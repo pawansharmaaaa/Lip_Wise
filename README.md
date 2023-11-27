@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # **LIP_WISE_GFPGAN**: *Wise enhancements for wav2lip.*
 
 **Introduction**
