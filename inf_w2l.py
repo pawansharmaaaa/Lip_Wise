@@ -71,7 +71,6 @@ def get_smoothened_boxes(boxes, T):
 	return boxes
 
 def face_detect(images):
-	# detector = face_detection.FaceAlignment(face_detection.LandmarksType._2D, flip_input=False, device=device)
 
 	batch_size = args.face_det_batch_size
 	
@@ -79,11 +78,10 @@ def face_detect(images):
 		predictions = []
 		try:
 			for i in tqdm(range(0, len(images), batch_size)):
-				# predictions.extend(detector.get_detections_for_batch(np.array(images[i:i + batch_size])))
+
 				step = min(i+batch_size, len(images))
 				predictions_batch = face_recognition.batch_face_locations(images[i:step], number_of_times_to_upsample=0)
 				predictions_b = [i[0] for i in predictions_batch if i]
-				# print(predictions_batch[0])
 				predictions.extend(predictions_b)
 		except RuntimeError:
 			if batch_size == 1: 
@@ -114,7 +112,6 @@ def face_detect(images):
 	if not args.nosmooth: boxes = get_smoothened_boxes(boxes, T=5)
 	results = [[image[y1:y2, x1:x2], (y1, y2, x1, x2)] for image, (x1, y1, x2, y2) in zip(images, boxes)]
 
-	# del detector
 	return results
 
 def datagen(frames, mels):
