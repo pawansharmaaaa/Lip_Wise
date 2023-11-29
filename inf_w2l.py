@@ -210,7 +210,7 @@ def load_gan_model():
 			tile=200,
 			tile_pad=10,
 			pre_pad=0,
-			half=True)  # need to set False in CPU mode
+			half=True)	# need to set False in CPU mode.
 
 	restorer = GFPGANer(
 		model_path=url,
