@@ -10,8 +10,11 @@ import platform
 from gfpgan import GFPGANer
 import cv2
 import face_recognition
+from no_face_filter import filter_face
 
 parser = argparse.ArgumentParser(description='Inference code to lip-sync videos in the wild using Wav2Lip models')
+
+parser.add_argument('--filter_face', type=bool, default=False, help='Whether to remove frames without face in the video')
 
 parser.add_argument('--checkpoint_path', type=str, 
 					help='Name of saved checkpoint to load weights from', required=True)
@@ -222,6 +225,9 @@ def load_gan_model():
 	return restorer
 
 def main():
+	if args.filter_face:
+		args.face = filter_face(args.face, 'temp/filter_face.mp4')
+
 	if not os.path.isfile(args.face):
 		raise ValueError('--face argument must be a valid path to video/image file')
 
