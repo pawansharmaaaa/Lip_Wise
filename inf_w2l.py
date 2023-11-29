@@ -4,7 +4,7 @@ import scipy, cv2, os, sys, argparse, audio
 import json, subprocess, random, string
 from tqdm import tqdm
 from glob import glob
-import torch, face_detection
+import torch
 from models import Wav2Lip
 import platform
 from gfpgan import GFPGANer
