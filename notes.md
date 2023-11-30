@@ -1,0 +1,3 @@
+- [ ] Add directory check in inference in the beginning
+- [ ] Clear ram after no_face_filter
+- [ ] 
