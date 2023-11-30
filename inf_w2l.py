@@ -14,7 +14,7 @@ from no_face_filter import filter_face
 
 parser = argparse.ArgumentParser(description='Inference code to lip-sync videos in the wild using Wav2Lip models')
 
-parser.add_argument('--filter_face', type=bool, default=False, help='Whether to remove frames without face in the video')
+parser.add_argument('--filter_face', default=False, action="store_true", help='Whether to remove frames without face in the video')
 
 parser.add_argument('--checkpoint_path', type=str, 
 					help='Name of saved checkpoint to load weights from', required=True)
@@ -76,31 +76,35 @@ def get_smoothened_boxes(boxes, T):
 def face_detect(images):
 
 	batch_size = args.face_det_batch_size
-	
+
 	while 1:
 		predictions = []
 		try:
 			for i in tqdm(range(0, len(images), batch_size)):
-
-				step = min(i+batch_size, len(images))
+				step = min(i + batch_size, len(images))
 				predictions_batch = face_recognition.batch_face_locations(images[i:step], number_of_times_to_upsample=0)
-				predictions_b = [i[0] for i in predictions_batch if i]
+				predictions_b = [i[0] for i in predictions_batch if i and len(i) > 0]
 				predictions.extend(predictions_b)
 		except RuntimeError:
-			if batch_size == 1: 
+			if batch_size == 1:
 				raise RuntimeError('Image too big to run face detection on GPU. Please use the --resize_factor argument')
 			batch_size //= 2
 			print('Recovering from OOM error; New batch size: {}'.format(batch_size))
 			continue
 		break
+
+	# Check if predictions and images have the same length before zipping them together
+	if len(predictions) != len(images):
+		print(f"Predictions Length: {len(predictions)}")
+		print(f"Images Length: {len(images)}")
+		raise ValueError('Length of predictions and images do not match')
+
 	predictions.append((141, 569, 265, 443))
-	print(f"Predictions Length: {len(predictions)}")
-	print(f"Images Length: {len(images)}")
 	results = []
 	pady1, pady2, padx1, padx2 = args.pads
 	for rect, image in zip(predictions, images):
 		if rect is None:
-			cv2.imwrite('temp/faulty_frame.jpg', image) # check this frame where the face was not detected.
+			cv2.imwrite('temp/faulty_frame.jpg', image)  # check this frame where the face was not detected.
 			raise ValueError('Face not detected! Ensure the video contains a face in all the frames.')
 
 		y1 = max(0, rect[0] - pady1)
@@ -108,7 +112,7 @@ def face_detect(images):
 		x1 = max(0, rect[3] - padx1)
 		x2 = min(image.shape[1], rect[1] + padx2)
 		print(f"Face_coords are top:{y1} bottom:{y2} left:{x1} right:{x2}")
-		
+
 		results.append([int(x1), int(y1), int(x2), int(y2)])
 
 	boxes = np.array(results)
