@@ -79,12 +79,16 @@ def face_detect(images):
 
 	while 1:
 		predictions = []
+		images_face = []
 		try:
 			for i in tqdm(range(0, len(images), batch_size)):
 				step = min(i + batch_size, len(images))
-				predictions_batch = face_recognition.batch_face_locations(images[i:step], number_of_times_to_upsample=0)
-				predictions_b = [i[0] for i in predictions_batch if i and len(i) > 0]
-				predictions.extend(predictions_b)
+				curr_batch = images[i:step]
+				predictions_batch = face_recognition.batch_face_locations(curr_batch, number_of_times_to_upsample=0) 
+				for img, loc in zip(curr_batch,predictions_batch):
+					if loc and len(loc) > 0:
+						predictions.appeend(loc[0])
+						images_face.append(img)
 		except RuntimeError:
 			if batch_size == 1:
 				raise RuntimeError('Image too big to run face detection on GPU. Please use the --resize_factor argument')

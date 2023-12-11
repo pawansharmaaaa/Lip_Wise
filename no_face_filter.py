@@ -19,7 +19,7 @@ def filter_face(input_path, output_path):
     frame_height = int(video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     # Create video writers for face.mp4
-    face_writer = cv2.VideoWriter(input_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (frame_width, frame_height))
+    face_writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (frame_width, frame_height))  # Changed input_path to output_path
 
     batch_size = 16
     frames = []
@@ -39,15 +39,16 @@ def filter_face(input_path, output_path):
 
             for frame_no, face_locations in enumerate(tqdm.tqdm(batch_faces, total=batch_size)):
                 if len(face_locations) == 1:
-                    # Write the frame to input_video.mp4 if a face is detected
+                    # Write the frame to output_path if a face is detected  # Changed input_video.mp4 to output_path
                     pos_frame = cv2.cvtColor(frames[frame_no], cv2.COLOR_RGB2BGR)
                     face_writer.write(pos_frame)
+                
+                # Release the frame immediately after it's processed
+                frames[frame_no] = None
+            
             frames = []
 
-    # Release video capture, writers and clear garbage
-    video_capture.release()
     face_writer.release()
     cv2.destroyAllWindows()
-    gc.collect()
 
     return output_path

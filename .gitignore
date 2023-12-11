@@ -16,3 +16,9 @@ evaluation/test_filelists/lr*.txt
 *.webm
 *.mp3
 gan
+*test*
+*_rgh.py
+*frame*.png
+dlib*
+*.onnx
+.vscode
