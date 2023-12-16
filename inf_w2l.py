@@ -10,7 +10,7 @@ import platform
 from gfpgan import GFPGANer
 import cv2
 import face_recognition
-from no_face_filter import filter_face
+from _testBKP.no_face_filter import filter_face
 
 parser = argparse.ArgumentParser(description='Inference code to lip-sync videos in the wild using Wav2Lip models')
 

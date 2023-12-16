@@ -168,6 +168,4 @@ Acknowledgments
 ----------
 Parts of the code structure are inspired by this [TTS repository](https://github.com/r9y9/deepvoice3_pytorch). We thank the author for this wonderful code. The code for Face Detection has been taken from the [face_alignment](https://github.com/1adrianb/face-alignment) repository. We thank the authors for releasing their code and models. We thank [zabique](https://github.com/zabique) for the tutorial collab notebook.
 =======
-# Lip_Wise_GFPGAN
-wav2lip that uses GFPGAN for upscaling.
 >>>>>>> 04948d52cb8a291475c7170469cc07bee4627bb5

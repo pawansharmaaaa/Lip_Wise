@@ -22,3 +22,7 @@ gan
 dlib*
 *.onnx
 .vscode
+.exe
+*.png
+*_OLD.md
+*Notebooks
