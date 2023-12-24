@@ -273,10 +273,30 @@ class FaceHelpers:
             Only The face.
         """
         mask = self.gen_face_mask(img, frame_no)
-        face = np.zeros_like(img)
+        face = np.zeros_like(img) * 255
         face[mask] = img[mask]
 
         return face, mask
+    
+    def crop_face(self, img, frame_no=0):
+        """
+        Crops the face from the image (Image with only face and black background).
+
+        Args:
+            img: Image from which the face is to be cropped.
+
+        Returns:
+            Only The face.
+        """
+
+        # Get bounding box
+        bbox = self.landmarks_all[frame_no][478:480] * [img.shape[1], img.shape[0]]
+        cropped_landmarks = self.landmarks_all[frame_no][480:482] - (bbox[0] + [-50, 50])
+
+        # Crop face
+        face = face[int(bbox[0, 1]-50):int(bbox[0, 1]+bbox[1, 1]+50), int(bbox[0, 0]-50):int(bbox[0, 0]+bbox[1, 0]+50)]
+
+        return face, cropped_landmarks
     
 
     def findEuclideanDistance(self, source_representation, test_representation):
@@ -286,10 +306,10 @@ class FaceHelpers:
         return euclidean_distance
 
     #this function is inspired from the deepface repository: https://github.com/serengil/deepface/blob/master/deepface/commons/functions.py
-    def alignment_procedure(self, img, frame_no=0):
+    def alignment_procedure(self, cropped_img, cropped_landmarks, frame_no=0):
 
-        left_eye = self.landmarks_all[frame_no][480] # Left eye index is 480
-        right_eye = self.landmarks_all[frame_no][481] # Right eye index is 481
+        left_eye = cropped_landmarks[frame_no][0] # Left eye index is 480
+        right_eye = cropped_landmarks[frame_no][1] # Right eye index is 481
 
         #this function aligns given face in img based on left and right eye coordinates
 
@@ -304,9 +324,9 @@ class FaceHelpers:
 
         center_eyes = (int((left_eye_x + right_eye_x) / 2), int((left_eye_y + right_eye_y) / 2))
 
-        center = (img.shape[1] / 2, img.shape[0] / 2)
+        center = (cropped_img.shape[1] / 2, cropped_img.shape[0] / 2)
 
-        output_size = (img.shape[1], img.shape[0])
+        output_size = (cropped_img.shape[1], cropped_img.shape[0])
         
 
         #-----------------------
@@ -352,13 +372,13 @@ class FaceHelpers:
             M = cv2.getRotationMatrix2D(center, direction * angle, 1)
 
             # Perform the affine transformation to rotate the image
-            img_rotated = cv2.warpAffine(img, M, output_size)
+            img_rotated = cv2.warpAffine(cropped_img, M, output_size)
 
         return img_rotated, M  #return img and inverse afiine matrix anyway
 
-    def warp_align(self, face, frame_no=0):
+    def warp_align(self, face, cropped_landmarks, frame_no=0):
         print("Warping and aligning face...")
-        face, M = self.alignment_procedure(face, frame_no)
+        face, M = self.alignment_procedure(face, cropped_landmarks, frame_no)
         return face, M
     
         
@@ -411,7 +431,7 @@ class FaceHelpers:
             yield frame_batch, mel_batch
 
 
-    def paste_back(face, background, mask):
+    def paste_back(self, face, background, mask):
         """
         Pastes the face back on the background.
 

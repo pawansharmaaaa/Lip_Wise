@@ -84,11 +84,15 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
         print("Extracting face from image...")
         face, mask = helper.extract_face(frame)
 
-        # Resize face for wav2lip
-        face = cv2.resize(face, (96, 96))
+        # Crop face
+        print("Cropping face...")
+        face, cropped_landmarks = helper.crop_face(face)
 
         # warp and align face
-        face, M = helper.warp_align(face)
+        face, M = helper.warp_align(face, cropped_landmarks)
+
+        # Resize face for wav2lip
+        face = cv2.resize(face, (96, 96))
 
         # Generate data for inference
         gen = helper.gen_data_image_mode(face, mel_chunks)
