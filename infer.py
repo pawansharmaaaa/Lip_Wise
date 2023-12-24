@@ -82,7 +82,7 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
 
         # extract face from image
         print("Extracting face from image...")
-        face = helper.extract_face(frame)
+        face, mask = helper.extract_face(frame)
 
         # Resize face for wav2lip
         face = cv2.resize(face, (96, 96))
@@ -133,7 +133,8 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
                 # Warp face back to original pose
                 cv2.resize(restored_face, (width, height), interpolation=cv2.INTER_CUBIC)
                 restored_face = cv2.warpAffine(restored_face, M, (width, height), flags=cv2.WARP_INVERSE_MAP)
-                out.write(restored_face)
+                restored_img = helper.paste_back(restored_face, frame, mask)
+                out.write(restored_img)
             
         out.release()
 

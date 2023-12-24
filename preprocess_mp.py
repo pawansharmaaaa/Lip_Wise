@@ -276,7 +276,7 @@ class FaceHelpers:
         face = np.zeros_like(img)
         face[mask] = img[mask]
 
-        return face
+        return face, mask
     
 
     def findEuclideanDistance(self, source_representation, test_representation):
