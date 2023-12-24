@@ -446,5 +446,6 @@ class FaceHelpers:
         Returns:
             The background with the face pasted on it.
         """
+        print("Pasting face back...")
         background[mask] = face[mask]
         return background

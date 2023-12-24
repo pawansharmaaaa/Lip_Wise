@@ -72,6 +72,7 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
 
         # Read image
         frame = cv2.imread(frame_path)
+        height, width, _ = frame.shape
 
         # Get face landmarks
         print("Getting face landmarks...")
@@ -82,7 +83,7 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
 
         # extract face from image
         print("Extracting face from image...")
-        face, mask = helper.extract_face(frame)
+        face, mask = helper.extract_face(frame.copy())
 
         # Crop face
         print("Cropping face...")
@@ -105,8 +106,6 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
         gfpgan = gfpgan.to(device)
 
         # Initialize video writer
-        width = int(frame.shape[1])
-        height = int(frame.shape[0])
         out = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
         # Feed to model:
@@ -136,7 +135,7 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
 
                 # Warp face back to original pose
                 restored_face = cv2.warpAffine(restored_face, M, (512, 512), flags=cv2.WARP_INVERSE_MAP)
-                cv2.resize(restored_face, (width, height), interpolation=cv2.INTER_CUBIC)
+                cv2.resize(restored_face, (width, height), interpolation=cv2.INTER_LANCZOS4)
                 restored_img = helper.paste_back(restored_face, frame, mask)
                 out.write(restored_img)
             
