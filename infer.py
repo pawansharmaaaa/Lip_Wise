@@ -2,31 +2,34 @@ import os
 import cv2
 import torch
 import subprocess
+import platform
 
+import numpy as np
 import gradio as gr
+
+from basicsr.utils import img2tensor, tensor2img
+from torchvision.transforms.functional import normalize
 
 # Custom Modules
 import audio
 import file_check
 import preprocess_mp as pmp
+import model_loaders as ml
 
 # Global Variables
-TEMP_DIRECTORY = os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'temp')
-MEDIA_DIRECTORY = os.path.join(TEMP_DIRECTORY, 'media')
-NPY_FILES_DIRECTORY = os.path.join(TEMP_DIRECTORY, 'npy_files')
+TEMP_DIRECTORY = file_check.TEMP_DIR
+MEDIA_DIRECTORY = file_check.MEDIA_DIR
+NPY_FILES_DIRECTORY = file_check.NPY_FILES_DIR
+OUTPUT_DIRECTORY = file_check.OUTPUT_DIR
 
 # Image Inference
-def infer_image(image_path, audio_path, fps=30, max_batch_size=16, mel_step_size=16, resize_factor=1):
+def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
     
         # Perform checks to ensure that all required files are present
         file_check.perform_check()
-
-        # Create media_preprocess object and helper object
-        pre_process = pmp.media_preprocess()
-        helper = pmp.FaceHelpers()
     
         # Get input type
-        input_type, img_ext = file_check.get_file_type(image_path)
+        input_type, img_ext = file_check.get_file_type(frame_path)
         if input_type != "image":
             raise Exception("Input file is not an image. Try again with an image file.")
         
@@ -64,6 +67,91 @@ def infer_image(image_path, audio_path, fps=30, max_batch_size=16, mel_step_size
 
         print(f"Length of mel chunks: {len(mel_chunks)}")
 
-        # fill frames array, it should have the same length as mel_chunks
-        frames = [cv2.imread(image_path)]*len(mel_chunks)
+        # Create media_preprocess object and helper object
+        processor = pmp.model_processor()
 
+        # Read image
+        frame = cv2.imread(frame_path)
+
+        # Get face landmarks
+        print("Getting face landmarks...")
+        landmarks = processor.preprocess_image(frame.copy())
+
+        # Create face helper object from landmarks
+        helper = pmp.FaceHelpers(landmarks)
+
+        # extract face from image
+        print("Extracting face from image...")
+        face = helper.extract_face(frame)
+
+        # Resize face for wav2lip
+        face = cv2.resize(face, (96, 96))
+
+        # warp and align face
+        face, M = helper.warp_align(face)
+
+        # Generate data for inference
+        gen = helper.gen_data_image_mode(face, mel_chunks)
+
+        # Load wav2lip model
+        w2l_model = ml.load_wav2lip_model()
+
+        # Load GFPGAN model
+        gfpgan = ml.load_gfpgan_model()
+        gfpgan = gfpgan.to(device)
+
+        # Initialize video writer
+        width = int(frame.shape[1])
+        height = int(frame.shape[0])
+        out = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
+
+        # Feed to model:
+        for i, (img_batch, mel_batch) in enumerate(gr.Progress(track_tqdm=True).tqdm(gen)):
+            img_batch = torch.FloatTensor(np.transpose(img_batch, (0, 3, 1, 2))).to(device)
+            mel_batch = torch.FloatTensor(np.transpose(mel_batch, (0, 3, 1, 2))).to(device)
+
+            with torch.no_grad():
+                pred = w2l_model(mel_batch, img_batch)
+            
+            pred = pred.cpu().numpy().transpose(0, 2, 3, 1) * 255.
+
+            for p in pred:
+                p = cv2.resize(p, (512, 512), interpolation=cv2.INTER_CUBIC)
+                dubbed_face_t = img2tensor(p / 255., bgr2rgb=True, float32=True)
+                normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
+                dubbed_face_t = dubbed_face_t.unsqueeze(0).to(device)
+                
+                try:
+                    output = gfpgan(dubbed_face_t, return_rgb=False, weight=0.5)[0]
+                    restored_face = tensor2img(output.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
+                except RuntimeError as error:
+                    print(f'\tFailed inference for GFPGAN: {error}.')
+                    restored_face = p
+                
+                restored_face = restored_face.astype(np.uint8)
+
+                # Warp face back to original pose
+                cv2.resize(restored_face, (width, height), interpolation=cv2.INTER_CUBIC)
+                restored_face = cv2.warpAffine(restored_face, M, (width, height), flags=cv2.WARP_INVERSE_MAP)
+                out.write(restored_face)
+            
+        out.release()
+
+        command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, 'output.mp4')}"
+        subprocess.call(command, shell=platform.system() != 'Windows')
+
+        return os.path.join(OUTPUT_DIRECTORY, 'output.mp4')
+
+if __name__ == "__main__":
+    # Create interface
+    inputs = [
+        gr.Image(type="filepath", label="Image"),
+        gr.Audio(type="filepath", label="Audio"),
+        gr.Slider(minimum=1, maximum=60, step=1, value=30, label="FPS"),
+        gr.Slider(minimum=0, maximum=160, step=16, value=16, label="Mel Step Size")
+    ]
+    outputs = gr.Video(sources='upload', label="Output")
+    title = "Lip Wise"
+
+    gr.Interface(fn=infer_image, inputs=inputs, outputs=outputs, title=title).launch()
+    

@@ -8,7 +8,7 @@ import numpy as np
 
 from basicsr.utils.download_util import load_file_from_url
 
-class media_preprocess:
+class model_processor:
 
     """
     INDEXES:
@@ -32,9 +32,9 @@ class media_preprocess:
         self.detector_model_path = os.path.join(file_check.MP_WEIGHTS_DIR, 'blaze_face_short_range.tflite')
         self.landmarker_model_path = os.path.join(file_check.MP_WEIGHTS_DIR, "face_landmarker.task")
 
-    def preprocess_image(self, image_path):
+    def preprocess_image(self, frame):
 
-        frame = cv2.imread(image_path)
+        # frame = cv2.imread(image_path)
         # Convert frame to RGB and convert to MediaPipe image
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         mp_frame = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
@@ -88,8 +88,7 @@ class media_preprocess:
 
         video_landmarks[0] = data
 
-        # Save video landmarks
-        np.save(os.path.join(self.npy_directory,'video_landmarks.npy'), video_landmarks)
+        return video_landmarks # Return landmarks instead of saving it to a file.
 
     def preprocess_video(self, video_path):
 
@@ -215,11 +214,20 @@ class media_preprocess:
             # Save index as npy array
             np.save(os.path.join(self.npy_directory, 'face_route_index.npy'), index)
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 class FaceHelpers:
 
-    def __init__(self):
+    def __init__(self, video_landmarks=None, max_batch_size=16):
         self.video_landmarks_path = os.path.join(file_check.NPY_FILES_DIR,'video_landmarks.npy')
-        self.landmarks_all = np.load(self.video_landmarks_path)
+        if video_landmarks is not None:
+            self.landmarks_all = video_landmarks
+        else:
+            self.landmarks_all = np.load(self.video_landmarks_path)
+
+        self.max_batch_size = max_batch_size
+        self.npy_directory = file_check.NPY_FILES_DIR
+        self.weights_directory = file_check.WEIGHTS_DIR
 
     def gen_face_mask(self, img, frame_no=0):
         """
@@ -232,6 +240,10 @@ class FaceHelpers:
         Returns:
             The face mask in bool format to be fed in the paste back function or extract_face function.
         """
+        if not os.path.exists(os.path.join(self.npy_directory, 'face_route_index.npy')):
+            processor = model_processor()
+            processor.gen_face_route_index()
+        
         index = np.load(os.path.join(self.npy_directory, 'face_route_index.npy'))
 
         coords = list()
@@ -250,7 +262,7 @@ class FaceHelpers:
 
         return mask
 
-    def extrtact_face(self, img, frame_no=0):
+    def extract_face(self, img, frame_no=0):
         """
         Extracts the face from the image (Image with only face and black background).
 
@@ -265,6 +277,7 @@ class FaceHelpers:
         face[mask] = img[mask]
 
         return face
+    
 
     def findEuclideanDistance(self, source_representation, test_representation):
         euclidean_distance = source_representation - test_representation
@@ -343,11 +356,60 @@ class FaceHelpers:
 
         return img_rotated, M  #return img and inverse afiine matrix anyway
 
-    def warp_face(self, face, frame_no=0):
+    def warp_align(self, face, frame_no=0):
         print("Warping and aligning face...")
         face, M = self.alignment_procedure(face, frame_no)
         return face, M
+    
         
+    def gen_data_image_mode(self, face, mel_chunks):
+        """
+        Generates data for inference in image mode.
+        Batches the data to be fed into the model.
+        Batch of image includes several images of shape (96, 96, 6) stacked together.
+        These images contain the half face and the full face.
+
+        Args:
+            face: The face extracted from the image.
+            mel_chunks: The mel chunks obtained from the audio.
+        
+        Returns:
+            A batch of images of shape (96, 96, 6) and mel chunks.
+        """
+        frame_batch = []
+        mel_batch = []
+
+        # Resize face for wav2lip
+        face = cv2.resize(face, (96, 96))
+        # Generate data for inference
+        for mel_chunk in mel_chunks:
+            frame_batch.append(face)
+            mel_batch.append(mel_chunk)
+
+            if len(frame_batch) >= self.max_batch_size:
+                frame_batch, mel_batch = np.asarray(frame_batch), np.asarray(mel_batch)
+
+                img_masked = frame_batch.copy()
+                img_masked[:, 96//2:] = 0
+
+                frame_batch = np.concatenate((img_masked, frame_batch), axis=3) / 255.
+                mel_batch = np.reshape(mel_batch, [len(mel_batch), mel_batch.shape[1], mel_batch.shape[2], 1])
+
+                yield frame_batch, mel_batch
+                frame_batch = []
+                mel_batch = []
+
+        if len(frame_batch) > 0:
+            frame_batch, mel_batch = np.asarray(frame_batch), np.asarray(mel_batch)
+
+            img_masked = frame_batch.copy()
+            img_masked[:, 96//2:] = 0
+
+            frame_batch = np.concatenate((img_masked, frame_batch), axis=3) / 255.
+            mel_batch = np.reshape(mel_batch, [len(mel_batch), mel_batch.shape[1], mel_batch.shape[2], 1])
+
+            yield frame_batch, mel_batch
+
 
     def paste_back(face, background, mask):
         """

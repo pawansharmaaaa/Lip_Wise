@@ -26,3 +26,5 @@ dlib*
 *.png
 *_OLD.md
 *Notebooks
+*temp
+*weights

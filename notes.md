@@ -9,12 +9,12 @@
     - [x] Alter code to also include eye coordinates.
 
 ### IMPROVING GAN UPSCALING
-- [ ] Merge Data Pipeline with preprocessor:
+- [x] Merge Data Pipeline with preprocessor:
     - [x] Remove need to recrop, realign and rewarp the image.
 
 ### IMPROVING WAV2LIP
-- [ ] Merge all data Pipeline:
-    - [ ] Remove the need to recrop, realign, renormalizing etc.
+- [x] Merge all data Pipeline:
+    - [x] Remove the need to recrop, realign, renormalizing etc.
     - [x] Devise a way to keep frames without face in the video.
         - [x] Understand Mels and working of wav2lip model.
 
@@ -22,6 +22,7 @@
 - [ ] Gradio UI
     - [ ] A tab for configuration variables.
     - [ ] A tab for Video, Audio and Output.
+    - [x] A tab for Image, Audio and output.
 
 ### FUTURE PLANS
 - [ ] Face and Audio wise Lipsync using face recognition.
