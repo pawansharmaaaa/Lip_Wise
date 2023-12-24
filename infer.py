@@ -116,10 +116,10 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
             with torch.no_grad():
                 pred = w2l_model(mel_batch, img_batch)
             
-            pred = pred.cpu().numpy().transpose(0, 2, 3, 1)
+            pred = pred.cpu().numpy().transpose(0, 2, 3, 1) * 255.
 
             for p in pred:
-                p = cv2.resize(p, (512, 512), interpolation=cv2.INTER_CUBIC)
+                p = cv2.resize(p.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_CUBIC)
                 dubbed_face_t = img2tensor(p, bgr2rgb=True, float32=True)
                 normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
                 dubbed_face_t = dubbed_face_t.unsqueeze(0).to(device)
