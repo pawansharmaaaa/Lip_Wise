@@ -135,7 +135,7 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
 
                 # Warp face back to original pose
                 restored_face = cv2.warpAffine(restored_face, M, (512, 512), flags=cv2.WARP_INVERSE_MAP)
-                cv2.resize(restored_face, (width, height), interpolation=cv2.INTER_LANCZOS4)
+                restored_face = cv2.resize(restored_face, (width, height), interpolation=cv2.INTER_LANCZOS4)
                 restored_img = helper.paste_back(restored_face, frame, mask)
                 out.write(restored_img)
             
