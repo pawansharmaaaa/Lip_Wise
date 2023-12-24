@@ -1,22 +1,22 @@
 # :memo: **TO-DO** List:
 
 ### PREPROCESS
-- [ ] Add directory check in inference in the beginning.
+- [x] Add directory check in inference in the beginning.
 - [x] Make preprocessing optimal.
 - [x] Clear ram after no_face_filter.
-- [ ] Make face coordinates reusable:
+- [x] Make face coordinates reusable:
     - [x] Saving facial coordinates as .npy file.
-    - [ ] Alter code to also include eye coordinates.
+    - [x] Alter code to also include eye coordinates.
 
 ### IMPROVING GAN UPSCALING
 - [ ] Merge Data Pipeline with preprocessor:
-    - [ ] Remove need to recrop, realign and rewarp the image.
+    - [x] Remove need to recrop, realign and rewarp the image.
 
 ### IMPROVING WAV2LIP
 - [ ] Merge all data Pipeline:
     - [ ] Remove the need to recrop, realign, renormalizing etc.
-    - [ ] Devise a way to keep frames without face in the video.
-        - [ ] Understand Mels and working of wav2lip model.
+    - [x] Devise a way to keep frames without face in the video.
+        - [x] Understand Mels and working of wav2lip model.
 
 ### OPTIONAL
 - [ ] Gradio UI

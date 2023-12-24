@@ -1,7 +1,6 @@
-from os import listdir, path
 import numpy as np
-import scipy, cv2, os, sys, argparse, audio
-import json, subprocess, random, string
+import cv2, os, argparse, audio
+import subprocess
 from tqdm import tqdm
 from glob import glob
 import torch
@@ -10,7 +9,6 @@ import platform
 from gfpgan import GFPGANer
 import cv2
 import face_recognition
-from _testBKP.no_face_filter import filter_face
 
 parser = argparse.ArgumentParser(description='Inference code to lip-sync videos in the wild using Wav2Lip models')
 
@@ -87,7 +85,7 @@ def face_detect(images):
 				predictions_batch = face_recognition.batch_face_locations(curr_batch, number_of_times_to_upsample=0) 
 				for img, loc in zip(curr_batch,predictions_batch):
 					if loc and len(loc) > 0:
-						predictions.appeend(loc[0])
+						predictions.append(loc[0])
 						images_face.append(img)
 		except RuntimeError:
 			if batch_size == 1:
@@ -233,8 +231,6 @@ def load_gan_model():
 	return restorer
 
 def main():
-	if args.filter_face:
-		args.face = filter_face(args.face, 'temp/filter_face.mp4')
 
 	if not os.path.isfile(args.face):
 		raise ValueError('--face argument must be a valid path to video/image file')
