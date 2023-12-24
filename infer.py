@@ -92,7 +92,7 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
         face, M = helper.warp_align(face, cropped_landmarks)
 
         # Resize face for wav2lip
-        face = cv2.resize(face, (96, 96))
+        face = cv2.resize(face, (96, 96), interpolation=cv2.INTER_AREA)
 
         # Generate data for inference
         gen = helper.gen_data_image_mode(face, mel_chunks)
@@ -117,11 +117,11 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
             with torch.no_grad():
                 pred = w2l_model(mel_batch, img_batch)
             
-            pred = pred.cpu().numpy().transpose(0, 2, 3, 1) * 255.
+            pred = pred.cpu().numpy().transpose(0, 2, 3, 1)
 
             for p in pred:
                 p = cv2.resize(p, (512, 512), interpolation=cv2.INTER_CUBIC)
-                dubbed_face_t = img2tensor(p / 255., bgr2rgb=True, float32=True)
+                dubbed_face_t = img2tensor(p, bgr2rgb=True, float32=True)
                 normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
                 dubbed_face_t = dubbed_face_t.unsqueeze(0).to(device)
                 
@@ -135,8 +135,8 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
                 restored_face = restored_face.astype(np.uint8)
 
                 # Warp face back to original pose
+                restored_face = cv2.warpAffine(restored_face, M, (512, 512), flags=cv2.WARP_INVERSE_MAP)
                 cv2.resize(restored_face, (width, height), interpolation=cv2.INTER_CUBIC)
-                restored_face = cv2.warpAffine(restored_face, M, (width, height), flags=cv2.WARP_INVERSE_MAP)
                 restored_img = helper.paste_back(restored_face, frame, mask)
                 out.write(restored_img)
             

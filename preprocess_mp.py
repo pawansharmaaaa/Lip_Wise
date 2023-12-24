@@ -278,7 +278,7 @@ class FaceHelpers:
 
         return face, mask
     
-    def crop_face(self, img, frame_no=0):
+    def crop_face(self, img, frame_no=0, face_padding=50):
         """
         Crops the face from the image (Image with only face and black background).
 
@@ -288,13 +288,15 @@ class FaceHelpers:
         Returns:
             Only The face.
         """
+        padding = [-face_padding, face_padding]
+        points = self.landmarks_all[frame_no][478:482] * [img.shape[1], img.shape[0]]
 
         # Get bounding box
-        bbox = self.landmarks_all[frame_no][478:480] * [img.shape[1], img.shape[0]]
-        cropped_landmarks = self.landmarks_all[frame_no][480:482] - (bbox[0] + [-50, 50])
+        bbox = points[:2]
+        cropped_landmarks = points[2:] - (bbox[0] + padding)
 
         # Crop face
-        face = face[int(bbox[0, 1]-50):int(bbox[0, 1]+bbox[1, 1]+50), int(bbox[0, 0]-50):int(bbox[0, 0]+bbox[1, 0]+50)]
+        face = img[int(bbox[0, 1]-50):int(bbox[0, 1]+bbox[1, 1]+50), int(bbox[0, 0]-50):int(bbox[0, 0]+bbox[1, 0]+50)]
 
         return face, cropped_landmarks
     
@@ -306,18 +308,20 @@ class FaceHelpers:
         return euclidean_distance
 
     #this function is inspired from the deepface repository: https://github.com/serengil/deepface/blob/master/deepface/commons/functions.py
-    def alignment_procedure(self, cropped_img, cropped_landmarks, frame_no=0):
+    def alignment_procedure(self, cropped_img, cropped_landmarks):
 
-        left_eye = cropped_landmarks[frame_no][0] # Left eye index is 480
-        right_eye = cropped_landmarks[frame_no][1] # Right eye index is 481
+        left_eye = cropped_landmarks[0] # Left eye index is 480
+        right_eye = cropped_landmarks[1] # Right eye index is 481
 
         #this function aligns given face in img based on left and right eye coordinates
 
         #left eye is the eye appearing on the left (right eye of the person)
         #left top point is (0, 0)
 
-        left_eye_x, left_eye_y = left_eye
-        right_eye_x, right_eye_y = right_eye
+        left_eye_x = left_eye[0]
+        left_eye_y = left_eye[1]
+        right_eye_x = right_eye[0]
+        right_eye_y = right_eye[1]
 
         #-----------------------
         #decide the image is inverse
@@ -376,9 +380,9 @@ class FaceHelpers:
 
         return img_rotated, M  #return img and inverse afiine matrix anyway
 
-    def warp_align(self, face, cropped_landmarks, frame_no=0):
+    def warp_align(self, face, cropped_landmarks):
         print("Warping and aligning face...")
-        face, M = self.alignment_procedure(face, cropped_landmarks, frame_no)
+        face, M = self.alignment_procedure(face, cropped_landmarks)
         return face, M
     
         
