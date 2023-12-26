@@ -87,11 +87,11 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
 
         # warp and align face
         print("Warping and aligning face...")
-        aligned_face, rotation_matrix = helper.warp_align(extracted_face)
+        aligned_face, rotation_matrix = helper.warp_align_extracted_face(extracted_face)
 
         # Crop face
         print("Cropping face...")
-        cropped_face, bbox = helper.crop_face(aligned_face, rotation_matrix)
+        cropped_face, bbox = helper.crop_extracted_face(aligned_face, rotation_matrix)
 
         # Store cropped face's height and width
         cropped_face_height, cropped_face_width, _ = cropped_face.shape
