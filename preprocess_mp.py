@@ -37,6 +37,7 @@ class model_processor:
         # frame = cv2.imread(image_path)
         # Convert frame to RGB and convert to MediaPipe image
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        height, width, _ = frame.shape
         mp_frame = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
         
         # Initialize mediapipe
@@ -61,34 +62,35 @@ class model_processor:
             min_face_detection_confidence=0.5,
             running_mode=VisionRunningMode.IMAGE)
         
-        video_landmarks = np.zeros((1, 486, 2)).astype(np.float64)
+        image_landmarks = np.zeros((1, 486, 2)).astype(np.float64)
         
         with FaceLandmarker.create_from_options(options_lan) as landmarker,FaceDetector.create_from_options(options_det) as detector:
             # Run face detector and face landmark models in IMAGE mode
             result_landmarker = landmarker.detect(mp_frame)
             result_detection = detector.detect(mp_frame)
         
-        # Get data ready to be saved
-        if len(result_detection.detections) > 0 and len(result_landmarker.face_landmarks) > 0:
-            # Get bounding box
-            bbox = result_detection.detections[0].bounding_box
-            bbox_np = (np.array([bbox.origin_x, bbox.origin_y, bbox.width, bbox.height]).reshape(2, 2) / [frame.shape[1], frame.shape[0]]).astype(np.float64)
+            # Get data ready to be saved
+            if len(result_detection.detections) > 0 and len(result_landmarker.face_landmarks) > 0:
+                # Get bounding box
+                bbox = result_detection.detections[0].bounding_box
+                bbox_np = np.array([[bbox.origin_x, bbox.origin_y], [bbox.origin_x + bbox.width, bbox.origin_y + bbox.height]])
+                bbox_np = bbox_np + [[0, -10], [0, 10]] # To include more forehead and full chin
+                bbox_np = (bbox_np/[width, height]).astype(np.float64) # Normalize
 
-            # Get Keypoints
-            kp = result_detection.detections[0].keypoints
-            kp_np = np.array([[k.x, k.y] for k in kp]).astype(np.float64)
+                # Get Keypoints
+                kp = result_detection.detections[0].keypoints
+                kp_np = np.array([[k.x, k.y] for k in kp]).astype(np.float64)
 
-            # Get landmarks
-            landmarks_np = np.array([[i.x, i.y] for i in result_landmarker.face_landmarks[0]]).astype(np.float64)
+                # Get landmarks
+                landmarks_np = np.array([[i.x, i.y] for i in result_landmarker.face_landmarks[0]]).astype(np.float64)
 
-            # Concatenate landmarks, bbox and keypoints. This is the data that will be saved.
-            data = np.vstack((landmarks_np, bbox_np, kp_np)).astype(np.float64)
-        else:
-            data = np.zeros((486,2)).astype(np.float64)
-
-        video_landmarks[0] = data
-
-        return video_landmarks # Return landmarks instead of saving it to a file.
+                # Concatenate landmarks, bbox and keypoints. This is the data that will be saved.
+                data = np.vstack((landmarks_np, bbox_np, kp_np)).astype(np.float64)
+            else:
+                data = np.zeros((486,2)).astype(np.float64)
+            
+            image_landmarks[0] = data
+            np.save(os.path.join(self.npy_directory,'image_landmarks.npy'), image_landmarks)
 
     def preprocess_video(self, video_path):
 
@@ -158,7 +160,9 @@ class model_processor:
                 if len(result_detection.detections) > 0 and len(result_landmarker.face_landmarks) > 0:
                     # Get bounding box
                     bbox = result_detection.detections[0].bounding_box
-                    bbox_np = (np.array([bbox.origin_x, bbox.origin_y, bbox.width, bbox.height]).reshape(2, 2) / [width, height]).astype(np.float64)
+                    bbox_np = np.array([[bbox.origin_x, bbox.origin_y], [bbox.origin_x + bbox.width, bbox.origin_y + bbox.height]])
+                    bbox_np = bbox_np + [[0, -10], [0, 10]] # To include more forehead and full chin
+                    bbox_np = (bbox_np/[width, height]).astype(np.float64) # Normalize
 
                     # Get Keypoints
                     kp = result_detection.detections[0].keypoints
@@ -218,16 +222,26 @@ class model_processor:
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 class FaceHelpers:
 
-    def __init__(self, video_landmarks=None, max_batch_size=16):
-        self.video_landmarks_path = os.path.join(file_check.NPY_FILES_DIR,'video_landmarks.npy')
-        if video_landmarks is not None:
-            self.landmarks_all = video_landmarks
-        else:
-            self.landmarks_all = np.load(self.video_landmarks_path)
+    def __init__(self, image_mode=False, max_batch_size=16):
 
         self.max_batch_size = max_batch_size
         self.npy_directory = file_check.NPY_FILES_DIR
         self.weights_directory = file_check.WEIGHTS_DIR
+
+        self.video_landmarks_path = os.path.join(self.npy_directory,'video_landmarks.npy')
+        self.image_landmarks_path = os.path.join(self.npy_directory,'image_landmarks.npy')
+        if image_mode:
+            try:
+                self.landmarks_all = np.load(self.image_landmarks_path)
+            except FileNotFoundError as e:
+                print("Image landmarks were not saved. Please report this issue.")
+                exit(1)
+        else:
+            try:
+                self.landmarks_all = np.load(self.video_landmarks_path)
+            except FileNotFoundError as e:
+                print("Video landmarks were not saved. Please report this issue.")
+                exit(1)
 
     def gen_face_mask(self, img, frame_no=0):
         """
@@ -260,9 +274,11 @@ class FaceHelpers:
         mask = cv2.fillConvexPoly(mask, coords, 1)
         mask = mask.astype(bool)
 
-        return mask
+        original_mask = mask
 
-    def extract_face(self, img, frame_no=0):
+        return original_mask
+
+    def extract_face(self, original_img, frame_no=0):
         """
         Extracts the face from the image (Image with only face and black background).
 
@@ -272,33 +288,11 @@ class FaceHelpers:
         Returns:
             Only The face.
         """
-        mask = self.gen_face_mask(img, frame_no)
-        face = np.zeros_like(img) * 255
-        face[mask] = img[mask]
+        original_mask = self.gen_face_mask(original_img, frame_no)
+        extracted_face = np.zeros_like(original_img)
+        extracted_face[original_mask] = original_img[original_mask]
 
-        return face, mask
-    
-    def crop_face(self, img, frame_no=0, face_padding=50):
-        """
-        Crops the face from the image (Image with only face and black background).
-
-        Args:
-            img: Image from which the face is to be cropped.
-
-        Returns:
-            Only The face.
-        """
-        padding = [-face_padding, face_padding]
-        points = self.landmarks_all[frame_no][478:482] * [img.shape[1], img.shape[0]]
-
-        # Get bounding box
-        bbox = points[:2]
-        cropped_landmarks = points[2:] - (bbox[0] + padding)
-
-        # Crop face
-        face = img[int(bbox[0, 1]-50):int(bbox[0, 1]+bbox[1, 1]+50), int(bbox[0, 0]-50):int(bbox[0, 0]+bbox[1, 0]+50)]
-
-        return face, cropped_landmarks
+        return extracted_face, original_mask
     
 
     def findEuclideanDistance(self, source_representation, test_representation):
@@ -308,10 +302,10 @@ class FaceHelpers:
         return euclidean_distance
 
     #this function is inspired from the deepface repository: https://github.com/serengil/deepface/blob/master/deepface/commons/functions.py
-    def alignment_procedure(self, cropped_img, cropped_landmarks):
+    def alignment_procedure(self, extracted_face, frame_no=0):
 
-        left_eye = cropped_landmarks[0] # Left eye index is 480
-        right_eye = cropped_landmarks[1] # Right eye index is 481
+        left_eye = self.landmarks_all[frame_no][480] * extracted_face.shape[:2] # Left eye index is 480, and also unzipping
+        right_eye = self.landmarks_all[frame_no][481] * extracted_face.shape[:2] # Right eye index is 481, and also unzipping
 
         #this function aligns given face in img based on left and right eye coordinates
 
@@ -328,9 +322,9 @@ class FaceHelpers:
 
         center_eyes = (int((left_eye_x + right_eye_x) / 2), int((left_eye_y + right_eye_y) / 2))
 
-        center = (cropped_img.shape[1] / 2, cropped_img.shape[0] / 2)
+        center = (extracted_face.shape[1] / 2, extracted_face.shape[0] / 2)
 
-        output_size = (cropped_img.shape[1], cropped_img.shape[0])
+        output_size = (extracted_face.shape[1], extracted_face.shape[0])
         
 
         #-----------------------
@@ -373,20 +367,66 @@ class FaceHelpers:
                 angle = 90 - angle
 
             # Get the rotation matrix
-            M = cv2.getRotationMatrix2D(center, direction * angle, 1)
+            rotation_matrix = cv2.getRotationMatrix2D(center, direction * angle, 1)
 
             # Perform the affine transformation to rotate the image
-            img_rotated = cv2.warpAffine(cropped_img, M, output_size)
+            aligned_face = cv2.warpAffine(extracted_face, rotation_matrix, output_size)
 
-        return img_rotated, M  #return img and inverse afiine matrix anyway
+        return aligned_face, rotation_matrix  #return img and inverse afiine matrix anyway
 
-    def warp_align(self, face, cropped_landmarks):
+    def warp_align_extracted_face(self, extracted_face):
         print("Warping and aligning face...")
-        face, M = self.alignment_procedure(face, cropped_landmarks)
-        return face, M
+        aligned_face, rotation_matrix = self.alignment_procedure(extracted_face)
+        return aligned_face, rotation_matrix
+    
+    def crop_extracted_face(self, aligned_face, rotation_matrix, frame_no=0):
+        """
+        Crops the face from the image (Image with only face and black background).
+
+        Args:
+            face: Image from which the face is to be cropped.
+
+        Returns:
+            Only The face.
+        """
+        old_bbox = self.landmarks_all[frame_no][478:480].copy()
+        old_landmarks = self.landmarks_all[frame_no][480:].copy()
+
+        # Unzip the bbox and landmarks
+        old_bbox = old_bbox * [aligned_face.shape[1], aligned_face.shape[0]]
+        old_landmarks = old_landmarks * [aligned_face.shape[1], aligned_face.shape[0]]
+
+        # Get new center from rotation_matrix
+        new_center = (rotation_matrix[:,2:])
+        new_center = np.reshape(new_center, (1, 2))
+
+        # New_landmarks
+        rotated_landmarks = np.dot(old_landmarks, rotation_matrix[:,:2].T) + new_center
+
+        # Calculate Distances for bbox
+        d1 = abs(old_landmarks[4][0] - old_bbox[0][0])
+        d2 = abs(old_landmarks[5][0] - old_bbox[1][0])
+        d3 = abs(max(old_landmarks[0][1], old_landmarks[1][1]) - old_bbox[0][1])
+        d4 = abs(old_landmarks[3][1] - old_bbox[1][1])
+
+        pad = np.array([[10, 90], [10, 90]])
+
+        # New_bbox
+        xmin = rotated_landmarks[4][0] - max(d1, pad[0][0])
+        xmax = rotated_landmarks[5][0] + max(d2, pad[1][0])
+        ymin = rotated_landmarks[0][1] - max(d3, pad[0][1])
+        ymax = rotated_landmarks[3][1] + max(d4, pad[1][1])
+
+        # New_bbox
+        bbox = np.array([[xmin, ymin], [xmax, ymax]]).astype(np.int32)
+
+        # Crop face
+        cropped_face = aligned_face[bbox[0,1]:bbox[1,1], bbox[0,0]:bbox[1,0]]
+
+        return cropped_face, bbox
     
         
-    def gen_data_image_mode(self, face, mel_chunks):
+    def gen_data_image_mode(self, cropped_face, mel_chunks):
         """
         Generates data for inference in image mode.
         Batches the data to be fed into the model.
@@ -404,10 +444,10 @@ class FaceHelpers:
         mel_batch = []
 
         # Resize face for wav2lip
-        face = cv2.resize(face, (96, 96))
+        cropped_face = cv2.resize(cropped_face, (96, 96))
         # Generate data for inference
         for mel_chunk in mel_chunks:
-            frame_batch.append(face)
+            frame_batch.append(cropped_face)
             mel_batch.append(mel_chunk)
 
             if len(frame_batch) >= self.max_batch_size:
@@ -434,8 +474,31 @@ class FaceHelpers:
 
             yield frame_batch, mel_batch
 
+    def paste_back_black_bg(self, processed_face, bbox, extracted_face):
+        processed_ready = np.zeros_like(extracted_face)
+        processed_ready[bbox[0,1]:bbox[1,1], bbox[0,0]:bbox[1,0]] = processed_face
 
-    def paste_back(self, face, background, mask):
+        return processed_ready
+    
+    def unwarp_align(self, processed_ready, rotation_matrix):
+        """
+        Unwarps and unaligns the processed face.
+
+        Args:
+            processed_face: The processed face.
+            rotation_matrix: The rotation matrix obtained from the alignment procedure.
+            bbox: The bounding box of the face.
+        
+        Returns:
+            The unwarped and unaligned face.
+        """
+        # Unwarp and unalign
+        print("Unwarping and unaligning face...")
+        ready_to_paste = cv2.warpAffine(processed_ready, rotation_matrix, (processed_ready.shape[1], processed_ready.shape[0]), flags=cv2.WARP_INVERSE_MAP)
+        return ready_to_paste
+
+
+    def paste_back(self, ready_to_paste, background, original_mask):
         """
         Pastes the face back on the background.
 
@@ -447,5 +510,5 @@ class FaceHelpers:
             The background with the face pasted on it.
         """
         print("Pasting face back...")
-        background[mask] = face[mask]
+        background[original_mask] = ready_to_paste[original_mask]
         return background

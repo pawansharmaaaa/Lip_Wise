@@ -76,27 +76,28 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
 
         # Get face landmarks
         print("Getting face landmarks...")
-        landmarks = processor.preprocess_image(frame.copy())
+        processor.preprocess_image(frame.copy())
 
         # Create face helper object from landmarks
-        helper = pmp.FaceHelpers(landmarks)
+        helper = pmp.FaceHelpers(image_mode=True)
 
         # extract face from image
         print("Extracting face from image...")
-        face, mask = helper.extract_face(frame.copy())
+        extracted_face, original_mask = helper.extract_face(frame.copy())
+
+        # warp and align face
+        print("Warping and aligning face...")
+        aligned_face, rotation_matrix = helper.warp_align(extracted_face)
 
         # Crop face
         print("Cropping face...")
-        face, cropped_landmarks = helper.crop_face(face)
+        cropped_face, bbox = helper.crop_face(aligned_face, rotation_matrix)
 
-        # warp and align face
-        face, M = helper.warp_align(face, cropped_landmarks)
-
-        # Resize face for wav2lip
-        face = cv2.resize(face, (96, 96), interpolation=cv2.INTER_AREA)
+        # Store cropped face's height and width
+        cropped_face_height, cropped_face_width, _ = cropped_face.shape
 
         # Generate data for inference
-        gen = helper.gen_data_image_mode(face, mel_chunks)
+        gen = helper.gen_data_image_mode(cropped_face, mel_chunks)
 
         # Load wav2lip model
         w2l_model = ml.load_wav2lip_model()
@@ -114,13 +115,13 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
             mel_batch = torch.FloatTensor(np.transpose(mel_batch, (0, 3, 1, 2))).to(device)
 
             with torch.no_grad():
-                pred = w2l_model(mel_batch, img_batch)
+                dubbed_faces = w2l_model(mel_batch, img_batch)
             
-            pred = pred.cpu().numpy().transpose(0, 2, 3, 1) * 255.
+            dubbed_faces = dubbed_faces.cpu().numpy().transpose(0, 2, 3, 1) * 255.
 
-            for p in pred:
-                p = cv2.resize(p.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_CUBIC)
-                dubbed_face_t = img2tensor(p, bgr2rgb=True, float32=True)
+            for d in dubbed_faces:
+                d = cv2.resize(d.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_CUBIC)
+                dubbed_face_t = img2tensor(d, bgr2rgb=True, float32=True)
                 normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
                 dubbed_face_t = dubbed_face_t.unsqueeze(0).to(device)
                 
@@ -129,15 +130,18 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
                     restored_face = tensor2img(output.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
                 except RuntimeError as error:
                     print(f'\tFailed inference for GFPGAN: {error}.')
-                    restored_face = p
+                    restored_face = d
                 
                 restored_face = restored_face.astype(np.uint8)
 
                 # Warp face back to original pose
-                restored_face = cv2.warpAffine(restored_face, M, (512, 512), flags=cv2.WARP_INVERSE_MAP)
-                restored_face = cv2.resize(restored_face, (width, height), interpolation=cv2.INTER_LANCZOS4)
-                restored_img = helper.paste_back(restored_face, frame, mask)
-                out.write(restored_img)
+                
+                processed_face = cv2.resize(restored_face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
+                processed_ready = helper.paste_back_black_bg(processed_face, bbox, extracted_face)
+                ready_to_paste = helper.unwarp_align(processed_ready, rotation_matrix)
+                restored_image = helper.paste_back(ready_to_paste, frame, original_mask)
+
+                out.write(restored_image)
             
         out.release()
 
