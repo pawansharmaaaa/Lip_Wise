@@ -10,3 +10,4 @@ gfpgan
 realesrgan
 mediapipe
 gradio
+gdown
