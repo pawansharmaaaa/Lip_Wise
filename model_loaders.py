@@ -27,6 +27,19 @@ def load_wav2lip_model():
     model = model.to(DEVICE)
     return model.eval()
 
+def load_wav2lip_gan_model():
+    model = Wav2Lip()
+    print(f"Load checkpoint from: {file_check.WAV2LIP_GAN_MODEL_PATH}")
+    checkpoint = _load(file_check.WAV2LIP_GAN_MODEL_PATH)
+    s = checkpoint["state_dict"]
+    new_s = {}
+    for k, v in s.items():
+        new_s[k.replace('module.', '')] = v
+    model.load_state_dict(new_s)
+
+    model = model.to(DEVICE)
+    return model.eval()
+
 def load_gfpgan_model():
 
     gfpgan = GFPGANv1Clean(

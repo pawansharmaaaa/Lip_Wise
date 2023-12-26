@@ -100,7 +100,7 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16, gfpgan_weight 
         gen = helper.gen_data_image_mode(cropped_face, mel_chunks)
 
         # Load wav2lip model
-        w2l_model = ml.load_wav2lip_model()
+        w2l_model = ml.load_wav2lip_gan_model()
 
         # Load GFPGAN model
         gfpgan = ml.load_gfpgan_model()
