@@ -23,7 +23,7 @@ NPY_FILES_DIRECTORY = file_check.NPY_FILES_DIR
 OUTPUT_DIRECTORY = file_check.OUTPUT_DIR
 
 # Image Inference
-def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
+def infer_image(frame_path, audio_path, fps=30, mel_step_size=16, gfpgan_weight = 1.0):
     
         # Perform checks to ensure that all required files are present
         file_check.perform_check()
@@ -126,7 +126,7 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16):
                 dubbed_face_t = dubbed_face_t.unsqueeze(0).to(device)
                 
                 try:
-                    output = gfpgan(dubbed_face_t, return_rgb=False, weight=0.5)[0]
+                    output = gfpgan(dubbed_face_t, return_rgb=False, weight=gfpgan_weight)[0]
                     restored_face = tensor2img(output.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
                 except RuntimeError as error:
                     print(f'\tFailed inference for GFPGAN: {error}.')
@@ -156,7 +156,8 @@ if __name__ == "__main__":
         gr.Image(type="filepath", label="Image"),
         gr.Audio(type="filepath", label="Audio"),
         gr.Slider(minimum=1, maximum=60, step=1, value=30, label="FPS"),
-        gr.Slider(minimum=0, maximum=160, step=16, value=16, label="Mel Step Size")
+        gr.Slider(minimum=0, maximum=160, step=16, value=16, label="Mel Step Size"),
+        gr.Slider(minimum=0.0, maximum=2.0, step=0.1, value=1.0, label="GFPGAN Weight")
     ]
     outputs = gr.Video(sources='upload', label="Output")
     title = "Lip Wise"

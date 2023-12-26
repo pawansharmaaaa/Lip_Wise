@@ -1,11 +1,12 @@
 import os
+import gdown
 from basicsr.utils.download_util import load_file_from_url
 
 LANDMARKER_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task'
 DETECTOR_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/latest/blaze_face_short_range.tflite'
 GFPGAN_MODEL_URL = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth'
-WAV2LIP_MODEL_URL = 'https://drive.google.com/uc?export=download&id=1paYmN1KAZ2oPQPV-XauCoRUorhkOt0s2'
-WAV2LIP_GAN_MODEL_URL = 'https://drive.google.com/uc?export=download&id=1WpqCULKQQcaCNf827h1qgjMHZENYHk-_'
+WAV2LIP_MODEL_URL = 'https://drive.google.com/file/d/1paYmN1KAZ2oPQPV-XauCoRUorhkOt0s2/view?usp=sharing'
+WAV2LIP_GAN_MODEL_URL = 'https://drive.google.com/file/d/1WpqCULKQQcaCNf827h1qgjMHZENYHk-_/view?usp=sharing'
 
 CURRENT_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
@@ -25,6 +26,10 @@ MP_DETECTOR_MODEL_PATH = os.path.join(MP_WEIGHTS_DIR, 'blaze_face_short_range.tf
 GFPGAN_MODEL_PATH = os.path.join(GFPGAN_WEIGHTS_DIR, 'GFPGANv1.4.pth')
 WAV2LIP_MODEL_PATH = os.path.join(WAV2LIP_WEIGHTS_DIR, 'wav2lip.pth')
 WAV2LIP_GAN_MODEL_PATH = os.path.join(WAV2LIP_WEIGHTS_DIR, 'wav2lip_gan.pth')
+
+def download_from_drive(url, model_dir, progress, file_name):
+    output_path = os.path.join(model_dir, file_name)
+    gdown.download(url, output=output_path, quiet=(progress is False))
 
 def perform_check():
     try:
@@ -72,14 +77,14 @@ def perform_check():
             
         if not os.path.exists(WAV2LIP_MODEL_PATH):
             print("Downloading Wav2Lip model...")
-            load_file_from_url(url=WAV2LIP_MODEL_URL, 
+            download_from_drive(url=WAV2LIP_MODEL_URL, 
                                model_dir=WAV2LIP_WEIGHTS_DIR,
                                progress=True,
                                file_name='wav2lip.pth')
             
         if not os.path.exists(WAV2LIP_GAN_MODEL_PATH):
             print("Downloading Wav2Lip GAN model...")
-            load_file_from_url(url=WAV2LIP_GAN_MODEL_URL,
+            download_from_drive(url=WAV2LIP_GAN_MODEL_URL,
                                model_dir=WAV2LIP_WEIGHTS_DIR,
                                progress=True,
                                file_name='wav2lip_gan.pth')
