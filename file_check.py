@@ -1,5 +1,4 @@
 import os
-import uuid
 from basicsr.utils.download_util import load_file_from_url
 
 LANDMARKER_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task'

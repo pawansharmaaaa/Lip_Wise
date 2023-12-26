@@ -74,7 +74,7 @@ class model_processor:
                 # Get bounding box
                 bbox = result_detection.detections[0].bounding_box
                 bbox_np = np.array([[bbox.origin_x, bbox.origin_y], [bbox.origin_x + bbox.width, bbox.origin_y + bbox.height]])
-                bbox_np = bbox_np + [[0, -10], [0, 10]] # To include more forehead and full chin
+                bbox_np = bbox_np + [[0, -100], [0, 10]] # To include more forehead and full chin
                 bbox_np = (bbox_np/[width, height]).astype(np.float64) # Normalize
 
                 # Get Keypoints
@@ -304,9 +304,10 @@ class FaceHelpers:
     #this function is inspired from the deepface repository: https://github.com/serengil/deepface/blob/master/deepface/commons/functions.py
     def alignment_procedure(self, extracted_face, frame_no=0):
 
-        left_eye = self.landmarks_all[frame_no][480] * extracted_face.shape[:2] # Left eye index is 480, and also unzipping
-        right_eye = self.landmarks_all[frame_no][481] * extracted_face.shape[:2] # Right eye index is 481, and also unzipping
+        height, width = extracted_face.shape[:2]
 
+        left_eye = self.landmarks_all[frame_no][480] *  [width, height]# Left eye index is 480, and also unzipping
+        right_eye = self.landmarks_all[frame_no][481] * [width, height] # Right eye index is 481, and also unzipping
         #this function aligns given face in img based on left and right eye coordinates
 
         #left eye is the eye appearing on the left (right eye of the person)
