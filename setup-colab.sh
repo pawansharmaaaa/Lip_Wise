@@ -22,4 +22,7 @@ fi
 pip install -r requirements.txt
 
 # Copy archs
-cp archs/* .lip-wise/lib/python3.10/site-packages/basicsr/archs/
+cp archs/* /usr/local/lib/python3.10/dist-packages/basicsr/archs
+
+# Run file_check.py
+python file_check.py
