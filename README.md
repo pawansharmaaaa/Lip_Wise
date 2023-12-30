@@ -10,6 +10,7 @@
     <img src="https://img.shields.io/github/contributors/pawansharmaaaa/Lip_Wise?style=social&logo=github">
     <img src="https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github">
 </div>
+---------------------------------------------------------------------------------------------------------------------------------
 
 ## **Introduction**
 
