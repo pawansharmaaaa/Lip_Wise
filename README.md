@@ -99,8 +99,8 @@ LipWise is a powerful video dubbing tool that leverages optimized inference for 
 - [ ] A separate tab for TTS.
 
 #### COLAB NOTEBOOK
-- [ ] Optimize Inference.
-- [ ] Implement Checks.
+- [x] Optimize Inference.
+- [x] Implement Checks.
 
 ## :hugs: ACKNOWLEDGEMENTS:
 
