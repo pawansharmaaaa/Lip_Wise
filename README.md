@@ -1,5 +1,5 @@
 <div style="display: flex; justify-content: space-between;">
-    <img src="https://img.shields.io/github/license/pawansharmaaaa/Lip_Wise?style=for-the-badge&logo=github">
+    <svg xmlns="http://www.w3.org/2000/svg" width="417.7375183105469" height="35" viewBox="0 0 417.7375183105469 35"><rect width="93.10000610351562" height="35" fill="#000000"/><rect x="93.10000610351562" width="324.63751220703125" height="35" fill="#ffffff"/><text x="46.55000305175781" y="17.5" font-size="12" font-family="'Roboto', sans-serif" fill="#ffffff" text-anchor="middle" alignment-baseline="middle" letter-spacing="2">LIP WISE:</text><text x="255.41876220703125" y="17.5" font-size="12" font-family="'Montserrat', sans-serif" fill="#000000" text-anchor="middle" font-weight="900" alignment-baseline="middle" letter-spacing="2">WISE ENHANCEMENTS FOR WAV2LIP</text></svg>
 </div>
 
 # [![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)[![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)](https://www.tensorflow.org/)
