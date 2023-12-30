@@ -1,5 +1,5 @@
 <div style="display: flex; justify-content: space-between;">
-    <img src = "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/b6d8fb73-1844-4f88-9c5a-a7a564747119">
+    <img src = "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/cca4987a-18e5-49f1-9eba-710f3c0655a7">
 </div>
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 <div style="display: flex; justify-content: flex-start; margin-top:20px;">
