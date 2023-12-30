@@ -34,8 +34,12 @@ LipWise is a powerful video dubbing tool that leverages optimized inference for 
 >   * `git clone https://github.com/pawansharmaaaa/Lip_Wise_GFPGAN`
 > * Make sure `python --version` is `>3.10`
 > * Download and install the [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) that is compatible with your system. The latest version generally supports most NVIDIA 10-series graphics cards and newer models.
-> * Run `setup.sh`
-> * Run `python3 launch.py`
+> * Make `setup.sh` an executable
+>   * `chmod +x ./setup.sh`
+> * Run `setup.sh` by double clicking on it.
+> * Make `launch.sh` an executable
+>   * `chmod +x ./launch.sh`
+> * Run `launch.sh` by double clicking on it.
 
 ## :memo: **TO-DO** List:
 
