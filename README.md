@@ -1,11 +1,8 @@
 <div style="display: flex; justify-content: space-between;">
     <svg xmlns="http://www.w3.org/2000/svg" width="417.7375183105469" height="35" viewBox="0 0 417.7375183105469 35"><rect width="93.10000610351562" height="35" fill="#000000"/><rect x="93.10000610351562" width="324.63751220703125" height="35" fill="#ffffff"/><text x="46.55000305175781" y="17.5" font-size="12" font-family="'Roboto', sans-serif" fill="#ffffff" text-anchor="middle" alignment-baseline="middle" letter-spacing="2">LIP WISE:</text><text x="255.41876220703125" y="17.5" font-size="12" font-family="'Montserrat', sans-serif" fill="#000000" text-anchor="middle" font-weight="900" alignment-baseline="middle" letter-spacing="2">WISE ENHANCEMENTS FOR WAV2LIP</text></svg>
 </div>
-
-# [![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)[![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)](https://www.tensorflow.org/)
-
-<div style="display: flex; justify-content: flex-start;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="155.70000076293945" height="20" viewBox="0 0 180 30"><rect width="77.3375015258789" height="35" fill="#000000"/><rect x="77.3375015258789" width="78.36249923706055" height="35" fill="#ffffff"/><text x="38.66875076293945" y="17.5" font-size="14" font-family="'Roboto', sans-serif" fill="#ffffff" text-anchor="middle" font-weight="600" alignment-baseline="middle" letter-spacing="2">GITHUB</text><text x="116.51875114440918" y="17.5" font-size="14" font-family="'Roboto', sans-serif" fill="#000000" text-anchor="middle" font-weight="600" alignment-baseline="middle" letter-spacing="2">STATS:</text></svg>
+<div style="display: flex; justify-content: flex-start; margin-top:20px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="155.70000076293945" height="20" viewBox="30 0 180 30"><rect width="77.3375015258789" height="35" fill="#000000"/><rect x="77.3375015258789" width="78.36249923706055" height="35" fill="#ffffff"/><text x="38.66875076293945" y="17.5" font-size="14" font-family="'Roboto', sans-serif" fill="#ffffff" text-anchor="middle" font-weight="600" alignment-baseline="middle" letter-spacing="2">GITHUB</text><text x="116.51875114440918" y="17.5" font-size="14" font-family="'Roboto', sans-serif" fill="#000000" text-anchor="middle" font-weight="600" alignment-baseline="middle" letter-spacing="2">STATS:</text></svg>
     <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social">
     <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social">
     <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social">
@@ -100,7 +97,10 @@ LipWise is a powerful video dubbing tool that leverages optimized inference for 
 - [ ] Implement Checks.
 
 ## :hugs: ACKNOWLEDGEMENTS:
-Thanks to the following open-source projects:
+
+#### Thanks to the following open-source projects:
+[![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)[![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)](https://www.tensorflow.org/)
+
 * <a href="https://github.com/Rudrabha/Wav2Lip" target="_blank">Wav2Lip</a>
 * <a href="https://github.com/sczhou/CodeFormer" target="_blank">CodeFormer</a>
 * <a href="https://github.com/TencentARC/GFPGAN" target="_blank">GFPGAN</a>
