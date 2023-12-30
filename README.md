@@ -1,12 +1,12 @@
 <div style="display: flex; justify-content: space-between;">
-    <img src=".\assets\lip-wise_-wise-enhancements-for-wav2lip.svg" height = 30>
+    <img src="https://github.com/pawansharmaaaa/Lip_Wise/blob/main/assets/lip-wise_-wise-enhancements-for-wav2lip.svg" height = 30>
     <img src="https://img.shields.io/github/license/pawansharmaaaa/Lip_Wise?style=for-the-badge&logo=github">
 </div>
 
 # [![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)[![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)](https://www.tensorflow.org/)
 
 <div style="display: flex; justify-content: flex-start;">
-    <img src=".\assets\github-stats_.svg" height="20" style="margin-right: 10px;">
+    <img src="https://github.com/pawansharmaaaa/Lip_Wise/blob/main/assets/github-stats_.svg" height="20" style="margin-right: 10px;">
     <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social">
     <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social">
     <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social">
