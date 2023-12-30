@@ -15,6 +15,8 @@ then
     fi
 fi
 
+sudo apt install python3.10-venv
+
 # Check if CUDA is installed
 if [ -z "$CUDA_PATH" ]
 then
@@ -32,4 +34,4 @@ source .lip-wise/bin/activate
 pip install -r requirements.txt
 
 # Copy archs
-cp archs/* .lip-wise/Lib/site-packages/basicsr/archs/
+cp archs/* .lip-wise/lib/python3.10/site-packages/basicsr/archs/

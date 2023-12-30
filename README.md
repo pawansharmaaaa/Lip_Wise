@@ -47,8 +47,7 @@ LipWise is a powerful video dubbing tool that leverages optimized inference for 
 - [x] setup.bat / setup.sh
     - [x] create venv
     - [x] install requirements inside venv
-- [ ] CodeFormer arch initialization
-
+- [x] CodeFormer arch initialization
 - [ ] Documentation
 
 #### PREPROCESS
