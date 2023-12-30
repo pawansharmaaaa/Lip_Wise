@@ -1,0 +1,13 @@
+librosa==0.9.1
+numpy
+opencv-contrib-python
+opencv-python
+torch
+torchvision
+tqdm
+numba
+gfpgan
+realesrgan
+mediapipe
+gradio
+gdown
