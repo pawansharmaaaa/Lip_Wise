@@ -1,12 +1,11 @@
 <div style="display: flex; justify-content: space-between;">
-    <img src="https://github.com/pawansharmaaaa/Lip_Wise/blob/main/assets/lip-wise_-wise-enhancements-for-wav2lip.svg" height = 30>
     <img src="https://img.shields.io/github/license/pawansharmaaaa/Lip_Wise?style=for-the-badge&logo=github">
 </div>
 
 # [![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)[![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)](https://www.tensorflow.org/)
 
 <div style="display: flex; justify-content: flex-start;">
-    <img src="https://github.com/pawansharmaaaa/Lip_Wise/blob/main/assets/github-stats_.svg" height="20" style="margin-right: 10px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="155.70000076293945" height="20" viewBox="0 0 180 30"><rect width="77.3375015258789" height="35" fill="#000000"/><rect x="77.3375015258789" width="78.36249923706055" height="35" fill="#ffffff"/><text x="38.66875076293945" y="17.5" font-size="14" font-family="'Roboto', sans-serif" fill="#ffffff" text-anchor="middle" font-weight="600" alignment-baseline="middle" letter-spacing="2">GITHUB</text><text x="116.51875114440918" y="17.5" font-size="14" font-family="'Roboto', sans-serif" fill="#000000" text-anchor="middle" font-weight="600" alignment-baseline="middle" letter-spacing="2">STATS:</text></svg>
     <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social">
     <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social">
     <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social">
