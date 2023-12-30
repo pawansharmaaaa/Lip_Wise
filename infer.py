@@ -9,12 +9,15 @@ import gradio as gr
 
 from basicsr.utils import img2tensor, tensor2img
 from torchvision.transforms.functional import normalize
+from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 
 # Custom Modules
 import audio
 import file_check
 import preprocess_mp as pmp
-import model_loaders as ml
+import model_loaders
+import batch_processors
 
 # Global Variables
 TEMP_DIRECTORY = file_check.TEMP_DIR
@@ -23,7 +26,7 @@ NPY_FILES_DIRECTORY = file_check.NPY_FILES_DIR
 OUTPUT_DIRECTORY = file_check.OUTPUT_DIR
 
 # Image Inference
-def infer_image(frame_path, audio_path, fps=30, mel_step_size=16, gfpgan_weight = 1.0):
+def infer_image(frame_path, audio_path, face_restorer = 'CodeFormer', fps=30, mel_step_size=16, weight = 1.0):
     
     # Perform checks to ensure that all required files are present
     file_check.perform_check()
@@ -87,7 +90,7 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16, gfpgan_weight 
 
     # warp and align face
     print("Warping and aligning face...")
-    aligned_face, rotation_matrix = helper.alignment_procedure(extracted_face)
+    aligned_face, rotation_matrix = helper.alignment_procedure(frame.copy())
 
     # Crop face
     print("Cropping face...")
@@ -97,20 +100,20 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16, gfpgan_weight 
     cropped_face_height, cropped_face_width, _ = cropped_face.shape
 
     # Generate data for inference
+    print("Generating data for inference...")
     gen = helper.gen_data_image_mode(cropped_face, mel_chunks)
+
+    # Create model loader object
+    ml = model_loaders.model_loaders(face_restorer, weight)
 
     # Load wav2lip model
     w2l_model = ml.load_wav2lip_model()
-
-    # Load GFPGAN model
-    gfpgan = ml.load_gfpgan_model()
-    gfpgan = gfpgan.to(device)
 
     # Initialize video writer
     out = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
     # Feed to model:
-    for i, (img_batch, mel_batch) in enumerate(gr.Progress(track_tqdm=True).tqdm(gen)):
+    for (img_batch, mel_batch) in gr.Progress(track_tqdm=True).tqdm(gen, total=len(mel_chunks)):
         img_batch = torch.FloatTensor(np.transpose(img_batch, (0, 3, 1, 2))).to(device)
         mel_batch = torch.FloatTensor(np.transpose(mel_batch, (0, 3, 1, 2))).to(device)
 
@@ -119,29 +122,21 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16, gfpgan_weight 
         
         dubbed_faces = dubbed_faces.cpu().numpy().transpose(0, 2, 3, 1) * 255.
 
-        for d in dubbed_faces:
-            d = cv2.resize(d.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_CUBIC)
-            dubbed_face_t = img2tensor(d, bgr2rgb=True, float32=True)
-            normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
-            dubbed_face_t = dubbed_face_t.unsqueeze(0).to(device)
-            
-            try:
-                output = gfpgan(dubbed_face_t, return_rgb=False, weight=gfpgan_weight)[0]
-                restored_face = tensor2img(output.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
-            except RuntimeError as error:
-                print(f'\tFailed inference for GFPGAN: {error}.')
-                restored_face = d
-            
-            restored_face = restored_face.astype(np.uint8)
-
-            # Warp face back to original pose
-            
-            processed_face = cv2.resize(restored_face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
-            processed_ready = helper.paste_back_black_bg(processed_face, bbox, extracted_face)
+        if face_restorer == 'CodeFormer':
+            with ThreadPoolExecutor() as executor:
+                restored_faces = list(executor.map(ml.restore_wCodeFormer, dubbed_faces))
+        elif face_restorer == 'GFPGAN':
+            with ThreadPoolExecutor() as executor:
+                restored_faces = list(executor.map(ml.restore_wGFPGAN, dubbed_faces))
+        
+        for face in restored_faces:
+            processed_face = cv2.resize(face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
+            processed_ready = helper.paste_back_black_bg(processed_face, bbox, frame)
             ready_to_paste = helper.unwarp_align(processed_ready, rotation_matrix)
-            restored_image = helper.paste_back(ready_to_paste, frame, original_mask)
-
-            out.write(restored_image)
+            final = helper.paste_back(ready_to_paste, frame, original_mask)
+            
+            # Write each processed face to `out`
+            out.write(final)
         
     out.release()
 
@@ -151,7 +146,7 @@ def infer_image(frame_path, audio_path, fps=30, mel_step_size=16, gfpgan_weight 
     return os.path.join(OUTPUT_DIRECTORY, 'output.mp4')
 
 # Video Inference
-def infer_video(video_path, audio_path, mel_step_size=16, gfpgan_weight = 1.0):
+def infer_video(video_path, audio_path, face_restorer='CodeFormer',mel_step_size=16, weight = 1.0):
     # Perform checks to ensure that all required files are present
     file_check.perform_check()
 
@@ -170,6 +165,13 @@ def infer_video(video_path, audio_path, mel_step_size=16, gfpgan_weight = 1.0):
         command = 'ffmpeg -y -i {} -strict -2 {}'.format(audio_path, os.path.join(MEDIA_DIRECTORY, 'aud_input.wav'))
         subprocess.call(command, shell=True)
         audio_path = os.path.join(MEDIA_DIRECTORY, 'aud_input.wav')
+
+    # Create media_preprocess object and helper object
+    processor = pmp.model_processor()
+
+    # Get face landmarks
+    print("Getting face landmarks...")
+    processor.detect_for_video(video_path)
     
     # Check for cuda
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -182,11 +184,14 @@ def infer_video(video_path, audio_path, mel_step_size=16, gfpgan_weight = 1.0):
 
     # Load video
     video = cv2.VideoCapture(video_path)
+
     # Get video properties
     fps = video.get(cv2.CAP_PROP_FPS)
+    frame_count = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
     width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
+    
+    # Create mel chunks array
     mel_chunks = []
     #The mel_idx_multiplier aligns audio chunks with video frames for consistent processing and analysis.
     mel_idx_multiplier = 80./fps
@@ -199,85 +204,107 @@ def infer_video(video_path, audio_path, mel_step_size=16, gfpgan_weight = 1.0):
         mel_chunks.append(mel[:, start_idx : start_idx + mel_step_size])
         i += 1
 
+    if len(mel_chunks) > frame_count:
+        print("Audio is longer than video. Truncating audio...")
+        mel_chunks = mel_chunks[:frame_count]
+    elif len(mel_chunks) < frame_count:
+        print("Video is longer than audio. Truncating video...")
+        frame_count = len(mel_chunks)
+
+    # Creating Boolean mask
+    total_frames = np.arange(0, frame_count) 
+    no_face_index = np.load(os.path.join(NPY_FILES_DIRECTORY, 'no_face_index.npy'))
+
+    mask = np.isin(total_frames, no_face_index, invert=True).astype(bool)
+    mask_batch = np.array_split(mask, len(mask)//16, axis=0)
+
     print(f"Length of mel chunks: {len(mel_chunks)}")
 
-    # Create media_preprocess object and helper object
-    processor = pmp.model_processor()
+    # Split mel chunks into batches
+    mel_chunks = np.array(mel_chunks)
+    mel_chunks_batch = np.array_split(mel_chunks, len(mel_chunks)//16, axis=0)
 
-    # Read image
-    # frame = cv2.imread(frame_path)
-    # height, width, _ = frame.shape
+    # Create an array of frame numbers and split it into batches
+    frame_numbers = np.arange(0, frame_count)
+    frame_nos_batch = np.array_split(frame_numbers, frame_count//16, axis=0)
 
-    # Get face landmarks
-    print("Getting face landmarks...")
-    processor.preprocess_image(frame.copy())
+    # Create batch helper object
+    bp = batch_processors.BatchProcessors()
 
-    # Create face helper object from landmarks
-    helper = pmp.FaceHelpers(image_mode=True)
+    # Create VideoWriter object
+    writer = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
-    # extract face from image
-    print("Extracting face from image...")
-    extracted_face, original_mask = helper.extract_face(frame.copy())
-
-    # warp and align face
-    print("Warping and aligning face...")
-    aligned_face, rotation_matrix = helper.warp_align_extracted_face(extracted_face)
-
-    # Crop face
-    print("Cropping face...")
-    cropped_face, bbox = helper.crop_extracted_face(aligned_face, rotation_matrix)
-
-    # Store cropped face's height and width
-    cropped_face_height, cropped_face_width, _ = cropped_face.shape
-
-    # Generate data for inference
-    gen = helper.gen_data_image_mode(cropped_face, mel_chunks)
+    # Create model loader object
+    ml = model_loaders.model_loaders(face_restorer, weight)
 
     # Load wav2lip model
     w2l_model = ml.load_wav2lip_model()
 
-    # Load GFPGAN model
-    gfpgan = ml.load_gfpgan_model()
-    gfpgan = gfpgan.to(device)
+    # Start image processing
+    images = []
+    batch_no = 0
+    while True:
+        ret, frame = video.read()
 
-    # Initialize video writer
-    out = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
+        if not ret:
+            break
 
-    # Feed to model:
-    for i, (img_batch, mel_batch) in enumerate(gr.Progress(track_tqdm=True).tqdm(gen)):
-        img_batch = torch.FloatTensor(np.transpose(img_batch, (0, 3, 1, 2))).to(device)
-        mel_batch = torch.FloatTensor(np.transpose(mel_batch, (0, 3, 1, 2))).to(device)
+        frame_no = int(video.get(cv2.CAP_PROP_POS_FRAMES))
+        print(f"Appending Frame no: {frame_no}")
+        images.append(frame)
 
-        with torch.no_grad():
-            dubbed_faces = w2l_model(mel_batch, img_batch)
-        
-        dubbed_faces = dubbed_faces.cpu().numpy().transpose(0, 2, 3, 1) * 255.
+        print(f"len of images: {len(images)}, len of mask_batch: {len(mask_batch[batch_no])}")
 
-        for d in dubbed_faces:
-            d = cv2.resize(d.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_CUBIC)
-            dubbed_face_t = img2tensor(d, bgr2rgb=True, float32=True)
-            normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
-            dubbed_face_t = dubbed_face_t.unsqueeze(0).to(device)
+        if len(images) == len(mask_batch[batch_no]):
             
-            try:
-                output = gfpgan(dubbed_face_t, return_rgb=False, weight=gfpgan_weight)[0]
-                restored_face = tensor2img(output.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
-            except RuntimeError as error:
-                print(f'\tFailed inference for GFPGAN: {error}.')
-                restored_face = d
+            frames = np.array(images)
+            frame_nos_to_input = frame_nos_batch[batch_no][mask_batch[batch_no]]
+            mels_to_input = mel_chunks_batch[batch_no][mask_batch[batch_no]]
+            frames_to_input = frames[mask_batch[batch_no]]
             
-            restored_face = restored_face.astype(np.uint8)
+            if len(frames_to_input) != 0 and len(mels_to_input) != 0:
+                extracted_faces, original_masks = bp.extract_face_batch(frames_to_input, frame_nos_to_input)
+                aligned_faces, rotation_matrices = bp.alignment_procedure_batch(frames_to_input, frame_nos_to_input)
+                cropped_faces, bboxes = bp.crop_extracted_face_batch(aligned_faces, rotation_matrices, frame_nos_to_input)
+                frame_batch, mel_batch = bp.gen_data_video_mode(cropped_faces, mels_to_input)
 
-            # Warp face back to original pose
-            
-            processed_face = cv2.resize(restored_face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
-            processed_ready = helper.paste_back_black_bg(processed_face, bbox, extracted_face)
-            ready_to_paste = helper.unwarp_align(processed_ready, rotation_matrix)
-            restored_image = helper.paste_back(ready_to_paste, frame, original_mask)
+                # Feed to wav2lip model:
+                frame_batch = torch.FloatTensor(np.transpose(frame_batch, (0, 3, 1, 2))).to(device)
+                mel_batch = torch.FloatTensor(np.transpose(mel_batch, (0, 3, 1, 2))).to(device)
 
-            out.write(restored_image)
-        
-    out.release()
+                with torch.no_grad():
+                    dubbed_faces = w2l_model(mel_batch, frame_batch)
+                
+                dubbed_faces = dubbed_faces.cpu().numpy().transpose(0, 2, 3, 1) * 255.
+
+                if face_restorer == 'CodeFormer':
+                    with ThreadPoolExecutor() as executor:
+                        restored_faces = list(executor.map(ml.restore_wCodeFormer, dubbed_faces))
+                elif face_restorer == 'GFPGAN':
+                    with ThreadPoolExecutor() as executor:
+                        restored_faces = list(executor.map(ml.restore_wGFPGAN, dubbed_faces))
+                
+                # Post processing
+                resized_restored_faces = bp.face_resize_batch(restored_faces, cropped_faces)
+                pasted_ready_faces = bp.paste_back_black_bg_batch(resized_restored_faces, bboxes, frames_to_input)
+                ready_to_paste = bp.unwarp_align_batch(pasted_ready_faces, rotation_matrices)
+                restored_images = bp.paste_back_batch(ready_to_paste, frames_to_input, original_masks)
+
+                frames[mask_batch[batch_no]] = restored_images
+
+            print(f"Writing batch no: {batch_no}")
+            for frame in frames:
+                writer.write(frame)
+            batch_no += 1
+
+            images = []
+
+            if batch_no == len(mel_chunks_batch):
+                print("Reached end of Audio, Video has been dubbed.")
+                break
+
+    video.release()
+    writer.release()
 
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, 'output.mp4')}"
     subprocess.call(command, shell=platform.system() != 'Windows')
