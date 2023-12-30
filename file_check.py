@@ -2,6 +2,9 @@
 
 import os
 import gdown
+
+import archs
+
 from basicsr.utils.download_util import load_file_from_url
 
 LANDMARKER_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task'
@@ -13,6 +16,7 @@ WAV2LIP_GAN_MODEL_URL = 'https://drive.google.com/uc?id=1WpqCULKQQcaCNf827h1qgjM
 
 CURRENT_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
+RESULTS_DIR = os.path.join(CURRENT_FILE_DIRECTORY, 'results')
 WEIGHTS_DIR = os.path.join(CURRENT_FILE_DIRECTORY, 'weights')
 MP_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'mp')
 GFPGAN_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'gfpgan')
@@ -34,6 +38,7 @@ WAV2LIP_GAN_MODEL_PATH = os.path.join(WAV2LIP_WEIGHTS_DIR, 'wav2lip_gan.pth')
 
 def __init__():
     perform_check()
+    archs.__init__()
 
 def download_from_drive(url, model_dir, progress, file_name):
     output_path = os.path.join(model_dir, file_name)
@@ -44,6 +49,11 @@ def download_from_drive(url, model_dir, progress, file_name):
 
 def perform_check():
     try:
+        #-----------------------------CHECK FOR RESULTS DIR-----------------------------
+        # Check if directory exists
+        if not os.path.exists(RESULTS_DIR):
+            os.makedirs(RESULTS_DIR)
+
         #------------------------------CHECK FOR TEMP DIR-------------------------------
         # Check if directory exists
         if not os.path.exists(TEMP_DIR):
