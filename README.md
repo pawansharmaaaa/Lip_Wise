@@ -1,5 +1,5 @@
 <div style="display: flex; justify-content: space-between;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="417.7375183105469" height="35" viewBox="0 0 417.7375183105469 35"><rect width="93.10000610351562" height="35" fill="#000000"/><rect x="93.10000610351562" width="324.63751220703125" height="35" fill="#ffffff"/><text x="46.55000305175781" y="17.5" font-size="12" font-family="'Roboto', sans-serif" fill="#ffffff" text-anchor="middle" alignment-baseline="middle" letter-spacing="2">LIP WISE:</text><text x="255.41876220703125" y="17.5" font-size="12" font-family="'Montserrat', sans-serif" fill="#000000" text-anchor="middle" font-weight="900" alignment-baseline="middle" letter-spacing="2">WISE ENHANCEMENTS FOR WAV2LIP</text></svg>
+    <img src = "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/f760c284-8d47-4e05-9d0d-301b8fc260b8">
 </div>
 <div style="display: flex; justify-content: flex-start; margin-top:20px;">
     <img src="https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/84e0a59e-84c5-476c-9c20-c717b3519cf6">
