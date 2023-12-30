@@ -27,6 +27,8 @@ LipWise is a powerful video dubbing tool that leverages optimized inference for 
 * **Effortless Setup:**
     *  With the exception of manual CUDA installation, the setup process is remarkably seamless, as outlined below.
 
+> [!IMPORTANT]
+> Please Help by starring the repo.
 
 # :eyeglasses: **INSTALLATION**
 
