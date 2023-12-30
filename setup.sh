@@ -30,3 +30,6 @@ source .lip-wise/bin/activate
 
 # Install requirements
 pip install -r requirements.txt
+
+# Copy archs
+cp archs/* .lip-wise/Lib/site-packages/basicsr/archs/

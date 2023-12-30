@@ -16,6 +16,7 @@ evaluation/test_filelists/lr*.txt
 *.webm
 *.mp3
 gan
+*lip-wise
 *test*
 *_rgh.py
 *frame*.png

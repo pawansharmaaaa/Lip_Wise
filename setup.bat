@@ -30,3 +30,6 @@ call .lip-wise\Scripts\activate
 
 REM Install requirements
 pip install -r requirements.txt
+
+REM Copy basicsr archs
+copy archs\* .lip-wise\Lib\site-packages\basicsr\archs
