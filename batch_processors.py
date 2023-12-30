@@ -1,3 +1,5 @@
+# This file is a part of https://github.com/pawansharmaaaa/Lip_Wise_GFPGAN/ repository.
+
 import cv2
 import math
 import os

@@ -1,3 +1,5 @@
+# This file is a part of https://github.com/pawansharmaaaa/Lip_Wise_GFPGAN/ repository.
+
 import argparse
 import gradio as gr
 

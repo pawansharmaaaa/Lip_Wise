@@ -1,3 +1,5 @@
+# This is a part of https://github.com/Rudrabha/Wav2Lip repository.
+
 import torch
 from torch import nn
 from torch.nn import functional as F

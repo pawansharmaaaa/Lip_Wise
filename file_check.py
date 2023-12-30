@@ -1,3 +1,5 @@
+# This file is a part of https://github.com/pawansharmaaaa/Lip_Wise_GFPGAN/ repository.
+
 import os
 import gdown
 from basicsr.utils.download_util import load_file_from_url
@@ -14,6 +16,7 @@ CURRENT_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 WEIGHTS_DIR = os.path.join(CURRENT_FILE_DIRECTORY, 'weights')
 MP_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'mp')
 GFPGAN_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'gfpgan')
+CODEFORMERS_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'codeformers')
 WAV2LIP_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'wav2lip')
 
 TEMP_DIR = os.path.join(CURRENT_FILE_DIRECTORY, 'temp')
@@ -56,6 +59,7 @@ def perform_check():
             os.makedirs(WEIGHTS_DIR)
             os.makedirs(MP_WEIGHTS_DIR)
             os.makedirs(GFPGAN_WEIGHTS_DIR)
+            os.makedirs(CODEFORMERS_WEIGHTS_DIR)
             os.makedirs(WAV2LIP_WEIGHTS_DIR)
 
 
@@ -83,7 +87,7 @@ def perform_check():
         if not os.path.exists(CODEFORMERS_MODEL_PATH):
             print("Downloading CodeFormer model...")
             load_file_from_url(url=CODEFORMERS_MODEL_URL,
-                               model_dir=GFPGAN_WEIGHTS_DIR,
+                               model_dir=CODEFORMERS_WEIGHTS_DIR,
                                progress=True,
                                file_name='codeformer.pth')
             

@@ -1,3 +1,5 @@
+# This Module is used to set the hyperparameters for the model. And is a part of https://github.com/Rudrabha/Wav2Lip repository.
+
 from glob import glob
 import os
 

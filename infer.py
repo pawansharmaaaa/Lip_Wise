@@ -1,3 +1,5 @@
+# This file is a part of https://github.com/pawansharmaaaa/Lip_Wise_GFPGAN/ repository.
+
 import os
 import cv2
 import torch
@@ -25,7 +27,7 @@ MEDIA_DIRECTORY = file_check.MEDIA_DIR
 NPY_FILES_DIRECTORY = file_check.NPY_FILES_DIR
 OUTPUT_DIRECTORY = file_check.OUTPUT_DIR
 
-# Image Inference
+#################################################### IMAGE INFERENCE ####################################################
 def infer_image(frame_path, audio_path, face_restorer = 'CodeFormer', fps=30, mel_step_size=16, weight = 1.0):
     
     # Perform checks to ensure that all required files are present
@@ -145,7 +147,8 @@ def infer_image(frame_path, audio_path, face_restorer = 'CodeFormer', fps=30, me
 
     return os.path.join(OUTPUT_DIRECTORY, 'output.mp4')
 
-# Video Inference
+################################################## VIDEO INFERENCE ##################################################
+
 def infer_video(video_path, audio_path, face_restorer='CodeFormer',mel_step_size=16, weight = 1.0):
     # Perform checks to ensure that all required files are present
     file_check.perform_check()

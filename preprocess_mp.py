@@ -1,3 +1,5 @@
+# This file is a part of https://github.com/pawansharmaaaa/Lip_Wise_GFPGAN/ repository.
+
 import cv2
 import math
 import os
@@ -368,12 +370,6 @@ class FaceHelpers:
             aligned_face = cv2.warpAffine(extracted_face, rotation_matrix, output_size)
 
         return aligned_face, rotation_matrix  #return img and inverse afiine matrix anyway
-
-    # Remove this function, this is useless.
-    # def warp_align_extracted_face(self, extracted_face):
-    #     print("Warping and aligning face...")
-    #     aligned_face, rotation_matrix = self.alignment_procedure(extracted_face)
-    #     return aligned_face, rotation_matrix
     
     def crop_extracted_face(self, aligned_face, rotation_matrix, frame_no=0):
         """
@@ -508,20 +504,3 @@ class FaceHelpers:
         print("Pasting face back...")
         background[original_mask] = ready_to_paste[original_mask]
         return background
-    
-    # Final Function encapsulating all the above postprocess functions 
-    def post_process_face(self, face, bbox, extracted_face, rotation_matrix, frame, original_mask, cropped_face_width, cropped_face_height):
-        processed_face = cv2.resize(face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
-        processed_ready = self.paste_back_black_bg(processed_face, bbox, extracted_face)
-        ready_to_paste = self.unwarp_align(processed_ready, rotation_matrix)
-        final = self.paste_back(ready_to_paste, frame, original_mask)
-        return final
-    
-    # async def post_process_face(self, face, bbox, extracted_face, rotation_matrix, frame, original_mask, cropped_face_width, cropped_face_height):
-    #     with concurrent.futures.ThreadPoolExecutor() as executor:
-    #         loop = asyncio.get_event_loop()
-    #         processed_face = await loop.run_in_executor(executor, cv2.resize, face, (cropped_face_width, cropped_face_height), cv2.INTER_LANCZOS4)
-    #         processed_ready = await loop.run_in_executor(executor, self.paste_back_black_bg, processed_face, bbox, extracted_face)
-    #         ready_to_paste = await loop.run_in_executor(executor, self.unwarp_align, processed_ready, rotation_matrix)
-    #         final = await loop.run_in_executor(executor, self.paste_back, ready_to_paste, frame, original_mask)
-    #     return final
