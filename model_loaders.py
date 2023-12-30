@@ -33,7 +33,7 @@ class model_loaders:
 
     def load_wav2lip_model(self):
         model = Wav2Lip()
-        print(f"Load checkpoint from: {file_check.WAV2LIP_MODEL_PATH}")
+        print(f"Loading wav2lip checkpoint from: {file_check.WAV2LIP_MODEL_PATH}")
         checkpoint = self._load(file_check.WAV2LIP_MODEL_PATH)
         s = checkpoint["state_dict"]
         new_s = {}
@@ -46,7 +46,7 @@ class model_loaders:
 
     def load_wav2lip_gan_model(self):
         model = Wav2Lip()
-        print(f"Load checkpoint from: {file_check.WAV2LIP_GAN_MODEL_PATH}")
+        print(f"Loading wav2lip checkpoint from: {file_check.WAV2LIP_GAN_MODEL_PATH}")
         checkpoint = self._load(file_check.WAV2LIP_GAN_MODEL_PATH)
         s = checkpoint["state_dict"]
         new_s = {}
@@ -58,7 +58,8 @@ class model_loaders:
         return model.eval()
 
     def load_gfpgan_model(self):
-
+        
+        print(f"Load GFPGAN checkpoint from: {file_check.GFPGAN_MODEL_PATH}")
         gfpgan = GFPGANv1Clean(
                         out_size=512,
                         num_style_feat=512,
@@ -83,7 +84,7 @@ class model_loaders:
         return restorer.to(self.device)
 
     def load_codeformer_model(self):
-        print(f"Load checkpoint from: {file_check.CODEFORMERS_MODEL_PATH}")
+        print(f"Load CodeFormer checkpoint from: {file_check.CODEFORMERS_MODEL_PATH}")
         
         model = ARCH_REGISTRY.get('CodeFormer')(dim_embd=512, codebook_size=1024, n_head=8, n_layers=9, connect_list=['32', '64', '128', '256']).to(self.device)
 
@@ -103,7 +104,7 @@ class model_loaders:
             restored_face = tensor2img(output.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
         except RuntimeError as error:
             print(f'\tFailed inference for GFPGAN: {error}.')
-            restored_face = dubbed_face
+            restored_face = tensor2img(dubbed_face_t.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
         
         restored_face = restored_face.astype(np.uint8)
         return restored_face
@@ -121,7 +122,7 @@ class model_loaders:
             del output
             torch.cuda.empty_cache()
         except RuntimeError as error:
-            print(f'\tFailed inference for GFPGAN: {error}.')
+            print(f'\tFailed inference for CodeFormer: {error}.')
             restored_face = tensor2img(dubbed_face_t, rgb2bgr=True, min_max=(-1, 1))
         
         restored_face = restored_face.astype(np.uint8)

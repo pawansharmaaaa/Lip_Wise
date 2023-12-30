@@ -253,10 +253,7 @@ def infer_video(video_path, audio_path, face_restorer='CodeFormer',mel_step_size
             break
 
         frame_no = int(video.get(cv2.CAP_PROP_POS_FRAMES))
-        print(f"Appending Frame no: {frame_no}")
         images.append(frame)
-
-        print(f"len of images: {len(images)}, len of mask_batch: {len(mask_batch[batch_no])}")
 
         if len(images) == len(mask_batch[batch_no]):
             

@@ -32,6 +32,9 @@ CODEFORMERS_MODEL_PATH = os.path.join(GFPGAN_WEIGHTS_DIR, 'codeformer.pth')
 WAV2LIP_MODEL_PATH = os.path.join(WAV2LIP_WEIGHTS_DIR, 'wav2lip.pth')
 WAV2LIP_GAN_MODEL_PATH = os.path.join(WAV2LIP_WEIGHTS_DIR, 'wav2lip_gan.pth')
 
+def __init__():
+    perform_check()
+
 def download_from_drive(url, model_dir, progress, file_name):
     output_path = os.path.join(model_dir, file_name)
     try:

@@ -104,8 +104,6 @@ class model_processor:
         width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        print(f"Frames to process: {frame_count}")
-
         # Initialize mediapipe
         BaseOptions = mp.tasks.BaseOptions
         VisionRunningMode = mp.tasks.vision.RunningMode
@@ -147,10 +145,6 @@ class model_processor:
                 # Run face detector and face landmark models in IMAGE mode
                 result_landmarker = landmarker.detect(mp_frame)
                 result_detection = detector.detect(mp_frame)
-
-                # Get data ready to be saved
-                print(f"Frame {frame_no} processing")
-                print(f"Face Detected: {len(result_landmarker.face_landmarks) > 0}")
                 
                 if len(result_detection.detections) > 0 and len(result_landmarker.face_landmarks) > 0:
                     # Get bounding box
@@ -173,7 +167,6 @@ class model_processor:
                     no_face_index.append(frame_no)
 
                 # Append data
-                print(f"Frame {frame_no} processed")
                 video_landmarks[frame_no] = data
             
                 # Increment frame number

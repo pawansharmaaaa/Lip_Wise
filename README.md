@@ -1,25 +1,53 @@
 # **LIP_WISE_GFPGAN**: *Wise enhancements for wav2lip.*
 
-### :memo: <font color='red'>**Note:**</font>
-#### <font color='green'>This project is actively under development, and significant improvements are expected in the near future. As I am still learning the intricacies of GitHub, I am currently committing changes on a gradual basis. To ensure the latest updates are readily accessible, I am maintaining the "clean" branch as the central repository of progress.</font>
+[![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)[![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)](https://www.tensorflow.org/)
+## **Introduction**
 
-### **Introduction**
+LipWise is a powerful video dubbing tool that leverages optimized inference for Wav2Lip, a cutting-edge deep learning model dedicated to generating lip-synced videos. It functions by carefully processing an input audio clip alongside a reference video featuring a speaker. This process utilizes the advanced face restoration capabilities of state-of-the-art models like GFPGAN and CodeFormer. These sophisticated models seamlessly integrate the new audio with the lip movements of the reference video, resulting in a stunningly natural and realistic final output.
 
-LipWise is an enhanced version of the Wav2Lip model, a deep learning model for lip-synced video generation. It operates by processing an input audio clip alongside a reference video featuring a speaking individual. The model then synthesizes a new video where the lip movements of the person in the reference video align seamlessly with the provided audio. LipWise offers several significant improvements over the original Wav2Lip model, including:
+* **Face Restoration Empowered by CodeFormer or GFPGAN:**
+    * Streamlined inference through the elimination of redundant processes.
+    * Enhanced efficiency with multi-threading implemented for the majority of preprocessing steps.
+* **Unrestricted Video Compatibility:**
+    * The limitation of requiring a face in every frame of the video has been lifted, allowing for greater versatility.  
+* **Enhanced face detection using Mediapipe:**
+    * masks generated using facial landmarks, leading to superior pasting results.
+    * Facial landmarks are meticulously stored as npy files, conserving processing resources when utilizing the same video repeatedly.
+* **Effortless Setup:**
+    *  With the exception of manual CUDA installation, the setup process is remarkably seamless, as outlined below.
 
-* High-resolution output via GFPGAN and RealESRGAN
-* Frame removal script
-* Enhanced face detection algorithm
 
-### **Features**
+# :eyeglasses: **INSTALLATION**
+### SETUP
 
-> * **High-resolution output via GFPGAN and RealESRGAN:** LipWise integrates GFPGAN and RealESRGAN, two cutting-edge GANs that specialize in upscaling images to higher resolutions while preserving impeccable image quality and intricate details. This allows LipWise to generate high-resolution lip-synced videos, resulting in a markedly clearer and more lifelike output.
-> * **Frame removal script:** LipWise includes a script to automatically eliminate frames devoid of detectable facial features. This significantly enhances the overall quality of the generated videos by removing frames in which facial recognition is absent or suboptimal. This ensures that the lip-syncing process concentrates on frames characterized by precise facial data, thereby yielding a smoother and more coherent final video.
-> * **Enhanced face detection algorithm:** LipWise boasts an improved face detection algorithm, augmenting the accuracy of face identification and tracking in the reference video. This heightened precision in face detection plays a pivotal role in achieving meticulous lip synchronization, ensuring the model aligns the generated lips accurately with the speaker's movements.
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)![nVIDIA](https://img.shields.io/badge/nVIDIA-%2376B900.svg?style=for-the-badge&logo=nVIDIA&logoColor=white)
+> * Clone this repository:
+>   * `git clone https://github.com/pawansharmaaaa/Lip_Wise_GFPGAN`
+> * Install `Python > 3.10` from [Official Site](https://www.python.org/downloads/) or From Microsoft store.
+> * Install winget from [Microsoft Store.](https://www.microsoft.com/p/app-installer/9nblggh4nns1#activetab=pivot:overviewtab)
+> * Download and install the [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) that is compatible with your system. The latest version generally supports most NVIDIA 10-series graphics cards and newer models.
+> * Run `setup.bat`
+> * Run `launch.bat`
 
-# :memo: **TO-DO** List:
+![Debian](https://img.shields.io/badge/Debian-D70A53?style=for-the-badge&logo=debian&logoColor=white)![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)![Pop!\_OS](https://img.shields.io/badge/Pop!_OS-48B9C7?style=for-the-badge&logo=Pop!_OS&logoColor=white)![nVIDIA](https://img.shields.io/badge/nVIDIA-%2376B900.svg?style=for-the-badge&logo=nVIDIA&logoColor=white)
+> * Clone this repository:
+>   * `git clone https://github.com/pawansharmaaaa/Lip_Wise_GFPGAN`
+> * Make sure `python --version` is `>3.10`
+> * Download and install the [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) that is compatible with your system. The latest version generally supports most NVIDIA 10-series graphics cards and newer models.
+> * Run `setup.sh`
+> * Run `python3 launch.py`
 
-### PREPROCESS
+## :memo: **TO-DO** List:
+
+#### URGENT REQUIREMENTS
+- [x] setup.bat / setup.sh
+    - [x] create venv
+    - [x] install requirements inside venv
+- [ ] CodeFormer arch initialization
+
+- [ ] Documentation
+
+#### PREPROCESS
 - [x] Add directory check in inference in the beginning.
 - [x] Make preprocessing optimal.
 - [x] Clear ram after no_face_filter.
@@ -27,32 +55,37 @@ LipWise is an enhanced version of the Wav2Lip model, a deep learning model for l
     - [x] Saving facial coordinates as .npy file.
     - [x] Alter code to also include eye coordinates.
 
-### IMPROVING GAN UPSCALING
+#### IMPROVING GAN UPSCALING
 - [x] Merge Data Pipeline with preprocessor:
     - [x] Remove need to recrop, realign and rewarp the image.
 
-### IMPROVING WAV2LIP
+#### IMPROVING WAV2LIP
 - [x] Merge all data Pipeline:
     - [x] Remove the need to recrop, realign, renormalizing etc.
     - [x] Devise a way to keep frames without face in the video.
         - [x] Understand Mels and working of wav2lip model.
 
-### OPTIONAL
-- [ ] Gradio UI
-    - [ ] A tab for configuration variables.
-    - [ ] A tab for Video, Audio and Output.
+#### OPTIONAL
+- [x] Gradio UI
+    - [x] A tab for Video, Audio and Output.
     - [x] A tab for Image, Audio and output.
 
-### FUTURE PLANS
+#### FURTHER IMPROVEMENTS
+- [ ] Inference without restorer
+- [ ] Model Improvement
+- [ ] Implement no_face_filter too
+
+#### FUTURE PLANS
 - [ ] Face and Audio wise Lipsync using face recognition.
 - [ ] A separate tab for TTS.
 
-### COLAB NOTEBOOK
+#### COLAB NOTEBOOK
 - [ ] Optimize Inference.
 - [ ] Implement Checks.
 
 ## :hugs: ACKNOWLEDGEMENTS:
 Thanks to the following open-source projects:
 * <a href="https://github.com/Rudrabha/Wav2Lip" target="_blank">Wav2Lip</a>
+* <a href="https://github.com/sczhou/CodeFormer" target="_blank">CodeFormer</a>
 * <a href="https://github.com/TencentARC/GFPGAN" target="_blank">GFPGAN</a>
 * <a href="https://github.com/googlesamples/mediapipe" target="_blank">MediaPipe</a>
