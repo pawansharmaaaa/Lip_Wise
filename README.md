@@ -1,16 +1,18 @@
-# ![forthebadge](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDguODAwMDMxNjYxOTg3MyIgaGVpZ2h0PSIzNSIgdmlld0JveD0iMCAwIDQwOC44MDAwMzE2NjE5ODczIDM1Ij48cmVjdCB3aWR0aD0iNDQuMDAwMDAxOTA3MzQ4NjMiIGhlaWdodD0iMzUiIGZpbGw9IiMwMDAwMDAiLz48cmVjdCB4PSI0NC4wMDAwMDE5MDczNDg2MyIgd2lkdGg9IjY4Ljc3NTAwNTM0MDU3NjE3IiBoZWlnaHQ9IjM1IiBmaWxsPSIjZmZmZmZmIi8+PHRleHQgeD0iMjIuMDAwMDAwOTUzNjc0MzE2IiB5PSIxNy41IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0iJ1JvYm90bycsIHNhbnMtc2VyaWYiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGFsaWdubWVudC1iYXNlbGluZT0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iMiI+TElQPC90ZXh0Pjx0ZXh0IHg9Ijc4LjM4NzUwNDU3NzYzNjcyIiB5PSIxNy41IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0iJ01vbnRzZXJyYXQnLCBzYW5zLXNlcmlmIiBmaWxsPSIjMDAwMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iOTAwIiBhbGlnbm1lbnQtYmFzZWxpbmU9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9IjIiPldJU0U6PC90ZXh0PjxyZWN0IHg9IjExMi43NzUwMDcyNDc5MjQ4IiB3aWR0aD0iMjk2LjAyNTAyNDQxNDA2MjUiIGhlaWdodD0iMzUiIGZpbGw9IiMyNjc0QTQiLz48dGV4dCB4PSIyNjAuNzg3NTE5NDU0OTU2MDUiIHk9IjE3LjUiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtZmFtaWx5PSInUm9ib3RvJywgc2Fucy1zZXJpZiIgZmlsbD0iI0ZGRkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC13ZWlnaHQ9IjUwMCIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSIyIj5XSVNFIEVOSEFOQ0VNRU5UUyBGT1IgV0FWMkxJUDwvdGV4dD48L3N2Zz4=)[![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)[![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)](https://www.tensorflow.org/)
-
-<div align="left">
-<img align="right" src="https://img.shields.io/github/license/pawansharmaaaa/Lip_Wise?style=for-the-badge&logo=github">
-<img align="left" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDkuNzAwMDAwNzYyOTM5NDUiIGhlaWdodD0iMzUiIHZpZXdCb3g9IjAgMCAxNDkuNzAwMDAwNzYyOTM5NDUgMzUiPjxyZWN0IHdpZHRoPSI3Ny4zMzc1MDE1MjU4Nzg5IiBoZWlnaHQ9IjM1IiBmaWxsPSIjMDgwODA4IiBkYXRhLWRhcmtyZWFkZXItaW5saW5lLWZpbGw9IiIgc3R5bGU9Ii0tZGFya3JlYWRlci1pbmxpbmUtZmlsbDogIzI2NmI4MTsiLz48cmVjdCB4PSI3Ny4zMzc1MDE1MjU4Nzg5IiB3aWR0aD0iNzIuMzYyNDk5MjM3MDYwNTUiIGhlaWdodD0iMzUiIGZpbGw9IiNmZmZmZmYiIGRhdGEtZGFya3JlYWRlci1pbmxpbmUtZmlsbD0iIiBzdHlsZT0iLS1kYXJrcmVhZGVyLWlubGluZS1maWxsOiAjMzM2MDdiOyIvPjx0ZXh0IHg9IjM4LjY2ODc1MDc2MjkzOTQ1IiB5PSIxNy41IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0iJ1JvYm90bycsIHNhbnMtc2VyaWYiIGZpbGw9IiNGRkZGRkYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGFsaWdubWVudC1iYXNlbGluZT0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iMiIgZGF0YS1kYXJrcmVhZGVyLWlubGluZS1maWxsPSIiIHN0eWxlPSItLWRhcmtyZWFkZXItaW5saW5lLWZpbGw6ICNhMmExYTA7Ij5HSVRIVUI8L3RleHQ+PHRleHQgeD0iMTEzLjUxODc1MTE0NDQwOTE4IiB5PSIxNy41IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0iJ01vbnRzZXJyYXQnLCBzYW5zLXNlcmlmIiBmaWxsPSIjMDAwMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iOTAwIiBhbGlnbm1lbnQtYmFzZWxpbmU9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9IjIiIGRhdGEtZGFya3JlYWRlci1pbmxpbmUtZmlsbD0iIiBzdHlsZT0iLS1kYXJrcmVhZGVyLWlubGluZS1maWxsOiAjYTJhMWEwOyI+U1RBVFM8L3RleHQ+PC9zdmc+">
+<div style="display: flex; justify-content: space-between;">
+    <img src=".\assets\lip-wise_-wise-enhancements-for-wav2lip.svg" height = 30>
+    <img src="https://img.shields.io/github/license/pawansharmaaaa/Lip_Wise?style=for-the-badge&logo=github">
 </div>
 
-# 
-![GitHub forks](https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social)
-![GitHub Repo stars](https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social)
-![GitHub contributors](https://img.shields.io/github/contributors/pawansharmaaaa/Lip_Wise?style=social&logo=github)
-![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github)
+# [![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)[![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)](https://www.tensorflow.org/)
+
+<div style="display: flex; justify-content: flex-start;">
+    <img src=".\assets\github-stats_.svg" height="20" style="margin-right: 10px;">
+    <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social">
+    <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social">
+    <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social">
+    <img src="https://img.shields.io/github/contributors/pawansharmaaaa/Lip_Wise?style=social&logo=github">
+    <img src="https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github">
+</div>
 
 ## **Introduction**
 
