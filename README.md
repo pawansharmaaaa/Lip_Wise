@@ -1,7 +1,7 @@
 <div style="display: flex; justify-content: space-between;">
     <img src = "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/cca4987a-18e5-49f1-9eba-710f3c0655a7">
 </div>
----------------------------------------------------------------------------------------------------------------------------------
+---
 <div style="display: flex; justify-content: flex-start; margin-top:20px;">
     <img src="https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/84e0a59e-84c5-476c-9c20-c717b3519cf6">
     <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social">
@@ -10,7 +10,7 @@
     <img src="https://img.shields.io/github/contributors/pawansharmaaaa/Lip_Wise?style=social&logo=github">
     <img src="https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github">
 </div>
----------------------------------------------------------------------------------------------------------------------------------
+---
 
 ## **Introduction**
 
