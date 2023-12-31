@@ -73,18 +73,31 @@ class model_processor:
         
             # Get data ready to be saved
             if len(result_detection.detections) > 0 and len(result_landmarker.face_landmarks) > 0:
-                # Get bounding box
-                bbox = result_detection.detections[0].bounding_box
-                bbox_np = np.array([[bbox.origin_x, bbox.origin_y], [bbox.origin_x + bbox.width, bbox.origin_y + bbox.height]])
-                bbox_np = bbox_np + [[0, -100], [0, 10]] # To include more forehead and full chin
-                bbox_np = (bbox_np/[width, height]).astype(np.float64) # Normalize
-
                 # Get Keypoints
                 kp = result_detection.detections[0].keypoints
                 kp_np = np.array([[k.x, k.y] for k in kp]).astype(np.float64)
 
                 # Get landmarks
                 landmarks_np = np.array([[i.x, i.y] for i in result_landmarker.face_landmarks[0]]).astype(np.float64)
+
+                # Get bounding box
+                # x-coordinates are at even indices and y-coordinates are at odd indices
+                x_coordinates = landmarks_np[:, 0]
+                y_coordinates = landmarks_np[:, 1]
+
+                # Top-most point has the smallest y-coordinate
+                y_min = landmarks_np[np.argmin(y_coordinates)]
+
+                # Bottom-most point has the largest y-coordinate
+                y_max = landmarks_np[np.argmax(y_coordinates)]
+
+                # Left-most point has the smallest x-coordinate
+                x_min = landmarks_np[np.argmin(x_coordinates)]
+
+                # Right-most point has the largest x-coordinate
+                x_max = landmarks_np[np.argmax(x_coordinates)]
+
+                bbox_np = np.array([[x_min[0], y_min[1]], [x_max[0], y_max[1]]]).astype(np.float64)
 
                 # Concatenate landmarks, bbox and keypoints. This is the data that will be saved.
                 data = np.vstack((landmarks_np, bbox_np, kp_np)).astype(np.float64)
@@ -147,18 +160,31 @@ class model_processor:
                 result_detection = detector.detect(mp_frame)
                 
                 if len(result_detection.detections) > 0 and len(result_landmarker.face_landmarks) > 0:
-                    # Get bounding box
-                    bbox = result_detection.detections[0].bounding_box
-                    bbox_np = np.array([[bbox.origin_x, bbox.origin_y], [bbox.origin_x + bbox.width, bbox.origin_y + bbox.height]])
-                    bbox_np = bbox_np + [[0, -10], [0, 10]] # To include more forehead and full chin
-                    bbox_np = (bbox_np/[width, height]).astype(np.float64) # Normalize
-
                     # Get Keypoints
                     kp = result_detection.detections[0].keypoints
                     kp_np = np.array([[k.x, k.y] for k in kp]).astype(np.float64)
 
                     # Get landmarks
                     landmarks_np = np.array([[i.x, i.y] for i in result_landmarker.face_landmarks[0]]).astype(np.float64)
+
+                    # Get bounding box
+                    # x-coordinates are at even indices and y-coordinates are at odd indices
+                    x_coordinates = landmarks_np[:, 0]
+                    y_coordinates = landmarks_np[:, 1]
+
+                    # Top-most point has the smallest y-coordinate
+                    y_min = landmarks_np[np.argmin(y_coordinates)]
+
+                    # Bottom-most point has the largest y-coordinate
+                    y_max = landmarks_np[np.argmax(y_coordinates)]
+
+                    # Left-most point has the smallest x-coordinate
+                    x_min = landmarks_np[np.argmin(x_coordinates)]
+
+                    # Right-most point has the largest x-coordinate
+                    x_max = landmarks_np[np.argmax(x_coordinates)]
+
+                    bbox_np = np.array([[x_min[0], y_min[1]], [x_max[0], y_max[1]]]).astype(np.float64)
 
                     # Concatenate landmarks, bbox and keypoints. This is the data that will be saved.
                     data = np.vstack((landmarks_np, bbox_np, kp_np)).astype(np.float64)
@@ -394,13 +420,10 @@ class FaceHelpers:
         d3 = abs(max(old_landmarks[0][1], old_landmarks[1][1]) - old_bbox[0][1])
         d4 = abs(old_landmarks[3][1] - old_bbox[1][1])
 
-        pad = np.array([[10, 90], [10, 90]])
-
-        # New_bbox
-        xmin = rotated_landmarks[4][0] - max(d1, pad[0][0])
-        xmax = rotated_landmarks[5][0] + max(d2, pad[1][0])
-        ymin = rotated_landmarks[0][1] - max(d3, pad[0][1])
-        ymax = rotated_landmarks[3][1] + max(d4, pad[1][1])
+        xmin = rotated_landmarks[4][0] - d1
+        xmax = rotated_landmarks[5][0] + d2
+        ymin = rotated_landmarks[0][1] - d3
+        ymax = rotated_landmarks[3][1] + d4
 
         # New_bbox
         bbox = np.array([[xmin, ymin], [xmax, ymax]]).astype(np.int32)
