@@ -33,6 +33,7 @@ class model_processor:
 
         self.detector_model_path = os.path.join(file_check.MP_WEIGHTS_DIR, 'blaze_face_short_range.tflite')
         self.landmarker_model_path = os.path.join(file_check.MP_WEIGHTS_DIR, "face_landmarker.task")
+        self.gen_face_route_index()
 
     def detect_for_image(self, frame):
 

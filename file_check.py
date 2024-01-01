@@ -6,7 +6,6 @@ import gdown
 import basicsr.archs as archs
 
 from basicsr.utils.download_util import load_file_from_url
-from preprocess_mp import model_processor
 
 LANDMARKER_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task'
 DETECTOR_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/latest/blaze_face_short_range.tflite'
@@ -40,8 +39,6 @@ WAV2LIP_GAN_MODEL_PATH = os.path.join(WAV2LIP_WEIGHTS_DIR, 'wav2lip_gan.pth')
 def __init__():
     perform_check()
     archs.__init__()
-    pr = model_processor()
-    pr.gen_face_route_index()
 
 def download_from_drive(url, model_dir, progress, file_name):
     output_path = os.path.join(model_dir, file_name)
