@@ -41,7 +41,7 @@ LipWise is a powerful video dubbing tool that leverages optimized inference for 
 ### :cd: **SETUP AND INFERENCE**
 ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)![nVIDIA](https://img.shields.io/badge/nVIDIA-%2376B900.svg?style=for-the-badge&logo=nVIDIA&logoColor=white)
 > * Clone this repository:
->   * `git clone https://github.com/pawansharmaaaa/Lip_Wise_GFPGAN`
+>   * `git clone https://github.com/pawansharmaaaa/Lip_Wise`
 > * Install `Python > 3.10` from [Official Site](https://www.python.org/downloads/) or From Microsoft store.
 > * Install winget from [Microsoft Store.](https://www.microsoft.com/p/app-installer/9nblggh4nns1#activetab=pivot:overviewtab)
 > * Download and install the [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) that is compatible with your system. The latest version generally supports most NVIDIA 10-series graphics cards and newer models.
@@ -50,7 +50,7 @@ LipWise is a powerful video dubbing tool that leverages optimized inference for 
 
 ![Debian](https://img.shields.io/badge/Debian-D70A53?style=for-the-badge&logo=debian&logoColor=white)![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)![Pop!\_OS](https://img.shields.io/badge/Pop!_OS-48B9C7?style=for-the-badge&logo=Pop!_OS&logoColor=white)![nVIDIA](https://img.shields.io/badge/nVIDIA-%2376B900.svg?style=for-the-badge&logo=nVIDIA&logoColor=white)
 > * Clone this repository:
->   * `git clone https://github.com/pawansharmaaaa/Lip_Wise_GFPGAN`
+>   * `git clone https://github.com/pawansharmaaaa/Lip_Wise`
 > * Make sure `python --version` is `>3.10`
 > * Download and install the [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) that is compatible with your system. The latest version generally supports most NVIDIA 10-series graphics cards and newer models.
 > * Make `setup.sh` an executable
