@@ -246,6 +246,9 @@ def infer_video(video_path, audio_path, face_restorer='CodeFormer',mel_step_size
     # Start image processing
     images = []
     batch_no = 0
+    est_total_batches = len(mel_chunks_batch)
+
+    p_bar = gr.Progress(total=est_total_batches)
     while True:
         ret, frame = video.read()
 
@@ -292,10 +295,11 @@ def infer_video(video_path, audio_path, face_restorer='CodeFormer',mel_step_size
 
                 frames[mask_batch[batch_no]] = restored_images
 
-            print(f"Writing batch no: {batch_no}")
+            print(f"Writing batch no: {batch_no} out of total {est_total_batches} batches.")
             for frame in frames:
                 writer.write(frame)
             batch_no += 1
+            p_bar.update(1)
 
             images = []
 

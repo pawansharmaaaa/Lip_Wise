@@ -4,8 +4,6 @@ import cv2
 import math
 import os
 import file_check
-import asyncio
-import concurrent.futures
 
 import mediapipe as mp
 import numpy as np
@@ -109,8 +107,11 @@ class model_processor:
             np.save(os.path.join(self.npy_directory,'image_landmarks.npy'), image_landmarks)
 
     def detect_for_video(self, video_path):
-
-        video = cv2.VideoCapture(video_path)
+        try:
+            video = cv2.VideoCapture(video_path)
+        except Exception as e:
+            print(f"Exception occurred while trying to open video file. Exceptin: {e}")
+            exit(1)
 
         # Get video properties
         fps = video.get(cv2.CAP_PROP_FPS)
@@ -232,6 +233,7 @@ class model_processor:
                 i += 1
 
             # Save index as npy array
+            os.makedirs(self.npy_directory, exist_ok=True)
             np.save(os.path.join(self.npy_directory, 'face_route_index.npy'), index)
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -273,8 +275,11 @@ class FaceHelpers:
         if not os.path.exists(os.path.join(self.npy_directory, 'face_route_index.npy')):
             processor = model_processor()
             processor.gen_face_route_index()
-        
-        index = np.load(os.path.join(self.npy_directory, 'face_route_index.npy'))
+        try:
+            index = np.load(os.path.join(self.npy_directory, 'face_route_index.npy'))
+        except FileNotFoundError as e:
+            print("Face route index was not read. Please rerun the inference.")
+            exit(1)
 
         coords = list()
         for source_idx, target_idx in index:
@@ -371,9 +376,8 @@ class FaceHelpers:
             
             #PR15: While mathematically cos_a must be within the closed range [-1.0, 1.0], floating point errors would produce cases violating this
             #In fact, we did come across a case where cos_a took the value 1.0000000169176173, which lead to a NaN from the following np.arccos step
-            cos_a = min(1.0, max(-1.0, cos_a))
             
-            
+            cos_a = np.clip(cos_a, -1.0, 1.0)
             angle = np.arccos(cos_a) #angle in radian
             angle = (angle * 180) / math.pi #radian to degree
 
@@ -383,11 +387,17 @@ class FaceHelpers:
             if direction == -1:
                 angle = 90 - angle
 
-            # Get the rotation matrix
-            rotation_matrix = cv2.getRotationMatrix2D(center, direction * angle, 1)
+            try:
+                # Get the rotation matrix
+                rotation_matrix = cv2.getRotationMatrix2D(center, direction * angle, 1)
 
-            # Perform the affine transformation to rotate the image
-            aligned_face = cv2.warpAffine(extracted_face, rotation_matrix, output_size)
+                # Perform the affine transformation to rotate the image
+                aligned_face = cv2.warpAffine(extracted_face, rotation_matrix, output_size)
+            except Exception as e:
+                print(f"Error aligning face at frame no: {frame_no}, Saving the frame for manual inspection.")
+                os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
+                cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_{frame_no}.jpg'), extracted_face)
+                exit(1)
 
         return aligned_face, rotation_matrix  #return img and inverse afiine matrix anyway
     
@@ -430,7 +440,14 @@ class FaceHelpers:
         bbox = np.array([[xmin, ymin], [xmax, ymax]]).astype(np.int32)
 
         # Crop face
-        cropped_face = aligned_face[bbox[0,1]:bbox[1,1], bbox[0,0]:bbox[1,0]]
+        try:
+            cropped_face = aligned_face[bbox[0,1]:bbox[1,1], bbox[0,0]:bbox[1,0]]
+        except IndexError as e:
+            print(f"Failed to crop face: {e}")
+            print(f"Saving the frame for manual inspection.")
+            os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
+            cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_crop{frame_no}.jpg'), aligned_face)
+            exit(1)
 
         return cropped_face, bbox
     
@@ -453,7 +470,12 @@ class FaceHelpers:
         mel_batch = []
 
         # Resize face for wav2lip
-        cropped_face = cv2.resize(cropped_face, (96, 96))
+        try:
+            cropped_face = cv2.resize(cropped_face, (96, 96))
+        except Exception as e:
+            print(f"Failed to resize face: {e}")
+            exit(1)
+
         # Generate data for inference
         for mel_chunk in mel_chunks:
             frame_batch.append(cropped_face)
@@ -485,7 +507,14 @@ class FaceHelpers:
 
     def paste_back_black_bg(self, processed_face, bbox, full_frame):
         processed_ready = np.zeros_like(full_frame)
-        processed_ready[bbox[0,1]:bbox[1,1], bbox[0,0]:bbox[1,0]] = processed_face
+        try:
+            processed_ready[bbox[0,1]:bbox[1,1], bbox[0,0]:bbox[1,0]] = processed_face
+        except IndexError as e:
+            print(f"Failed to paste face back onto full frame: {e}")
+            print(f"Saving the frame for manual inspection.")
+            os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
+            cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_paste.jpg'), processed_face)
+            exit(1)
 
         return processed_ready
     
@@ -502,8 +531,15 @@ class FaceHelpers:
             The unwarped and unaligned face.
         """
         # Unwarp and unalign
-        print("Unwarping and unaligning face...")
-        ready_to_paste = cv2.warpAffine(processed_ready, rotation_matrix, (processed_ready.shape[1], processed_ready.shape[0]), flags=cv2.WARP_INVERSE_MAP)
+        # print("Unwarping and unaligning face...")
+        try:
+            ready_to_paste = cv2.warpAffine(processed_ready, rotation_matrix, (processed_ready.shape[1], processed_ready.shape[0]), flags=cv2.WARP_INVERSE_MAP)
+        except Exception as e:
+            print(f"Failed to unwarp and unalign face: {e}")
+            print(f"Saving the frame for manual inspection.")
+            os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
+            cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_unwarp.jpg'), processed_ready)
+            exit(1)
         return ready_to_paste
 
 
@@ -518,6 +554,13 @@ class FaceHelpers:
         Returns:
             The background with the face pasted on it.
         """
-        print("Pasting face back...")
-        background[original_mask] = ready_to_paste[original_mask]
+        # print("Pasting face back...")
+        try:
+            background[original_mask] = ready_to_paste[original_mask]
+        except IndexError as e:
+            print(f"Failed to paste face back onto background: {e}")
+            print(f"Saving the frame for manual inspection.")
+            os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
+            cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_paste_back.jpg'), ready_to_paste)
+            exit(1)
         return background
