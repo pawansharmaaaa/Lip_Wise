@@ -1,4 +1,4 @@
-# This file is a part of https://github.com/pawansharmaaaa/Lip_Wise_GFPGAN/ repository.
+# This file is a part of https://github.com/pawansharmaaaa/Lip_Wise/ repository.
 
 import os
 import cv2
