@@ -19,7 +19,7 @@ inputs_for_image = [
     gr.Radio(["GFPGAN", "CodeFormer"], value='CodeFormer', label="Face Restorer"),
     gr.Slider(minimum=1, maximum=60, step=1, value=30, label="FPS"),
     gr.Number(value=16, label="Mel Step Size", interactive=False),
-    gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.7, label="Weight")
+    gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.3, label="Weight")
 ]
 output_for_image = gr.Video(sources='upload', label="Output")
 
@@ -30,7 +30,7 @@ inputs_for_video = [
     gr.Audio(type="filepath", label="Audio"),
     gr.Radio(["GFPGAN", "CodeFormer"], value='CodeFormer', label="Face Restorer"),
     gr.Number(value=16, label="Mel Step Size", interactive=False),
-    gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.7, label="Weight")
+    gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.3, label="Weight")
 ]
 output_for_video = gr.Video(sources='upload', label="Output")
 
