@@ -141,7 +141,6 @@ def infer_image(frame_path, audio_path, face_restorer = 'CodeFormer', fps=30, me
             out.write(final)
         
     out.release()
-
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, 'output.mp4')}"
     subprocess.call(command, shell=platform.system() != 'Windows')
 

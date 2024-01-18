@@ -20,6 +20,7 @@ fi
 
 # Install requirements
 pip install -r requirements.txt
+pip install --upgrade --no-cache-dir gdown
 
 # Copy archs
 cp archs/* /usr/local/lib/python3.10/dist-packages/basicsr/archs
