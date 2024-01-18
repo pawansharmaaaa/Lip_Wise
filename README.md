@@ -37,12 +37,12 @@ LipWise is a powerful video dubbing tool that leverages optimized inference for 
 
 # :eyeglasses: **INSTALLATION**
 
+---
+
 ### :softball: **TRIAL**
 <a href='https://colab.research.google.com/drive/1RSqHSi-ufSQCOlBGxCr8WOma1ihJuX9I?usp=sharing' target="_blank"><img alt='Open in Google Colab' src='https://img.shields.io/badge/OPEN_IN COLAB-100000?style=for-the-badge&logo=Google Colab&logoColor=927123&labelColor=black&color=ffffff'/></a>
 > [!TIP]
-> Use GPU runtime for faster processing. 
-
----
+> Use GPU runtime for faster processing.
 
 ### :cd: **SETUP AND INFERENCE**
 ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)![nVIDIA](https://img.shields.io/badge/nVIDIA-%2376B900.svg?style=for-the-badge&logo=nVIDIA&logoColor=white)
