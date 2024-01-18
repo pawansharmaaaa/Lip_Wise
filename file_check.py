@@ -11,8 +11,8 @@ LANDMARKER_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_lan
 DETECTOR_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/latest/blaze_face_short_range.tflite'
 GFPGAN_MODEL_URL = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth'
 CODEFORMERS_MODEL_URL = 'https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth'
-WAV2LIP_MODEL_URL = 'https://drive.google.com/uc?id=1paYmN1KAZ2oPQPV-XauCoRUorhkOt0s2'
-WAV2LIP_GAN_MODEL_URL = 'https://drive.google.com/uc?id=1WpqCULKQQcaCNf827h1qgjMHZENYHk-_'
+WAV2LIP_MODEL_URL = ['https://drive.google.com/uc?id=1paYmN1KAZ2oPQPV-XauCoRUorhkOt0s2','https://drive.google.com/uc?id=1dhunIPYumA7WnR7dDsd7jsMgzgpOlg0V']
+WAV2LIP_GAN_MODEL_URL = ['https://drive.google.com/uc?id=1WpqCULKQQcaCNf827h1qgjMHZENYHk-_','https://drive.google.com/uc?id=16UHRZv-oTW629AiMkSot5MrgDb42RJTX']
 
 CURRENT_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
@@ -44,7 +44,7 @@ def download_from_drive(url, model_dir, progress, file_name):
     output_path = os.path.join(model_dir, file_name)
     try:
         gdown.download(url, output=output_path, quiet=(progress is False))
-    except Exception as e:
+    except RuntimeError as e:
         print(f"Error occurred while downloading from drive: {e}")
 
 def perform_check():
@@ -106,17 +106,17 @@ def perform_check():
             
         if not os.path.exists(WAV2LIP_MODEL_PATH):
             print("Downloading Wav2Lip model...")
-            download_from_drive(url=WAV2LIP_MODEL_URL, 
-                               model_dir=WAV2LIP_WEIGHTS_DIR,
-                               progress=True,
-                               file_name='wav2lip.pth')
+            download_from_drive(url=WAV2LIP_MODEL_URL[1],
+                            model_dir=WAV2LIP_WEIGHTS_DIR,
+                            progress=True,
+                            file_name='wav2lip.pth')
             
         if not os.path.exists(WAV2LIP_GAN_MODEL_PATH):
             print("Downloading Wav2Lip GAN model...")
-            download_from_drive(url=WAV2LIP_GAN_MODEL_URL,
-                               model_dir=WAV2LIP_WEIGHTS_DIR,
-                               progress=True,
-                               file_name='wav2lip_gan.pth')
+            download_from_drive(url=WAV2LIP_GAN_MODEL_URL[1],
+                            model_dir=WAV2LIP_WEIGHTS_DIR,
+                            progress=True,
+                            file_name='wav2lip_gan.pth')
     
     except OSError as e:
         print(f"OS Error occurred: {e}")
@@ -138,3 +138,6 @@ def get_file_type(filename):
         return "audio", extension
     else:
         return "unknown", extension
+    
+if __name__ == "__main__":
+    perform_check()

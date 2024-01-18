@@ -1,9 +1,7 @@
 # This file is a part of https://github.com/pawansharmaaaa/Lip_Wise/ repository.
 
 import cv2
-import math
 import os
-import asyncio
 
 import mediapipe as mp
 import numpy as np
