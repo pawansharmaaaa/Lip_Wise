@@ -11,8 +11,8 @@ LANDMARKER_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_lan
 DETECTOR_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/latest/blaze_face_short_range.tflite'
 GFPGAN_MODEL_URL = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth'
 CODEFORMERS_MODEL_URL = 'https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth'
-WAV2LIP_MODEL_URL = 'https://drive.google.com/file/d/1paYmN1KAZ2oPQPV-XauCoRUorhkOt0s2/view?usp=sharing'
-WAV2LIP_GAN_MODEL_URL = 'https://drive.google.com/file/d/1WpqCULKQQcaCNf827h1qgjMHZENYHk-_/view?usp=sharing'
+WAV2LIP_MODEL_URL = 'https://drive.google.com/uc?id=1paYmN1KAZ2oPQPV-XauCoRUorhkOt0s2'
+WAV2LIP_GAN_MODEL_URL = 'https://drive.google.com/uc?id=1WpqCULKQQcaCNf827h1qgjMHZENYHk-_'
 
 CURRENT_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
