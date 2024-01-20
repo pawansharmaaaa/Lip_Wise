@@ -25,7 +25,8 @@ class model_processor:
             485: Mouth center
     """
 
-    def __init__(self):
+    def __init__(self, padding=np.array([[0,0], [0,0]])):
+        self.padding = padding
         self.npy_directory = file_check.NPY_FILES_DIR
         self.weights_directory = file_check.WEIGHTS_DIR
 
@@ -97,6 +98,8 @@ class model_processor:
                 x_max = landmarks_np[np.argmax(x_coordinates)]
 
                 bbox_np = np.array([[x_min[0], y_min[1]], [x_max[0], y_max[1]]]).astype(np.float64)
+
+                bbox_np = bbox_np + self.padding
 
                 # Concatenate landmarks, bbox and keypoints. This is the data that will be saved.
                 data = np.vstack((landmarks_np, bbox_np, kp_np)).astype(np.float64)

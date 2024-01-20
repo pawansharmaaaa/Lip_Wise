@@ -28,7 +28,7 @@ NPY_FILES_DIRECTORY = file_check.NPY_FILES_DIR
 OUTPUT_DIRECTORY = file_check.OUTPUT_DIR
 
 #################################################### IMAGE INFERENCE ####################################################
-def infer_image(frame_path, audio_path, face_restorer = 'CodeFormer', fps=30, mel_step_size=16, weight = 1.0):
+def infer_image(frame_path, audio_path, pad, face_restorer = 'CodeFormer', fps=30, mel_step_size=16, weight = 1.0):
     
     # Perform checks to ensure that all required files are present
     file_check.perform_check()
@@ -73,7 +73,8 @@ def infer_image(frame_path, audio_path, face_restorer = 'CodeFormer', fps=30, me
     print(f"Length of mel chunks: {len(mel_chunks)}")
 
     # Create media_preprocess object and helper object
-    processor = pmp.model_processor()
+    padding = [[pad, pad], [pad, pad]]
+    processor = pmp.model_processor(padding=padding)
 
     # Read image
     frame = cv2.imread(frame_path)
