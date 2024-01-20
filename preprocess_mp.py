@@ -25,7 +25,7 @@ class model_processor:
             485: Mouth center
     """
 
-    def __init__(self, padding=np.array([[0,0], [0,0]])):
+    def __init__(self, padding=0):
         self.padding = padding
         self.npy_directory = file_check.NPY_FILES_DIR
         self.weights_directory = file_check.WEIGHTS_DIR
@@ -86,16 +86,16 @@ class model_processor:
                 y_coordinates = landmarks_np[:, 1]
 
                 # Top-most point has the smallest y-coordinate
-                y_min = landmarks_np[np.argmin(y_coordinates)]
+                y_min = landmarks_np[np.argmin(y_coordinates)] + self.padding
 
                 # Bottom-most point has the largest y-coordinate
-                y_max = landmarks_np[np.argmax(y_coordinates)]
+                y_max = landmarks_np[np.argmax(y_coordinates)] + self.padding
 
                 # Left-most point has the smallest x-coordinate
-                x_min = landmarks_np[np.argmin(x_coordinates)]
+                x_min = landmarks_np[np.argmin(x_coordinates)] + self.padding
 
                 # Right-most point has the largest x-coordinate
-                x_max = landmarks_np[np.argmax(x_coordinates)]
+                x_max = landmarks_np[np.argmax(x_coordinates)] + self.padding
 
                 bbox_np = np.array([[x_min[0], y_min[1]], [x_max[0], y_max[1]]]).astype(np.float64)
 

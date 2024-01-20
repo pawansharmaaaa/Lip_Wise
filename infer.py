@@ -73,8 +73,7 @@ def infer_image(frame_path, audio_path, pad, face_restorer = 'CodeFormer', fps=3
     print(f"Length of mel chunks: {len(mel_chunks)}")
 
     # Create media_preprocess object and helper object
-    padding = [[pad, pad], [pad, pad]]
-    processor = pmp.model_processor(padding=padding)
+    processor = pmp.model_processor(padding=pad)
 
     # Read image
     frame = cv2.imread(frame_path)
