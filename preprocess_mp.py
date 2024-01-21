@@ -148,6 +148,8 @@ class model_processor:
         frame_no = 0
         no_face_index = []
         video_landmarks = np.zeros((frame_count, 486, 2)).astype(np.float64)
+        norm_pad_x = self.padding / width
+        norm_pad_y = self.padding / height
 
         with FaceLandmarker.create_from_options(options_lan) as landmarker,FaceDetector.create_from_options(options_det) as detector:
             while video.isOpened():
@@ -179,16 +181,16 @@ class model_processor:
                     y_coordinates = landmarks_np[:, 1]
 
                     # Top-most point has the smallest y-coordinate
-                    y_min = landmarks_np[np.argmin(y_coordinates)]
+                    y_min = landmarks_np[np.argmin(y_coordinates)] - norm_pad_y
 
                     # Bottom-most point has the largest y-coordinate
-                    y_max = landmarks_np[np.argmax(y_coordinates)]
+                    y_max = landmarks_np[np.argmax(y_coordinates)] + norm_pad_y
 
                     # Left-most point has the smallest x-coordinate
-                    x_min = landmarks_np[np.argmin(x_coordinates)]
+                    x_min = landmarks_np[np.argmin(x_coordinates)] - norm_pad_x
 
                     # Right-most point has the largest x-coordinate
-                    x_max = landmarks_np[np.argmax(x_coordinates)]
+                    x_max = landmarks_np[np.argmax(x_coordinates)] + norm_pad_x
 
                     bbox_np = np.array([[x_min[0], y_min[1]], [x_max[0], y_max[1]]]).astype(np.float64)
 

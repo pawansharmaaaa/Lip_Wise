@@ -155,7 +155,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
 
 ################################################## VIDEO INFERENCE ##################################################
 
-def infer_video(video_path, audio_path, face_restorer='CodeFormer',mel_step_size=16, weight = 1.0):
+def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step_size=16, weight = 1.0):
     # Perform checks to ensure that all required files are present
     file_check.perform_check()
 
@@ -176,7 +176,7 @@ def infer_video(video_path, audio_path, face_restorer='CodeFormer',mel_step_size
         audio_path = os.path.join(MEDIA_DIRECTORY, 'aud_input.wav')
 
     # Create media_preprocess object and helper object
-    processor = pmp.model_processor()
+    processor = pmp.model_processor(padding=pad)
 
     # Get face landmarks
     print("Getting face landmarks...")

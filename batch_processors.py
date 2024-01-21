@@ -60,7 +60,7 @@ class BatchProcessors:
         resized_cropped_faces_batch = []
         # Resize face for wav2lip
         for cropped_face in cropped_faces_batch:
-            cropped_face = cv2.resize(cropped_face, (96, 96))
+            cropped_face = cv2.resize(cropped_face, (96, 96), interpolation=cv2.INTER_AREA)
             resized_cropped_faces_batch.append(cropped_face)
 
         frame_batch = np.asarray(resized_cropped_faces_batch)
