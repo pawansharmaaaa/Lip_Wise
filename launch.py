@@ -30,6 +30,7 @@ image_Interface = gr.Interface(fn=infer.infer_image, inputs=inputs_for_image, ou
 inputs_for_video = [
     gr.Video(sources='upload',label="Video"),
     gr.Audio(type="filepath", label="Audio"),
+    gr.Number(value=0, label="Padding: Increase if getting black outlines"),
     gr.Radio(["GFPGAN", "CodeFormer"], value='CodeFormer', label="Face Restorer"),
     gr.Number(value=16, label="Mel Step Size", interactive=False),
     gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.3, label="Weight")
