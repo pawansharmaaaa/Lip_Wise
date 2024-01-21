@@ -2,7 +2,7 @@
 
 import cv2
 import math
-import os
+import os, sys
 import file_check
 
 import mediapipe as mp
@@ -41,6 +41,9 @@ class model_processor:
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         height, width, _ = frame.shape
         mp_frame = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
+
+        norm_pad_x = self.padding / width
+        norm_pad_y = self.padding / height
         
         # Initialize mediapipe
         BaseOptions = mp.tasks.BaseOptions
@@ -86,20 +89,18 @@ class model_processor:
                 y_coordinates = landmarks_np[:, 1]
 
                 # Top-most point has the smallest y-coordinate
-                y_min = landmarks_np[np.argmin(y_coordinates)] + self.padding
+                y_min = landmarks_np[np.argmin(y_coordinates)] - norm_pad_y
 
                 # Bottom-most point has the largest y-coordinate
-                y_max = landmarks_np[np.argmax(y_coordinates)] + self.padding
+                y_max = landmarks_np[np.argmax(y_coordinates)] + norm_pad_y
 
                 # Left-most point has the smallest x-coordinate
-                x_min = landmarks_np[np.argmin(x_coordinates)] + self.padding
+                x_min = landmarks_np[np.argmin(x_coordinates)] - norm_pad_x
 
                 # Right-most point has the largest x-coordinate
-                x_max = landmarks_np[np.argmax(x_coordinates)] + self.padding
+                x_max = landmarks_np[np.argmax(x_coordinates)] + norm_pad_x
 
                 bbox_np = np.array([[x_min[0], y_min[1]], [x_max[0], y_max[1]]]).astype(np.float64)
-
-                bbox_np = bbox_np + self.padding
 
                 # Concatenate landmarks, bbox and keypoints. This is the data that will be saved.
                 data = np.vstack((landmarks_np, bbox_np, kp_np)).astype(np.float64)
@@ -238,6 +239,35 @@ class model_processor:
             # Save index as npy array
             os.makedirs(self.npy_directory, exist_ok=True)
             np.save(os.path.join(self.npy_directory, 'face_route_index.npy'), index)
+
+    def align_3d(self, frame):
+        """
+        Aligns the face in the image.
+
+        Args:
+            frame: The image from which the face is to be aligned.
+
+        Returns:
+            The aligned face.
+        """
+        # Load the model (adjust the path as needed)
+        face_aligner = mp.tasks.vision.FaceAligner.create_from_model_path(self.landmarker_model_path)
+
+        # Load your image (replace with your image path)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        mp_frame = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
+
+        # Align the face(s) in the image
+        aligned_image = face_aligner.align(mp_frame)
+
+        if aligned_image:
+            # Convert the MediaPipe image to OpenCV image
+            aligned_image = cv2.cvtColor(aligned_image.numpy_view(), cv2.COLOR_RGB2BGR)
+            return aligned_image
+        else:
+            # No face detected in the image
+            print("3D Alignment failed. No face detected in the image.")
+            sys.exit(1)
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------

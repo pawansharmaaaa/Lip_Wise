@@ -17,6 +17,7 @@ inputs_for_image = [
     gr.Image(type="filepath", label="Image"),
     gr.Audio(type="filepath", label="Audio"),
     gr.Number(value=0, label="Padding: Increase if getting black outlines"),
+    gr.Checkbox(label = "Perform 3D_alignment?"),
     gr.Radio(["GFPGAN", "CodeFormer"], value='CodeFormer', label="Face Restorer"),
     gr.Slider(minimum=1, maximum=60, step=1, value=30, label="FPS"),
     gr.Number(value=16, label="Mel Step Size", interactive=False),

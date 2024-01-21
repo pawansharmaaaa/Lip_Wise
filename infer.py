@@ -28,7 +28,7 @@ NPY_FILES_DIRECTORY = file_check.NPY_FILES_DIR
 OUTPUT_DIRECTORY = file_check.OUTPUT_DIR
 
 #################################################### IMAGE INFERENCE ####################################################
-def infer_image(frame_path, audio_path, pad, face_restorer = 'CodeFormer', fps=30, mel_step_size=16, weight = 1.0):
+def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = 'CodeFormer', fps=30, mel_step_size=16, weight = 1.0):
     
     # Perform checks to ensure that all required files are present
     file_check.perform_check()
@@ -76,7 +76,11 @@ def infer_image(frame_path, audio_path, pad, face_restorer = 'CodeFormer', fps=3
     processor = pmp.model_processor(padding=pad)
 
     # Read image
-    frame = cv2.imread(frame_path)
+    if align_3d:
+      frame = cv2.imread(frame_path)
+      frame = processor.align_3d(frame)
+    else:
+      frame = cv2.imread(frame_path)
     height, width, _ = frame.shape
 
     # Get face landmarks
@@ -114,6 +118,7 @@ def infer_image(frame_path, audio_path, pad, face_restorer = 'CodeFormer', fps=3
     # Initialize video writer
     out = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
+    print("Processing.....")
     # Feed to model:
     for (img_batch, mel_batch) in gr.Progress(track_tqdm=True).tqdm(gen, total=len(mel_chunks)):
         img_batch = torch.FloatTensor(np.transpose(img_batch, (0, 3, 1, 2))).to(device)
@@ -143,6 +148,8 @@ def infer_image(frame_path, audio_path, pad, face_restorer = 'CodeFormer', fps=3
     out.release()
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, 'output.mp4')}"
     subprocess.call(command, shell=platform.system() != 'Windows')
+
+    print("Done! Check output.mp4 in output directory.")
 
     return os.path.join(OUTPUT_DIRECTORY, 'output.mp4')
 
