@@ -2,6 +2,9 @@
     <img src = "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/cca4987a-18e5-49f1-9eba-710f3c0655a7">
 </div>
 
+> [!IMPORTANT]
+> Please Help by starring the repo. :grin:
+
 ---
 
 <div style="display: flex; justify-content: flex-start; margin-top:20px;">
@@ -29,9 +32,6 @@ LipWise is a powerful video dubbing tool that leverages optimized inference for 
     * Facial landmarks are meticulously stored as npy files, conserving processing resources when utilizing the same video repeatedly.
 * **Effortless Setup:**
     *  With the exception of manual CUDA installation, the setup process is remarkably seamless, as outlined below.
-
-> [!IMPORTANT]
-> Please Help by starring the repo. :grin:
 
 ---
 
