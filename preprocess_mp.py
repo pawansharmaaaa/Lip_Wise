@@ -504,7 +504,7 @@ class FaceHelpers:
 
         # Resize face for wav2lip
         try:
-            cropped_face = cv2.resize(cropped_face, (96, 96))
+            cropped_face = cv2.resize(cropped_face, (96, 96), interpolation=cv2.INTER_AREA)
         except Exception as e:
             print(f"Failed to resize face: {e}")
             exit(1)
