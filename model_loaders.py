@@ -94,7 +94,7 @@ class model_loaders:
         return model.eval()
     
     def restore_wGFPGAN(self, dubbed_face):
-        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_CUBIC)
+        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_LANCZOS4)
         dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
         normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
         dubbed_face_t = dubbed_face_t.unsqueeze(0).to(self.device)
@@ -110,7 +110,7 @@ class model_loaders:
         return restored_face
     
     def restore_wCodeFormer(self, dubbed_face):
-        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_CUBIC)
+        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_LANCZOS4)
         dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
         normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
         dubbed_face_t = dubbed_face_t.unsqueeze(0).to(self.device)

@@ -244,7 +244,7 @@ class model_processor:
 
     def align_3d(self, frame):
         """
-        Aligns the face in the image.
+        Aligns the face in the image in 3D.
 
         Args:
             frame: The image from which the face is to be aligned.
