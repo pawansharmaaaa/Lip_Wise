@@ -1,3 +1,9 @@
+---
+title: Lip_Wise
+app_file: infer.py
+sdk: gradio
+sdk_version: 4.12.0
+---
 <div style="display: flex; justify-content: space-between;">
     <img src = "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/cca4987a-18e5-49f1-9eba-710f3c0655a7">
 </div>
