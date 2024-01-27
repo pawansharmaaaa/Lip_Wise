@@ -29,3 +29,5 @@ dlib*
 *temp
 *weights
 *optimizer.ipynb
+infer_sl.py
+launch_sl.py

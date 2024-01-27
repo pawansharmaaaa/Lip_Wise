@@ -49,11 +49,6 @@ def download_from_drive(url, model_dir, progress, file_name):
 
 def perform_check():
     try:
-        #-----------------------------CHECK FOR RESULTS DIR-----------------------------
-        # Check if directory exists
-        if not os.path.exists(RESULTS_DIR):
-            os.makedirs(RESULTS_DIR)
-
         #------------------------------CHECK FOR TEMP DIR-------------------------------
         # Check if directory exists
         if not os.path.exists(TEMP_DIR):
