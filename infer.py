@@ -269,9 +269,8 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
             frames_to_input = frames[mask_batch[batch_no]]
             
             if len(frames_to_input) != 0 and len(mels_to_input) != 0:
-                extracted_faces, original_masks = bp.extract_face_batch(frames_to_input, frame_nos_to_input)
-                aligned_faces, rotation_matrices = bp.alignment_procedure_batch(frames_to_input, frame_nos_to_input)
-                cropped_faces, bboxes = bp.crop_extracted_face_batch(aligned_faces, rotation_matrices, frame_nos_to_input)
+                extracted_faces, face_masks, inv_masks, centers, bboxes = bp.extract_face_batch(frames_to_input, frame_nos_to_input)
+                cropped_faces, aligned_bboxes, rotation_matrices = bp.align_crop_batch(extracted_faces, frame_nos_to_input)
                 frame_batch, mel_batch = bp.gen_data_video_mode(cropped_faces, mels_to_input)
 
                 # Feed to wav2lip model:
@@ -292,9 +291,9 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
                 
                 # Post processing
                 resized_restored_faces = bp.face_resize_batch(restored_faces, cropped_faces)
-                pasted_ready_faces = bp.paste_back_black_bg_batch(resized_restored_faces, bboxes, frames_to_input)
+                pasted_ready_faces = bp.paste_back_black_bg_batch(resized_restored_faces, aligned_bboxes, frames_to_input)
                 ready_to_paste = bp.unwarp_align_batch(pasted_ready_faces, rotation_matrices)
-                restored_images = bp.paste_back_batch(ready_to_paste, frames_to_input, original_masks)
+                restored_images = bp.paste_back_batch(ready_to_paste, frames_to_input, face_masks, inv_masks, centers)
 
                 frames[mask_batch[batch_no]] = restored_images
 

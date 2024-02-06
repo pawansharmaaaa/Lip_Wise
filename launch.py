@@ -22,10 +22,10 @@ inputs_for_image = [
     gr.Number(value=0, label="Padding: Increase if getting black outlines"),
     gr.Checkbox(label = "Perform 3D_alignment?"),
     gr.Radio(["GFPGAN", "CodeFormer"], value='CodeFormer', label="Face Restorer"),
-    gr.Slider(minimum=1, maximum=60, step=1, value=30, label="FPS"),
+    gr.Slider(minimum=1, maximum=60, step=1, value=25, label="FPS"),
     gr.Number(value=16, label="Mel Step Size", interactive=False),
     gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.3, label="Weight"),
-    gr.Checkbox(label = "Upscale Background with REALESRGAN", default=False),
+    gr.Checkbox(label = "Upscale Background with REALESRGAN", value=False),
     gr.Dropdown(choices=bg_upscalers, label="REALESRGAN Model", value="RealESRGAN_x4plus", max_choices=1)
 ]
 output_for_image = gr.Video(sources='upload', label="Output")
