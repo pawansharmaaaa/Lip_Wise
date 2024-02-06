@@ -28,10 +28,10 @@ NPY_FILES_DIRECTORY = file_check.NPY_FILES_DIR
 OUTPUT_DIRECTORY = file_check.OUTPUT_DIR
 
 #################################################### IMAGE INFERENCE ####################################################
-def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = 'CodeFormer', fps=30, mel_step_size=16, weight = 1.0):
+def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = 'CodeFormer', fps=30, mel_step_size=16, weight = 1.0, upscale_bg = False, bgupscaler='RealESRGAN_x4plus'):
     
     # Perform checks to ensure that all required files are present
-    file_check.perform_check()
+    file_check.perform_check(model_name=bgupscaler)
 
     # Get input type
     input_type, img_ext = file_check.get_file_type(frame_path)
@@ -73,7 +73,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     print(f"Length of mel chunks: {len(mel_chunks)}")
 
     # Create media_preprocess object and helper object
-    processor = pmp.model_processor(padding=pad)
+    processor = pmp.ModelProcessor(padding=pad)
 
     # Read image
     if align_3d:
@@ -92,15 +92,11 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
 
     # extract face from image
     print("Extracting face from image...")
-    extracted_face, original_mask = helper.extract_face(frame.copy())
+    extracted_face, mask, inv_mask, center, bbox = helper.extract_face(original_img=frame)
 
-    # warp and align face
-    print("Warping and aligning face...")
-    aligned_face, rotation_matrix = helper.alignment_procedure(frame.copy())
-
-    # Crop face
-    print("Cropping face...")
-    cropped_face, bbox = helper.crop_extracted_face(aligned_face, rotation_matrix)
+    # Warp, Crop and Align face
+    print("Warping, cropping and aligning face...")
+    cropped_face, aligned_bbox, rotation_matrix = helper.align_crop_face(extracted_face=extracted_face)
 
     # Store cropped face's height and width
     cropped_face_height, cropped_face_width, _ = cropped_face.shape
@@ -138,9 +134,9 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
         
         for face in restored_faces:
             processed_face = cv2.resize(face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
-            processed_ready = helper.paste_back_black_bg(processed_face, bbox, frame)
+            processed_ready = helper.paste_back_black_bg(processed_face, aligned_bbox, frame)
             ready_to_paste = helper.unwarp_align(processed_ready, rotation_matrix)
-            final = helper.paste_back(ready_to_paste, frame, original_mask)
+            final = helper.paste_back(ready_to_paste, frame, mask, inv_mask, center)
             
             # Write each processed face to `out`
             out.write(final)

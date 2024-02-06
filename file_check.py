@@ -13,6 +13,15 @@ GFPGAN_MODEL_URL = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.
 CODEFORMERS_MODEL_URL = 'https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth'
 WAV2LIP_MODEL_URL = ['https://drive.google.com/uc?id=1paYmN1KAZ2oPQPV-XauCoRUorhkOt0s2','https://drive.google.com/uc?id=1dhunIPYumA7WnR7dDsd7jsMgzgpOlg0V']
 WAV2LIP_GAN_MODEL_URL = ['https://drive.google.com/uc?id=1WpqCULKQQcaCNf827h1qgjMHZENYHk-_','https://drive.google.com/uc?id=16UHRZv-oTW629AiMkSot5MrgDb42RJTX']
+REAL_ESRGAN_MODEL_URL = {
+            'RealESRGAN_x4plus': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth',
+            'RealESRNet_x4plus': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.1/RealESRNet_x4plus.pth',
+            'RealESRGAN_x4plus_anime_6B': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth',
+            'RealESRGAN_x2plus': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth',
+            'realesr-animevideov3': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-animevideov3.pth',
+            'realesr-general-wdn-x4v3': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-wdn-x4v3.pth',
+            'realesr-general-x4v3': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth'
+        }
 
 CURRENT_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
@@ -22,6 +31,7 @@ MP_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'mp')
 GFPGAN_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'gfpgan')
 CODEFORMERS_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'codeformers')
 WAV2LIP_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'wav2lip')
+REALESRGAN_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'realesrgan')
 
 TEMP_DIR = os.path.join(CURRENT_FILE_DIRECTORY, 'temp')
 NPY_FILES_DIR = os.path.join(TEMP_DIR, 'npy_files')
@@ -47,7 +57,8 @@ def download_from_drive(url, model_dir, progress, file_name):
     except RuntimeError as e:
         print(f"Error occurred while downloading from drive: {e}")
 
-def perform_check():
+def perform_check(model_name='RealESRGAN_x4plus'):
+    REALESRGAN_MODEL_PATH = os.path.join(REALESRGAN_WEIGHTS_DIR, f'{model_name}.pth')
     try:
         #------------------------------CHECK FOR TEMP DIR-------------------------------
         # Check if directory exists
@@ -112,6 +123,13 @@ def perform_check():
                             model_dir=WAV2LIP_WEIGHTS_DIR,
                             progress=True,
                             file_name='wav2lip_gan.pth')
+            
+        if not os.path.exists(REALESRGAN_MODEL_PATH):
+            print(f"Downloading Real-ESRGAN model: {REALESRGAN_MODEL_PATH}...")
+            load_file_from_url(url=REAL_ESRGAN_MODEL_URL[model_name],
+                                model_dir=REALESRGAN_WEIGHTS_DIR,
+                                progress=True,
+                                file_name=f'{model_name}.pth')
     
     except OSError as e:
         print(f"OS Error occurred: {e}")
