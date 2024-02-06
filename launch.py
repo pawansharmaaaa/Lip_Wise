@@ -5,12 +5,15 @@ import gradio as gr
 
 # Custom Modules
 import infer
+import file_check
 
 # Argument parser
 parser = argparse.ArgumentParser(description="Your description here")
 parser.add_argument("--colab", action="store_true", help="Use when running inference from Google Colab")
 
 args = parser.parse_args()
+
+bg_upscalers = list(file_check.REAL_ESRGAN_MODEL_URL.keys())
 
 # Create interface
 inputs_for_image = [
@@ -21,7 +24,9 @@ inputs_for_image = [
     gr.Radio(["GFPGAN", "CodeFormer"], value='CodeFormer', label="Face Restorer"),
     gr.Slider(minimum=1, maximum=60, step=1, value=30, label="FPS"),
     gr.Number(value=16, label="Mel Step Size", interactive=False),
-    gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.3, label="Weight")
+    gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.3, label="Weight"),
+    gr.Checkbox(label = "Upscale Background with REALESRGAN", default=False),
+    gr.Dropdown(choices=bg_upscalers, label="REALESRGAN Model", value="RealESRGAN_x4plus", max_choices=1)
 ]
 output_for_image = gr.Video(sources='upload', label="Output")
 
