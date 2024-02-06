@@ -106,7 +106,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     gen = helper.gen_data_image_mode(cropped_face, mel_chunks)
 
     # Create model loader object
-    ml = model_loaders.model_loaders(face_restorer, weight)
+    ml = model_loaders.ModelLoader(face_restorer, weight)
 
     # Load wav2lip model
     w2l_model = ml.load_wav2lip_model()
@@ -151,9 +151,9 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
 
 ################################################## VIDEO INFERENCE ##################################################
 
-def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step_size=16, weight = 1.0):
+def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step_size=16, weight = 1.0, upscale_bg = False, bgupscaler='RealESRGAN_x4plus'):
     # Perform checks to ensure that all required files are present
-    file_check.perform_check()
+    file_check.perform_check(model_name=bgupscaler)
 
     # Get input type
     input_type, vid_ext = file_check.get_file_type(video_path)
@@ -240,7 +240,7 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
     writer = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
     # Create model loader object
-    ml = model_loaders.model_loaders(face_restorer, weight)
+    ml = model_loaders.ModelLoader(face_restorer, weight)
 
     # Load wav2lip model
     w2l_model = ml.load_wav2lip_model()
@@ -299,6 +299,8 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
 
             print(f"Writing batch no: {batch_no} out of total {est_total_batches} batches.")
             for frame in frames:
+                if upscale_bg:
+                    frame, _ = ml.restore_background(frame, bgupscaler, tile=0, outscale=1.0, half=False)
                 writer.write(frame)
             batch_no += 1
             p_bar.__call__((batch_no, est_total_batches))

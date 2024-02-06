@@ -26,7 +26,7 @@ inputs_for_image = [
     gr.Number(value=16, label="Mel Step Size", interactive=False),
     gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.3, label="Weight"),
     gr.Checkbox(label = "Upscale Background with REALESRGAN", value=False),
-    gr.Dropdown(choices=bg_upscalers, label="REALESRGAN Model", value="RealESRGAN_x4plus", max_choices=1)
+    gr.Dropdown(choices=bg_upscalers, label="REALESRGAN Model", value="RealESRGAN_x4plus")
 ]
 output_for_image = gr.Video(sources='upload', label="Output")
 
@@ -38,7 +38,9 @@ inputs_for_video = [
     gr.Number(value=0, label="Padding: Increase if getting black outlines"),
     gr.Radio(["GFPGAN", "CodeFormer"], value='CodeFormer', label="Face Restorer"),
     gr.Number(value=16, label="Mel Step Size", interactive=False),
-    gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.3, label="Weight")
+    gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.3, label="Weight"),
+    gr.Checkbox(label = "Upscale Background with REALESRGAN", value=False),
+    gr.Dropdown(choices=bg_upscalers, label="REALESRGAN Model", value="RealESRGAN_x4plus")
 ]
 output_for_video = gr.Video(sources='upload', label="Output")
 

@@ -3,6 +3,7 @@
 import file_check
 import torch
 import cv2
+import os
 
 import numpy as np
 
@@ -11,8 +12,11 @@ from basicsr.utils import img2tensor, tensor2img
 from torchvision.transforms.functional import normalize
 from models import Wav2Lip
 from gfpgan.archs.gfpganv1_clean_arch import GFPGANv1Clean
+from realesrgan.archs.srvgg_arch import SRVGGNetCompact
+from basicsr.archs.rrdbnet_arch import RRDBNet
+from realesrgan import RealESRGANer
 
-class model_loaders:
+class ModelLoader:
 
     def __init__(self, restorer, weight):
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -43,6 +47,47 @@ class model_loaders:
 
         model = model.to(self.device)
         return model.eval()
+    
+    def load_realesrgan_model(self, model_name, tile, half=False):
+
+        if not torch.cuda.is_available():  # CPU
+            import warnings
+            warnings.warn("YAVU uses RealESRGAN for backgound upscaling and it's inference is really slow on CPU. Please consider using GPU.")
+            bg_upsampler = None
+        else:
+            if self.model_name == 'RealESRGAN_x4plus':  # x4 RRDBNet model
+                model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
+                netscale = 4
+            elif self.model_name == 'RealESRNet_x4plus':  # x4 RRDBNet model
+                model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
+                netscale = 4
+            elif self.model_name == 'RealESRGAN_x4plus_anime_6B':  # x4 RRDBNet model with 6 blocks
+                model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=6, num_grow_ch=32, scale=4)
+                netscale = 4
+            elif self.model_name == 'RealESRGAN_x2plus':  # x2 RRDBNet model
+                model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
+                netscale = 2
+            elif self.model_name == 'realesr-animevideov3':  # x4 VGG-style model (XS size)
+                model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=16, upscale=4, act_type='prelu')
+                netscale = 4
+            elif self.model_name == 'realesr-general-x4v3':  # x4 VGG-style model (S size)
+                model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=32, upscale=4, act_type='prelu')
+                netscale = 4
+
+            realesrgan_model_path = os.path.join(file_check.REALESRGAN_WEIGHTS_DIR, f'{model_name}.pth')
+
+            bg_upsampler = RealESRGANer(
+                scale=netscale,
+                model_path=realesrgan_model_path,
+                dni_weight=None,
+                model=model,
+                tile=tile,
+                tile_pad=10,
+                pre_pad=0,
+                half=half,
+                gpu_id=None)
+            
+        return bg_upsampler
 
     def load_wav2lip_gan_model(self):
         model = Wav2Lip()
@@ -92,6 +137,12 @@ class model_loaders:
         checkpoint = torch.load(ckpt_path)['params_ema']
         model.load_state_dict(checkpoint)
         return model.eval()
+    
+    def restore_background(self, background, model_name, tile, outscale=1.0, half=False):
+        bgupsampler = self.load_realesrgan_model(model_name, tile, half=False)
+        if bgupsampler is not None:
+            background = bgupsampler.enhance(background, outscale=outscale)
+        return background
     
     def restore_wGFPGAN(self, dubbed_face):
         dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_LANCZOS4)
