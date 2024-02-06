@@ -607,7 +607,7 @@ class FaceHelpers:
             # Add the new face to the background
             result = cv2.add(background, ready_to_paste)
 
-            final_blend = cv2.seamlessClone(result, original_img, face_mask, center, cv2.MIXED_CLONE)
+            final_blend = cv2.seamlessClone(result, original_img, face_mask, center, cv2.NORMAL_CLONE)
         except IndexError as e:
             print(f"Failed to paste face back onto background: {e}")
             print(f"Saving the frame for manual inspection.")

@@ -35,7 +35,7 @@ class BatchProcessors:
     
     def align_crop_batch(self, extracted_faces, frame_numbers):
         with ThreadPoolExecutor() as executor:
-            cropped_faces, aligned_bboxes, rotation_matrices = zip(*list(executor.map(self.helper.alignment_procedure, extracted_faces, frame_numbers)))
+            cropped_faces, aligned_bboxes, rotation_matrices = zip(*list(executor.map(self.helper.align_crop_face, extracted_faces, frame_numbers)))
         return cropped_faces, aligned_bboxes, rotation_matrices
     
     def gen_data_video_mode(self, cropped_faces_batch, mel_batch):

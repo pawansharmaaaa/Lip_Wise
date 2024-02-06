@@ -137,6 +137,10 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
             processed_ready = helper.paste_back_black_bg(processed_face, aligned_bbox, frame)
             ready_to_paste = helper.unwarp_align(processed_ready, rotation_matrix)
             final = helper.paste_back(ready_to_paste, frame, mask, inv_mask, center)
+
+            # Upscale background
+            if upscale_bg:
+                final, _ = ml.restore_background(final, bgupscaler, tile=0, outscale=1.0, half=False)
             
             # Write each processed face to `out`
             out.write(final)
