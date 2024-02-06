@@ -172,7 +172,7 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
         audio_path = os.path.join(MEDIA_DIRECTORY, 'aud_input.wav')
 
     # Create media_preprocess object and helper object
-    processor = pmp.model_processor(padding=pad)
+    processor = pmp.ModelProcessor(padding=pad)
 
     # Get face landmarks
     print("Getting face landmarks...")
