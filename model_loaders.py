@@ -55,22 +55,22 @@ class ModelLoader:
             warnings.warn("YAVU uses RealESRGAN for backgound upscaling and it's inference is really slow on CPU. Please consider using GPU.")
             bg_upsampler = None
         else:
-            if self.model_name == 'RealESRGAN_x4plus':  # x4 RRDBNet model
+            if model_name == 'RealESRGAN_x4plus':  # x4 RRDBNet model
                 model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
                 netscale = 4
-            elif self.model_name == 'RealESRNet_x4plus':  # x4 RRDBNet model
+            elif model_name == 'RealESRNet_x4plus':  # x4 RRDBNet model
                 model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
                 netscale = 4
-            elif self.model_name == 'RealESRGAN_x4plus_anime_6B':  # x4 RRDBNet model with 6 blocks
+            elif model_name == 'RealESRGAN_x4plus_anime_6B':  # x4 RRDBNet model with 6 blocks
                 model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=6, num_grow_ch=32, scale=4)
                 netscale = 4
-            elif self.model_name == 'RealESRGAN_x2plus':  # x2 RRDBNet model
+            elif model_name == 'RealESRGAN_x2plus':  # x2 RRDBNet model
                 model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
                 netscale = 2
-            elif self.model_name == 'realesr-animevideov3':  # x4 VGG-style model (XS size)
+            elif model_name == 'realesr-animevideov3':  # x4 VGG-style model (XS size)
                 model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=16, upscale=4, act_type='prelu')
                 netscale = 4
-            elif self.model_name == 'realesr-general-x4v3':  # x4 VGG-style model (S size)
+            elif model_name == 'realesr-general-x4v3':  # x4 VGG-style model (S size)
                 model = SRVGGNetCompact(num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=32, upscale=4, act_type='prelu')
                 netscale = 4
 
