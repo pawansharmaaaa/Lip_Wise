@@ -140,7 +140,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
 
             # Upscale background
             if upscale_bg:
-                final, _ = ml.restore_background(final, bgupscaler, tile=0, outscale=1.0, half=False)
+                final, _ = ml.restore_background(final, bgupscaler, tile=400, outscale=1.0, half=False)
             
             # Write each processed face to `out`
             out.write(final)
@@ -304,7 +304,7 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
             print(f"Writing batch no: {batch_no} out of total {est_total_batches} batches.")
             for frame in frames:
                 if upscale_bg:
-                    frame, _ = ml.restore_background(frame, bgupscaler, tile=0, outscale=1.0, half=False)
+                    frame, _ = ml.restore_background(frame, bgupscaler, tile=400, outscale=1.0, half=False)
                 writer.write(frame)
             batch_no += 1
             p_bar.__call__((batch_no, est_total_batches))
