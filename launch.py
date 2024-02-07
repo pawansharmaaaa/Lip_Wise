@@ -40,7 +40,7 @@ inputs_for_video = [
     gr.Number(value=16, label="Mel Step Size", interactive=False),
     gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.3, label="Weight"),
     gr.Checkbox(label = "Upscale Background with REALESRGAN", value=False),
-    gr.Dropdown(choices=bg_upscalers, label="REALESRGAN Model", value="RealESRGAN_x4plus")
+    gr.Dropdown(choices=bg_upscalers, label="REALESRGAN Model", value="RealESRGAN_x2plus")
 ]
 output_for_video = gr.Video(sources='upload', label="Output")
 
