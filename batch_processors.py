@@ -17,13 +17,6 @@ class BatchProcessors:
 
         self.npy_directory = file_check.NPY_FILES_DIR
         self.weights_directory = file_check.WEIGHTS_DIR
-        self.video_landmarks_path = os.path.join(self.npy_directory,'video_landmarks.npy')
-
-        try:
-            self.landmarks_all = np.load(self.video_landmarks_path)
-        except FileNotFoundError as e:
-            print("Video landmarks were not saved. Please report this issue.")
-            exit(1)
 
         self.helper = preprocess_mp.FaceHelpers()
 
