@@ -141,7 +141,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
             if upscale_bg:
                 final, _ = ml.restore_background(final, bgupscaler, tile=400, outscale=1.0, half=False)
 
-            out.write(frame)
+            out.write(final)
                 
     out.release()
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, file_name)}"
