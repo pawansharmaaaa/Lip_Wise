@@ -114,6 +114,12 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     # Initialize video writer
     out = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
+    # Initialize Batch Processors
+    bp = batch_processors.BatchProcessors()
+
+    # Partial Functions for Batch Processing
+    
+
     print("Processing.....")
     # Feed to model:
     for (img_batch, mel_batch) in gr.Progress(track_tqdm=True).tqdm(gen, total=len(mel_chunks)):
@@ -131,19 +137,30 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
         elif face_restorer == 'GFPGAN':
             with ThreadPoolExecutor() as executor:
                 restored_faces = list(executor.map(ml.restore_wGFPGAN, dubbed_faces))
-        
-        for face in restored_faces:
-            processed_face = cv2.resize(face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
-            processed_ready = helper.paste_back_black_bg(processed_face, aligned_bbox, frame)
-            ready_to_paste = helper.unwarp_align(processed_ready, rotation_matrix)
-            final = helper.paste_back(ready_to_paste, frame, mask, inv_mask, center)
 
-            # Upscale background
+        processed_faces = bp.part_face_resize_batch(restored_faces, cropped_face)
+        processed_ready = bp.part_paste_back_black_bg_batch(processed_faces, aligned_bbox, frame)
+        ready_to_paste = bp.part_unwarp_align_batch(processed_ready, rotation_matrix)
+        final = bp.part_paste_back_batch(ready_to_paste, frame, mask, inv_mask, center)
+
+        for frame in final:
             if upscale_bg:
-                final, _ = ml.restore_background(final, bgupscaler, tile=400, outscale=1.0, half=False)
+                frame, _ = ml.restore_background(frame, bgupscaler, tile=400, outscale=1.0, half=False)
+            out.write(frame)
+
+        
+        # for face in restored_faces:
+        #     processed_face = cv2.resize(face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
+        #     processed_ready = helper.paste_back_black_bg(processed_face, aligned_bbox, frame)
+        #     ready_to_paste = helper.unwarp_align(processed_ready, rotation_matrix)
+        #     final = helper.paste_back(ready_to_paste, frame, mask, inv_mask, center)
+
+        #     # Upscale background
+        #     if upscale_bg:
+        #         final, _ = ml.restore_background(final, bgupscaler, tile=400, outscale=1.0, half=False)
             
-            # Write each processed face to `out`
-            out.write(final)
+        #     # Write each processed face to `out`
+        #     out.write(final)
         
     out.release()
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, 'output.mp4')}"

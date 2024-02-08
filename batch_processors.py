@@ -93,3 +93,30 @@ class BatchProcessors:
         with ThreadPoolExecutor() as executor:
             pasted_faces = list(executor.map(self.helper.paste_back, ready_to_paste, frame_batch, face_masks, inv_masks, centers))
         return pasted_faces
+    
+    # Partial Functions:
+    def part_face_resize_batch(self, restored_faces, cropped_face):
+        
+        height, width = cropped_face.shape[:2]
+        resizer_partial = partial(cv2.resize, dsize=(width,height),interpolation=cv2.INTER_LANCZOS4)
+        with ThreadPoolExecutor() as executor:
+            resized_restored_faces = list(executor.map(resizer_partial, restored_faces))
+        return resized_restored_faces
+
+    def part_paste_back_black_bg_batch(self, processed_face_batch, aligned_bbox, frame):
+        func = partial(self.helper.paste_back_black_bg, aligned_bbox=aligned_bbox, full_frame=frame)
+        with ThreadPoolExecutor() as executor:
+            pasted_ready_faces = list(executor.map(func, processed_face_batch))
+        return pasted_ready_faces
+    
+    def part_unwarp_align_batch(self, pasted_ready_faces, rotation_matrix):
+        func = partial(self.helper.unwarp_align, rotation_matrix=rotation_matrix)
+        with ThreadPoolExecutor() as executor:
+            ready_to_paste = list(executor.map(func, pasted_ready_faces))
+        return ready_to_paste
+    
+    def part_paste_back_batch(self, ready_to_paste, frame, face_mask, inv_mask, center):
+        func = partial(self.helper.paste_back, original_img=frame, face_mask=face_mask, inv_mask=inv_mask, center=center)
+        with ThreadPoolExecutor() as executor:
+            pasted_faces = list(executor.map(func, ready_to_paste))
+        return pasted_faces
