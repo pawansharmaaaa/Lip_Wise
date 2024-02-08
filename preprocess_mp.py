@@ -588,7 +588,7 @@ class FaceHelpers:
         return ready_to_paste
 
 
-    def paste_back(self, ready_to_paste, original_img, face_mask, inv_half_mask, center):
+    def paste_back(self, ready_to_paste, original_img, face_mask, inv_mask, center):
         """
         Pastes the face back on the background.
 
@@ -602,7 +602,7 @@ class FaceHelpers:
         # print("Pasting face back...")
         try:
             # Remove the face from the background
-            # inv_half_mask = inv_mask.copy()
+            inv_half_mask = inv_mask.copy()
             inv_half_mask[:center[1], :] = 255
             background = cv2.bitwise_and(original_img, original_img, mask=inv_half_mask)
 
