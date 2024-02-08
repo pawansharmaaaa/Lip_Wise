@@ -13,20 +13,12 @@ import preprocess_mp
 import file_check
 
 class BatchProcessors:
-    def __init__(self):
+    def __init__(self, image_mode=False):
 
         self.npy_directory = file_check.NPY_FILES_DIR
         self.weights_directory = file_check.WEIGHTS_DIR
-        self.video_landmarks_path = os.path.join(self.npy_directory,'video_landmarks.npy')
-
-        try:
-            self.landmarks_all = np.load(self.video_landmarks_path)
-        except FileNotFoundError as e:
-            print("Video landmarks were not saved. Please report this issue.")
-            exit(1)
-
-        self.helper = preprocess_mp.FaceHelpers()
-
+        
+        self.helper = preprocess_mp.FaceHelpers(image_mode=image_mode)
 
     def extract_face_batch(self, frame_batch, frame_numbers):
         with ThreadPoolExecutor() as executor:

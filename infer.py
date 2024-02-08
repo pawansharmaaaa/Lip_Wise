@@ -83,6 +83,8 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
       frame = cv2.imread(frame_path)
     height, width, _ = frame.shape
 
+    file_name = os.path.basename(frame_path).split('.')[0] + '_output.mp4'
+
     # Get face landmarks
     print("Getting face landmarks...")
     processor.detect_for_image(frame.copy())
@@ -97,8 +99,6 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     # Warp, Crop and Align face
     print("Warping, cropping and aligning face...")
     cropped_face, aligned_bbox, rotation_matrix = helper.align_crop_face(extracted_face=extracted_face)
-
-    # Store cropped face's height and width
     cropped_face_height, cropped_face_width, _ = cropped_face.shape
 
     # Generate data for inference
@@ -131,27 +131,25 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
         elif face_restorer == 'GFPGAN':
             with ThreadPoolExecutor() as executor:
                 restored_faces = list(executor.map(ml.restore_wGFPGAN, dubbed_faces))
-        
+
         for face in restored_faces:
             processed_face = cv2.resize(face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
             processed_ready = helper.paste_back_black_bg(processed_face, aligned_bbox, frame)
             ready_to_paste = helper.unwarp_align(processed_ready, rotation_matrix)
             final = helper.paste_back(ready_to_paste, frame, mask, inv_mask, center)
 
-            # Upscale background
             if upscale_bg:
                 final, _ = ml.restore_background(final, bgupscaler, tile=400, outscale=1.0, half=False)
-            
-            # Write each processed face to `out`
+
             out.write(final)
-        
+                
     out.release()
-    command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, 'output.mp4')}"
+    command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, file_name)}"
     subprocess.call(command, shell=platform.system() != 'Windows')
 
-    print("Done! Check output.mp4 in output directory.")
+    print(f"Done! Check {file_name} in output directory.")
 
-    return os.path.join(OUTPUT_DIRECTORY, 'output.mp4')
+    return os.path.join(OUTPUT_DIRECTORY, file_name)
 
 ################################################## VIDEO INFERENCE ##################################################
 
@@ -193,6 +191,8 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
 
     # Load video
     video = cv2.VideoCapture(video_path)
+    
+    file_name = os.path.basename(video_path).split('.')[0] + '_output.mp4'
 
     # Get video properties
     fps = video.get(cv2.CAP_PROP_FPS)
@@ -318,7 +318,7 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
     video.release()
     writer.release()
 
-    command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, 'output.mp4')}"
+    command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, file_name)}"
     subprocess.call(command, shell=platform.system() != 'Windows')
 
-    return os.path.join(OUTPUT_DIRECTORY, 'output.mp4')
+    return os.path.join(OUTPUT_DIRECTORY, file_name)
