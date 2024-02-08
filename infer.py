@@ -151,7 +151,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, file_name)}"
     subprocess.call(command, shell=platform.system() != 'Windows')
 
-    print("Done! Check output.mp4 in output directory.")
+    print("Done! Check {file_name} in output directory.")
 
     return os.path.join(OUTPUT_DIRECTORY, file_name)
 
