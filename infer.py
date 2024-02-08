@@ -116,6 +116,9 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     # Initialize Batch Processors
     bp = batch_processors.BatchProcessors(image_mode=True)
 
+    # Init Partial Functions
+    bp.create_partial_functions(cropped_face, aligned_bbox, frame.copy(), rotation_matrix, mask, inv_mask, center)
+
     print("Processing.....")
     # Feed to model:
     for (img_batch, mel_batch) in gr.Progress(track_tqdm=True).tqdm(gen, total=len(mel_chunks)):
