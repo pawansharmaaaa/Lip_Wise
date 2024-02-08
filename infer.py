@@ -100,9 +100,6 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     print("Warping, cropping and aligning face...")
     cropped_face, aligned_bbox, rotation_matrix = helper.align_crop_face(extracted_face=extracted_face)
 
-    # Store cropped face's height and width
-    cropped_face_height, cropped_face_width, _ = cropped_face.shape
-
     # Generate data for inference
     print("Generating data for inference...")
     gen = helper.gen_data_image_mode(cropped_face, mel_chunks)
