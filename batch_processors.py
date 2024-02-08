@@ -13,12 +13,12 @@ import preprocess_mp
 import file_check
 
 class BatchProcessors:
-    def __init__(self):
+    def __init__(self, image_mode=False):
 
         self.npy_directory = file_check.NPY_FILES_DIR
         self.weights_directory = file_check.WEIGHTS_DIR
-
-        self.helper = preprocess_mp.FaceHelpers()
+        
+        self.helper = preprocess_mp.FaceHelpers(image_mode=image_mode)
 
 
     def extract_face_batch(self, frame_batch, frame_numbers):

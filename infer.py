@@ -115,10 +115,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     out = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
     # Initialize Batch Processors
-    bp = batch_processors.BatchProcessors()
-
-    # Partial Functions for Batch Processing
-    
+    bp = batch_processors.BatchProcessors(image_mode=True)
 
     print("Processing.....")
     # Feed to model:
