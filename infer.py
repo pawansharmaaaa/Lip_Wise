@@ -114,9 +114,6 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     # Initialize video writer
     out = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
-    # Initialize Batch Processors
-    bp = batch_processors.BatchProcessors(image_mode=True)
-
     print("Processing.....")
     # Feed to model:
     for (img_batch, mel_batch) in gr.Progress(track_tqdm=True).tqdm(gen, total=len(mel_chunks)):
