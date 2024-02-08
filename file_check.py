@@ -25,7 +25,6 @@ REAL_ESRGAN_MODEL_URL = {
 
 CURRENT_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
-RESULTS_DIR = os.path.join(CURRENT_FILE_DIRECTORY, 'results')
 WEIGHTS_DIR = os.path.join(CURRENT_FILE_DIRECTORY, 'weights')
 MP_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'mp')
 GFPGAN_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'gfpgan')
