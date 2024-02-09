@@ -618,7 +618,8 @@ class FaceHelpers:
             del lower_jaw
 
             # Blend the face with the background
-            final_blend = cv2.seamlessClone(result, original_img, face_mask, center, cv2.NORMAL_CLONE)
+            flags = int(cv2.NORMAL_CLONE*0.5) | int(cv2.MIXED_CLONE*0.5)
+            final_blend = cv2.seamlessClone(result, original_img, face_mask, center, flags=flags)
         except IndexError as e:
             print(f"Failed to paste face back onto background: {e}")
             print(f"Saving the frame for manual inspection.")
