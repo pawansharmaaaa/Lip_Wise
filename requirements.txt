@@ -11,3 +11,4 @@ realesrgan
 mediapipe
 gradio
 gdown
+ipywidgets
