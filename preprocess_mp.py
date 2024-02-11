@@ -606,7 +606,8 @@ class FaceHelpers:
             inv_half_mask[:center[1], :] = 255
             background = cv2.bitwise_and(original_img, original_img, mask=inv_half_mask)
 
-            lower_jaw = cv2.bitwise_and(ready_to_paste, ready_to_paste, mask=cv2.bitwise_not(inv_half_mask))
+            half_mask = cv2.bitwise_not(inv_half_mask)
+            lower_jaw = cv2.bitwise_and(ready_to_paste, ready_to_paste, mask=half_mask)
             
             del ready_to_paste
             del inv_half_mask
