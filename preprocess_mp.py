@@ -624,7 +624,23 @@ class FaceHelpers:
             # original_img = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
             half_mask = cv2.erode(half_mask, (15, 15), iterations=50)
             half_mask = cv2.GaussianBlur(half_mask, (15, 15), 50)
-            final_blend = cv2.seamlessClone(result, original_img, half_mask, (center[0],center[2]), flags=cv2.NORMAL_CLONE)
+
+            # Assuming 'mask' is your binary mask
+            contours, _ = cv2.findContours(half_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            # Assuming you want the center of the largest contour
+            largest_contour = max(contours, key=cv2.contourArea)
+
+            # Calculate the bounding rectangle
+            x, y, w, h = cv2.boundingRect(largest_contour)
+
+            # Calculate the center of the bounding rectangle
+            center_x = x + w // 2
+            center_y = y + h // 2
+
+            center_2 = (center_x, center_y)
+
+            final_blend = cv2.seamlessClone(result, original_img, half_mask, center_2, flags=cv2.NORMAL_CLONE)
             # final_blend = cv2.cvtColor(final_blend, cv2.COLOR_RGB2BGR)
         except IndexError as e:
             print(f"Failed to paste face back onto background: {e}")
