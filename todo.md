@@ -1,1 +1,1 @@
-- [ ]Change mask in seamless clone and give it a try
+- [ ] Change mask in seamless clone and give it a try
