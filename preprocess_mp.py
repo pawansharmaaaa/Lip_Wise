@@ -350,7 +350,7 @@ class FaceHelpers:
 
         # Get the bounding box and center from hull
         bbox = cv2.boundingRect(hull)
-        center = (bbox[0] + bbox[2]//2, bbox[1] + bbox[3]//2)
+        center = (bbox[0] + bbox[2]//2, bbox[1] + bbox[3]//2, bbox[1] + (3*(bbox[3]//4)))
 
         # Generate face mask
         mask = np.zeros((dim.height, dim.width), dtype=np.uint8)
@@ -619,7 +619,10 @@ class FaceHelpers:
 
             # Blend the face with the background
             # flags = int(cv2.NORMAL_CLONE*0.5) | int(cv2.MIXED_CLONE*0.5)
-            final_blend = cv2.seamlessClone(result, original_img, face_mask, center, flags=cv2.NORMAL_CLONE)
+            result = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
+            original_img = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
+            final_blend = cv2.seamlessClone(result, original_img, face_mask, (center[0],center[2]), flags=cv2.NORMAL_CLONE)
+            final_blend = cv2.cvtColor(final_blend, cv2.COLOR_RGB2BGR)
         except IndexError as e:
             print(f"Failed to paste face back onto background: {e}")
             print(f"Saving the frame for manual inspection.")
