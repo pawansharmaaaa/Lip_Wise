@@ -619,10 +619,12 @@ class FaceHelpers:
 
             # Blend the face with the background
             # flags = int(cv2.NORMAL_CLONE*0.5) | int(cv2.MIXED_CLONE*0.5)
-            result = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
-            original_img = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
-            final_blend = cv2.seamlessClone(result, original_img, face_mask, (center[0],center[2]), flags=cv2.NORMAL_CLONE)
-            final_blend = cv2.cvtColor(final_blend, cv2.COLOR_RGB2BGR)
+            # result = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
+            # original_img = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
+            half_mask = cv2.erode(half_mask, (15, 15), iterations=50)
+            half_mask = cv2.GaussianBlur(half_mask, (15, 15), 50)
+            final_blend = cv2.seamlessClone(result, original_img, half_mask, (center[0],center[2]), flags=cv2.NORMAL_CLONE)
+            # final_blend = cv2.cvtColor(final_blend, cv2.COLOR_RGB2BGR)
         except IndexError as e:
             print(f"Failed to paste face back onto background: {e}")
             print(f"Saving the frame for manual inspection.")
