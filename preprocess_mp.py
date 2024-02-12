@@ -639,16 +639,8 @@ class FaceHelpers:
             center_y = y + h // 2
 
             center_2 = (center_x, center_y)
-            # Use dilation to expand the ROI
-            dilated = cv2.dilate(half_mask, np.ones((5,5), np.uint8), iterations=1)
 
-            # Use erosion to shrink the ROI back down
-            eroded = cv2.erode(dilated, np.ones((5,5), np.uint8), iterations=1)
-
-            # Subtract the eroded image from the dilated image to get only the edges
-            edges = cv2.subtract(dilated, eroded)
-
-            final_blend = cv2.seamlessClone(result, original_img, edges, center_2, flags=cv2.NORMAL_CLONE)
+            final_blend = cv2.seamlessClone(result, original_img, half_mask, center_2, flags=cv2.NORMAL_CLONE)
             # final_blend = cv2.cvtColor(final_blend, cv2.COLOR_RGB2BGR)
         except IndexError as e:
             print(f"Failed to paste face back onto background: {e}")
