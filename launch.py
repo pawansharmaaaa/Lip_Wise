@@ -64,7 +64,7 @@ def render_weight(face_restorer):
 with gr.Blocks(title='Lip-Wise', theme=theme) as ui:
     gr.Markdown('''
         <div style="display: flex; justify-content: center;">
-            <img src = "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/cca4987a-18e5-49f1-9eba-710f3c0655a7">
+            <img src = "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/cca4987a-18e5-49f1-9eba-710f3c0655a7" style="max-width: 50%; max-height: 40%;">
         </div>
         ''')
     with gr.Tab(label="Process Image"):
