@@ -157,6 +157,14 @@ input[type="number"].svelte-3iwdd6 {
     border-style: none;
 }
 
+/* Dropdown fallback Colab */
+.container.svelte-vomtxz .wrap.svelte-vomtxz {
+    background-image: var(--primary_input);
+    border-radius: 8px 8px 8px 8px;
+    padding: 0%;
+    border-style: none;
+}
+
 /* Guide accordian */
 .guide {
     background-image: var(--back_gradient_dark);

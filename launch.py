@@ -55,7 +55,7 @@ def render_weight(face_restorer):
                             minimum=0.0,
                             maximum=1.0,
                             step=0.1,
-                            value=0.3,
+                            value=0.6,
                             label="CodeFormer Weight",
                             info="0 for better quality, 1 for better identity."
                         )
@@ -108,7 +108,7 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
                         with gr.Row():
                             with gr.Column():
                                 mel_step_size = gr.Number(value=16, label="Mel Step Size", interactive=False, visible=False)
-                                weight = render_weight(face_restorer)
+                                weight = gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.6, label="CodeFormer Weight", info="0 for better quality, 1 for better identity.")
                                 upscale_bg.select(render_dd, upscale_bg, bg_model)
                                 face_restorer.select(render_weight, face_restorer, weight)
                 
@@ -136,7 +136,7 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
                             padding = gr.Slider(minimum=0, maximum=60, step=1, value=0, label="Padding", info="Increase if getting black outlines. The Value is in Pixels.")
                             face_restorer = gr.Radio(["GFPGAN", "CodeFormer"], value='CodeFormer', label="Face Restorer", info="GFPGAN is faster, but CodeFormer is more accurate.")
                             mel_step_size = gr.Number(value=16, label="Mel Step Size", interactive=False, visible=False)
-                            weight = render_weight(face_restorer)
+                            weight = gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.6, label="CodeFormer Weight", info="0 for better quality, 1 for better identity.")
                         with gr.Column():
                             upscale_bg = gr.Checkbox(label = "Upscale Background with REALESRGAN", value=False, info="This will improve the quality of the video, but will take longer to process.")
                             bg_model = gr.Dropdown(choices=bg_upscalers, label="REALESRGAN Model", value="RealESRGAN_x2plus", info="Choose the model to use for upscaling the background.", visible=False)
@@ -148,7 +148,7 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
 
             with gr.Column():
                 gr.Markdown("# OUTPUT")
-                video_output = gr.Video(sources='upload', label="Output")
+                video_output = gr.Video(sources='upload', label="Output", elem_classes=["output"])
 
                 process.click(infer.infer_video, [video_input, audio_input, padding, face_restorer, mel_step_size, weight, upscale_bg, bg_model], [video_output])
 
