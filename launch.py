@@ -23,7 +23,6 @@ theme = gr.themes.Base(
     spacing_size="md",
     radius_size="lg",
 ).set(
-    font_family="JetBrains Mono, sans-serif",
     shadow_drop='*shadow_inset',
     shadow_drop_lg='*button_shadow_hover',
     block_info_text_weight='500',
