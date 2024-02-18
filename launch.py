@@ -71,7 +71,7 @@ def render_weight(face_restorer):
 
 # Create interface
 
-with gr.Blocks(title='Lip-Wise', theme=theme, css = r"E:\Lip_Wise\style.css") as ui:
+with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as ui:
     with gr.Row(elem_classes=["row"]):
         gr.HTML(
             '''
