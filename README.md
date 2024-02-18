@@ -1,6 +1,6 @@
 <div style="display: flex; justify-content: space-between;">
     <img src = "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/cca4987a-18e5-49f1-9eba-710f3c0655a7"></img>
-    <img src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/50965e59-ca49-4841-97c1-9598ed8cdeeb"><img>
+    <img src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5bc1b8af-879a-414b-b54a-db605a53c8f7"><img>
 </div>
 
 > [!IMPORTANT]
