@@ -121,7 +121,7 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
 
                 process.click(infer.infer_image, [image_input, audio_input, padding, alignment, face_restorer, fps, mel_step_size, weight, upscale_bg, bg_model], [image_output])
 
-    with gr.Tab(label="Process Video", elem_classes=["tabs"]):
+    with gr.Tab(label="Process Video", elem_id="tab", elem_classes=["tabs"]):
         with gr.Row(elem_classes=["row"]):
             with gr.Column():
                 gr.Markdown("# INPUTS")
@@ -152,7 +152,7 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
 
                 process.click(infer.infer_video, [video_input, audio_input, padding, face_restorer, mel_step_size, weight, upscale_bg, bg_model], [video_output])
 
-    with gr.Tab(label="Guide", elem_classes=["tabs"]):
+    with gr.Tab(label="Guide", elem_id="tab", elem_classes=["tabs"]):
         with gr.Accordion(label="Tips For Better Results", open=True, elem_classes=["guide"]):
             gr.Markdown(
             """
