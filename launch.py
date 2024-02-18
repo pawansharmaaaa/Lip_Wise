@@ -126,7 +126,7 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
             with gr.Column():
                 gr.Markdown("# INPUTS")
                 
-                with gr.Group():
+                with gr.Accordion("Input Video and Audio", open=True, elem_classes=["inp_group", "accordion"]):
                     video_input = gr.Video(sources='upload',label="Video")
                     audio_input = gr.Audio(type="filepath", label="Audio")
                 
