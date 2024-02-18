@@ -61,7 +61,7 @@ def render_weight(face_restorer):
 
 # Create interface
 
-with gr.Blocks(title='Lip-Wise', theme=theme) as ui:
+with gr.Blocks(title='Lip-Wise', theme=theme, css = r"E:\Lip_Wise\style.css") as ui:
     gr.Markdown('''
         <div style="display: flex; justify-content: center;">
             <img src = "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/cca4987a-18e5-49f1-9eba-710f3c0655a7" style="max-width: 50%; max-height: 40%;">
@@ -69,7 +69,7 @@ with gr.Blocks(title='Lip-Wise', theme=theme) as ui:
         ''')
     with gr.Tab(label="Process Image"):
         with gr.Row():
-            with gr.Column():
+            with gr.Column(elem_classes=["col", "image-process"]):
                 gr.Markdown("# INPUTS")
                 with gr.Group():
                     image_input = gr.Image(type="filepath", label="Image", container=True)
@@ -125,7 +125,7 @@ with gr.Blocks(title='Lip-Wise', theme=theme) as ui:
                             upscale_bg.select(render_dd, upscale_bg, bg_model)
                             face_restorer.select(render_weight, face_restorer, weight)
                     
-                process = gr.Button(value="Process Video", variant="primary")
+                process = gr.Button(value="Process Video", variant="primary", elem_id="gen-button")
 
             with gr.Column():
                 gr.Markdown("# OUTPUT")

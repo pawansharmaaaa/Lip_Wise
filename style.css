@@ -1,0 +1,215 @@
+/* Title */
+
+.title body {
+    display: grid;
+    place-items: center;
+    min-height: 20vh;
+    background: linear-gradient(to right, #ff0000, #00B053, #1BAADA);
+}
+
+.title h1 {
+    font-size: 2rem;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: white;
+    -webkit-text-fill-color: white;
+    text-shadow: hsla(0, 85%, 79%, 0.747) 0 1px 30px;
+    place-items: center;
+    text-align: center;
+}
+
+.title h1:hover {
+    text-shadow: rgba(80, 63, 205, 1) 0 1px 30px;
+    filter: drop-shadow(10px 0px 10px rgba(0, 0, 0, 0.5));
+}
+
+@keyframes move-bg {
+    to {
+      background-position: var(--bg-size) 0;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .tiltle h1{
+      animation: move-bg 8s linear infinite;
+    }
+}
+
+/* Tab button */
+.tabs{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px 8px 8px 8px;
+    border-style: none;
+    background-color: #4d4855;
+    background: #0F2027;
+    background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);
+    background: radial-gradient( circle farthest-corner at -4% -12.9%,  rgb(32, 46, 54) 0.3%, rgba(30,33,48,1) 90.2% );
+}
+
+.tabs:hover{
+    box-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
+    transition-duration: .5s;
+}
+
+#tab-button{
+    border-radius: 8px 8px 8px 8px;
+    margin: 5px 5px 5px 5px;
+    border-style: none;
+    box-sizing: border-box;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-family: "JetBrains Mono","Inter UI","SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    height: 4rem;
+    padding: 0 1.6rem;
+    text-align: center;
+    text-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
+    transition: all .5s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+#tab-button:hover {
+    /* background: linear-gradient(315deg, #090947 0%, #5a585a 74%); */
+    box-shadow: #503fcd80 0 1px 30px;
+    transition-duration: .1s;
+}
+
+/* rows */
+.row {
+    font-family: 'JetBrains Mono', 'sans-serif';
+}
+
+.tabs h1{
+    font-size: 2rem;
+    color: rgb(158, 42, 42);
+    -webkit-text-fill-color: white;
+    text-shadow: hsla(0, 85%, 79%, 0.747) 0 1px 30px;
+    place-items: center;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.accordion {
+    /* background-color: #4d4855; */
+    background-image: radial-gradient( circle farthest-corner at -4% -12.9%,  rgb(32, 46, 54) 0.3%, rgba(30,33,48,1) 90.2% );
+    border-radius: 8px 8px 8px 8px;
+}
+
+.accordion .block {
+    background-color: #4d4855;
+    border-radius: auto;
+}
+
+/* Standard Button */
+#gen-button {
+    /* background-image: linear-gradient(92.88deg, #455EB5 9.16%, #5643CC 43.89%, #673FD7 64.72%); */
+    /* background-image: linear-gradient(to right, #2C5364, #203A43, #0F2027); */
+    background-image: linear-gradient(315deg, #8d86a9 0%, #e01c34 74%);
+    border-radius: 8px;
+    border-style: none;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-family: "JetBrains","Inter UI","SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    height: 4rem;
+    padding: 0 1.6rem;
+    text-align: center;
+    text-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
+    transition: all .5s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+#gen-button:hover {
+    box-shadow: rgba(80, 63, 205, 0.5) 0 1px 30px;
+    transition-duration: .1s;
+}
+
+@media (min-width: 768px) {
+    #gen-button {
+        padding: 0 2.6rem;
+    }
+}
+
+/* Slider Color */
+input[type="range"].svelte-3iwdd6 {
+    background-image: linear-gradient(to right, #2C5364, #203A43, #0F2027);
+}
+/* Checked Box Color */
+input.svelte-3pzdsv.svelte-3pzdsv.svelte-3pzdsv:checked, input.svelte-3pzdsv.svelte-3pzdsv.svelte-3pzdsv:checked:hover, input.svelte-3pzdsv.svelte-3pzdsv.svelte-3pzdsv:checked:focus {
+    background-color: linear-gradient(to right, #2C5364, #203A43, #0F2027);
+    border-color: #4d4855;
+    box-shadow: rgba(80, 63, 205, 0.5) 0 1px 30px;
+}
+
+/* Radio Button Color */
+input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j {
+    background-color: linear-gradient(to right, #2C5364, #203A43, #0F2027);
+    border-color: #4d4855;
+    box-shadow: rgba(80, 63, 205, 0.5) 0 1px 30px;
+}
+input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j:checked, input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j:checked:hover, input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j:checked:focus {
+    background-color: linear-gradient(to right, #2C5364, #203A43, #0F2027);
+    border-color: #4d4855;
+    box-shadow: rgba(80, 63, 205, 0.5) 0 1px 30px;
+}
+
+/* Radio span */
+label.svelte-1mhtq7j {
+    background-image: linear-gradient(to right, #2C5364, #203A43, #0F2027);
+    border-radius: 8px 8px 8px 8px;
+}
+
+/* Output */
+.output {
+    font-family: 'JetBrains Mono', 'sans-serif';
+    background-image: radial-gradient( circle farthest-corner at -4% -12.9%,  rgb(32, 46, 54) 0.3%, rgba(30,33,48,1) 90.2% );
+}
+
+blockquote {
+    font-family: 'JetBrains Mono', 'sans-serif';
+    margin: 8px 0 8px 0;
+    padding: 8px 16px 8px 16px;
+    border-radius: 8px 8px 8px 8px;
+    background-image: radial-gradient( circle farthest-corner at -4% -12.9%,  rgb(32, 46, 54) 0.3%, rgba(30,33,48,1) 90.2% );
+}
+
+/* accordian-outer */
+.guide.block.svelte-90oupt {
+    background-image: radial-gradient( circle farthest-corner at -4% -12.9%,  rgb(32, 46, 54) 0.3%, rgba(30,33,48,1) 90.2% );
+    border-radius: 8px 8px 8px 8px;
+}
+
+.gradio-container {
+    display: flex;
+    background: transparent;
+    /* background-image: background-color: #0cbaba; */
+    /* background-image: linear-gradient(315deg, #0cbaba 0%, #380036 74%); */
+}
+
+/* Gradio Content */
+.app.svelte-182fdeq.svelte-182fdeq {
+    padding: 16px 16px 16px 16px;
+}
+
+/* Gradio Content */
+.tabs {
+    /* background: radial-gradient( circle farthest-corner at -4% -12.9%,  rgb(32, 46, 54) 0.3%, rgba(30,33,48,1) 90.2% ); */
+    background: transparent;
+    border-style: hidden;
+}
+
+#tab-button.selected {
+    background: rgba(0, 0, 0, 0.25);
+    transition-duration: .1s;
+}
