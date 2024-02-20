@@ -3,10 +3,12 @@
 import cv2
 import math
 import os, sys
-import file_check
+
+from helpers import file_check
 
 import mediapipe as mp
 import numpy as np
+
 
 class FrameDimensions:
     _instance = None

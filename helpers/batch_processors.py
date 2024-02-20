@@ -9,8 +9,8 @@ import numpy as np
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 
-import preprocess_mp
-import file_check
+from helpers import preprocess_mp
+from helpers import file_check
 
 class BatchProcessors:
     def __init__(self, image_mode=False):

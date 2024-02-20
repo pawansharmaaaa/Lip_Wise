@@ -5,7 +5,7 @@ import gradio as gr
 
 # Custom Modules
 import infer
-import file_check
+from helpers import file_check
 
 # Argument parser
 parser = argparse.ArgumentParser(description="Your description here")

@@ -23,7 +23,7 @@ REAL_ESRGAN_MODEL_URL = {
             'realesr-general-x4v3': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth'
         }
 
-CURRENT_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+CURRENT_FILE_DIRECTORY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CSS_FILE_PATH = os.path.join(CURRENT_FILE_DIRECTORY, 'style.css')
 
 WEIGHTS_DIR = os.path.join(CURRENT_FILE_DIRECTORY, 'weights')

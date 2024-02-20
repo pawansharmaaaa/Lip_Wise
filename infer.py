@@ -15,11 +15,11 @@ from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 
 # Custom Modules
-import audio
-import file_check
-import preprocess_mp as pmp
-import model_loaders
-import batch_processors
+from helpers import audio
+from helpers import file_check
+from helpers import preprocess_mp as pmp
+from helpers import model_loaders
+from helpers import batch_processors
 
 # Global Variables
 TEMP_DIRECTORY = file_check.TEMP_DIR
