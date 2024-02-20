@@ -35,4 +35,4 @@ REM Copy basicsr archs
 copy archs\* .lip-wise\Lib\site-packages\basicsr\archs
 
 REM Run file_check.py
-python file_check.py
+python .\helpers\file_check.py

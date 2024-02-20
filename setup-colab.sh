@@ -26,4 +26,4 @@ pip install --upgrade --no-cache-dir gdown
 cp archs/* /usr/local/lib/python3.10/dist-packages/basicsr/archs
 
 # Run file_check.py
-python file_check.py
+python ./helpers/file_check.py

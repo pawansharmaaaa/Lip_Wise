@@ -253,7 +253,7 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
     # Start image processing
     images = []
     batch_no = 0
-    est_total_batches = len(mel_chunks_batch)
+    est_total_batches = len(mel_chunks_batch) + 1
 
     p_bar = gr.Progress()
 
@@ -321,5 +321,6 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
 
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, file_name)}"
     subprocess.call(command, shell=platform.system() != 'Windows')
+    p_bar.__call__((est_total_batches, est_total_batches))
 
     return os.path.join(OUTPUT_DIRECTORY, file_name)
