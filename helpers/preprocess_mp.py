@@ -3,10 +3,12 @@
 import cv2
 import math
 import os, sys
-import file_check
+
+from helpers import file_check
 
 import mediapipe as mp
 import numpy as np
+
 
 class FrameDimensions:
     _instance = None
@@ -350,7 +352,7 @@ class FaceHelpers:
 
         # Get the bounding box and center from hull
         bbox = cv2.boundingRect(hull)
-        center = (bbox[0] + bbox[2]//2, bbox[1] + bbox[3]//2)
+        center = (bbox[0] + bbox[2]//2, bbox[1] + bbox[3]//2, bbox[1] + (3*(bbox[3]//4)))
 
         # Generate face mask
         mask = np.zeros((dim.height, dim.width), dtype=np.uint8)
@@ -606,7 +608,8 @@ class FaceHelpers:
             inv_half_mask[:center[1], :] = 255
             background = cv2.bitwise_and(original_img, original_img, mask=inv_half_mask)
 
-            lower_jaw = cv2.bitwise_and(ready_to_paste, ready_to_paste, mask=cv2.bitwise_not(inv_half_mask))
+            half_mask = cv2.bitwise_not(inv_half_mask)
+            lower_jaw = cv2.bitwise_and(ready_to_paste, ready_to_paste, mask=half_mask)
             
             del ready_to_paste
             del inv_half_mask
@@ -618,7 +621,29 @@ class FaceHelpers:
             del lower_jaw
 
             # Blend the face with the background
-            final_blend = cv2.seamlessClone(result, original_img, face_mask, center, flags=cv2.NORMAL_CLONE)
+            # flags = int(cv2.NORMAL_CLONE*0.5) | int(cv2.MIXED_CLONE*0.5)
+            # result = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
+            # original_img = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
+            half_mask = cv2.erode(half_mask, (15, 15), iterations=50)
+            half_mask = cv2.GaussianBlur(half_mask, (15, 15), 50)
+
+            # Assuming 'mask' is your binary mask
+            contours, _ = cv2.findContours(half_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            # Assuming you want the center of the largest contour
+            largest_contour = max(contours, key=cv2.contourArea)
+
+            # Calculate the bounding rectangle
+            x, y, w, h = cv2.boundingRect(largest_contour)
+
+            # Calculate the center of the bounding rectangle
+            center_x = x + w // 2
+            center_y = y + h // 2
+
+            center_2 = (center_x, center_y)
+
+            final_blend = cv2.seamlessClone(result, original_img, half_mask, center_2, flags=cv2.NORMAL_CLONE)
+            # final_blend = cv2.cvtColor(final_blend, cv2.COLOR_RGB2BGR)
         except IndexError as e:
             print(f"Failed to paste face back onto background: {e}")
             print(f"Saving the frame for manual inspection.")

@@ -1,6 +1,7 @@
 # This file is a part of https://github.com/pawansharmaaaa/Lip_Wise/ repository.
 
-import file_check
+from helpers import file_check
+
 import torch
 import cv2
 import os

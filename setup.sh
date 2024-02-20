@@ -37,4 +37,4 @@ pip install -r requirements.txt
 cp archs/* .lip-wise/lib/python3.10/site-packages/basicsr/archs/
 
 # Run file_check.py
-python file_check.py
+python ./helpers/file_check.py

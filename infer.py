@@ -15,11 +15,11 @@ from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 
 # Custom Modules
-import audio
-import file_check
-import preprocess_mp as pmp
-import model_loaders
-import batch_processors
+from helpers import audio
+from helpers import file_check
+from helpers import preprocess_mp as pmp
+from helpers import model_loaders
+from helpers import batch_processors
 
 # Global Variables
 TEMP_DIRECTORY = file_check.TEMP_DIR
@@ -144,6 +144,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
             out.write(final)
                 
     out.release()
+    del gen
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, file_name)}"
     subprocess.call(command, shell=platform.system() != 'Windows')
 
@@ -252,7 +253,7 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
     # Start image processing
     images = []
     batch_no = 0
-    est_total_batches = len(mel_chunks_batch)
+    est_total_batches = len(mel_chunks_batch) + 1
 
     p_bar = gr.Progress()
 
@@ -320,5 +321,6 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
 
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, file_name)}"
     subprocess.call(command, shell=platform.system() != 'Windows')
+    p_bar.__call__((est_total_batches, est_total_batches))
 
     return os.path.join(OUTPUT_DIRECTORY, file_name)
