@@ -134,7 +134,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
 
         for face in restored_faces:
             processed_face = cv2.resize(face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
-            processed_ready = helper.paste_back_black_bg(processed_face, aligned_bbox, frame)
+            processed_ready = helper.paste_back_black_bg(processed_face, aligned_bbox, frame, ml)
             ready_to_paste = helper.unwarp_align(processed_ready, rotation_matrix)
             final = helper.paste_back(ready_to_paste, frame, mask, inv_mask, center)
 
@@ -296,7 +296,7 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
                 
                 # Post processing
                 resized_restored_faces = bp.face_resize_batch(restored_faces, cropped_faces)
-                pasted_ready_faces = bp.paste_back_black_bg_batch(resized_restored_faces, aligned_bboxes, frames_to_input)
+                pasted_ready_faces = bp.paste_back_black_bg_batch(resized_restored_faces, aligned_bboxes, frames_to_input, ml)
                 ready_to_paste = bp.unwarp_align_batch(pasted_ready_faces, rotation_matrices)
                 restored_images = bp.paste_back_batch(ready_to_paste, frames_to_input, face_masks, inv_masks, centers)
 

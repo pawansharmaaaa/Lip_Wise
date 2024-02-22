@@ -71,9 +71,10 @@ class BatchProcessors:
             resized_restored_faces = list(executor.map(resizer_partial, restored_faces, size_batch))
         return resized_restored_faces
 
-    def paste_back_black_bg_batch(self, processed_face_batch, aligned_bboxes_batch, frame_batch):
+    def paste_back_black_bg_batch(self, processed_face_batch, aligned_bboxes_batch, frame_batch, ml):
+        paste_partial = partial(self.helper.paste_back_black_bg, ml=ml)
         with ThreadPoolExecutor() as executor:
-            pasted_ready_faces = list(executor.map(self.helper.paste_back_black_bg, processed_face_batch, aligned_bboxes_batch, frame_batch))
+            pasted_ready_faces = list(executor.map(paste_partial, processed_face_batch, aligned_bboxes_batch, frame_batch))
         return pasted_ready_faces
     
     def unwarp_align_batch(self, pasted_ready_faces, rotation_matrices):
