@@ -218,7 +218,7 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
                                         weight)
 
             process.click(infer.infer_image, 
-                            [image_input, audio_input, padding, alignment, face_restorer, fps, mel_step_size, weight, upscale_bg, bg_model], 
+                            [image_input, audio_input, padding, alignment, face_restorer, fps, mel_step_size, weight, upscale_bg, bg_model, gan],
                             [image_output])
 
     with gr.Tab(label="Process Video", elem_id="tab", elem_classes=["tabs"]):
