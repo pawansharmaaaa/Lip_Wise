@@ -28,6 +28,7 @@ NPY_FILES_DIRECTORY = file_check.NPY_FILES_DIR
 OUTPUT_DIRECTORY = file_check.OUTPUT_DIR
 
 #################################################### IMAGE INFERENCE ####################################################
+@torch.no_grad()
 def infer_image(frame_path, audio_path, pad, align_3d = False, 
                 face_restorer = 'CodeFormer', 
                 fps=30, 
@@ -176,6 +177,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False,
 
 ################################################## VIDEO INFERENCE ##################################################
 
+@torch.no_grad()
 def infer_video(video_path, audio_path, pad, 
                 face_restorer='CodeFormer',
                 mel_step_size=16, 

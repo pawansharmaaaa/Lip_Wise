@@ -150,12 +150,14 @@ class ModelLoader:
         model.load_state_dict(checkpoint)
         return model.eval()
     
+    @torch.no_grad()
     def restore_background(self, background, model_name, tile, outscale=1.0, half=False):
         bgupsampler = self.load_realesrgan_model(model_name, tile, half=False)
         if bgupsampler is not None:
             background = bgupsampler.enhance(background, outscale=outscale)
         return background
     
+    @torch.no_grad()
     def restore_wGFPGAN(self, dubbed_face):
         dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_LANCZOS4)
         dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
@@ -172,6 +174,7 @@ class ModelLoader:
         restored_face = restored_face.astype(np.uint8)
         return restored_face
     
+    @torch.no_grad()
     def restore_wRF(self, dubbed_face):
         dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_LANCZOS4)
         dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
@@ -188,6 +191,7 @@ class ModelLoader:
         restored_face = restored_face.astype(np.uint8)
         return restored_face
     
+    @torch.no_grad()
     def restore_wCodeFormer(self, dubbed_face):
         dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_LANCZOS4)
         dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
