@@ -27,11 +27,7 @@ class Total_stat:
 
     @mels.setter
     def mels(self, value):
-        if self._mels == 0:  # Allow setting only once
-            print(f"Setting mels to: {value}")
-            self._mels = value
-        else:
-            raise ValueError("mels has already been set")
+        self._mels = value
 
     @property
     def video_frames(self):
@@ -39,10 +35,7 @@ class Total_stat:
 
     @video_frames.setter
     def video_frames(self, value):
-        if self._video_frames == 0:  # Allow setting only once
-            self._video_frames = value
-        else:
-            raise ValueError("video_frames has already been set")
+        self._video_frames = value
 
 
 # A class to store frame dimensions.
