@@ -43,7 +43,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     if audio_type != "audio":
         raise Exception("Input file is not an audio.")
     if aud_ext != "wav":
-        print("Audio file is not a wav file. Converting to wav...")
+        gr.Info("Audio file is not a wav file. Converting to wav...")
         # Convert audio to wav
         command = 'ffmpeg -y -i {} -strict -2 {}'.format(audio_path, os.path.join(MEDIA_DIRECTORY, 'aud_input.wav'))
         subprocess.call(command, shell=True)
@@ -92,6 +92,9 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     # Create face helper object from landmarks
     helper = pmp.FaceHelpers(image_mode=True)
 
+    # Create progress bar
+    p_bar = gr.Progress()
+
     # extract face from image
     print("Extracting face from image...")
     extracted_face, mask, inv_mask, center, bbox = helper.extract_face(original_img=frame)
@@ -100,10 +103,13 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     print("Warping, cropping and aligning face...")
     cropped_face, aligned_bbox, rotation_matrix = helper.align_crop_face(extracted_face=extracted_face)
     cropped_face_height, cropped_face_width, _ = cropped_face.shape
-
+    
+    total = pmp.Total_stat()
     # Generate data for inference
     print("Generating data for inference...")
-    gen = helper.gen_data_image_mode(cropped_face, mel_chunks)
+    gen = helper.gen_data_image_mode(cropped_face, mel_chunks, total)
+
+    print(f"Total mels:  {total.mels}")
 
     # Create model loader object
     ml = model_loaders.ModelLoader(face_restorer, weight)
@@ -115,8 +121,9 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     out = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
     print("Processing.....")
+    batch_no = 1
     # Feed to model:
-    for (img_batch, mel_batch) in gr.Progress(track_tqdm=True).tqdm(gen, total=len(mel_chunks)):
+    for (img_batch, mel_batch) in gen:
         img_batch = torch.FloatTensor(np.transpose(img_batch, (0, 3, 1, 2))).to(device)
         mel_batch = torch.FloatTensor(np.transpose(mel_batch, (0, 3, 1, 2))).to(device)
 
@@ -142,13 +149,18 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
                 final, _ = ml.restore_background(final, bgupscaler, tile=400, outscale=1.0, half=False)
 
             out.write(final)
+
+        p_bar.__call__((batch_no, total.mels+1))
+        batch_no += 1
                 
     out.release()
     del gen
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, file_name)}"
     subprocess.call(command, shell=platform.system() != 'Windows')
 
-    print(f"Done! Check {file_name} in output directory.")
+    p_bar.__call__((batch_no, total.mels+1))
+
+    gr.Info(f"Done! Check {file_name} in output directory.")
 
     return os.path.join(OUTPUT_DIRECTORY, file_name)
 
@@ -168,7 +180,7 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
     if audio_type != "audio":
         raise Exception("Input file is not an audio.")
     if aud_ext != "wav":
-        print("Audio file is not a wav file. Converting to wav...")
+        gr.Info("Audio file is not a wav file. Converting to wav...")
         # Convert audio to wav
         command = 'ffmpeg -y -i {} -strict -2 {}'.format(audio_path, os.path.join(MEDIA_DIRECTORY, 'aud_input.wav'))
         subprocess.call(command, shell=True)
@@ -215,10 +227,10 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
         i += 1
 
     if len(mel_chunks) > frame_count:
-        print("Audio is longer than video. Truncating audio...")
+        gr.Info("Audio is longer than video. Truncating audio...")
         mel_chunks = mel_chunks[:frame_count]
     elif len(mel_chunks) < frame_count:
-        print("Video is longer than audio. Truncating video...")
+        gr.Info("Video is longer than audio. Truncating video...")
         frame_count = len(mel_chunks)
 
     # Creating Boolean mask
@@ -313,7 +325,7 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
             images = []
 
             if batch_no == len(mel_chunks_batch):
-                print("Reached end of Audio, Video has been dubbed.")
+                gr.Info("Reached end of Audio, Video has been dubbed.")
                 break
 
     video.release()

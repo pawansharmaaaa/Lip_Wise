@@ -2,6 +2,7 @@
 
 import cv2
 import math
+import gradio as gr
 import os, sys
 
 from helpers import file_check
@@ -9,7 +10,42 @@ from helpers import file_check
 import mediapipe as mp
 import numpy as np
 
+# A class to store total number of steps in the pipeline.
+class Total_stat:
+    _instance = None
 
+    def __new__(cls):
+        if not cls._instance:
+            cls._instance = super(Total_stat, cls).__new__(cls)
+            cls._instance._mels = 0  # Initialize attributes
+            cls._instance._video_frames = 0
+        return cls._instance
+
+    @property
+    def mels(self):
+        return self._mels
+
+    @mels.setter
+    def mels(self, value):
+        if self._mels == 0:  # Allow setting only once
+            print(f"Setting mels to: {value}")
+            self._mels = value
+        else:
+            raise ValueError("mels has already been set")
+
+    @property
+    def video_frames(self):
+        return self._video_frames
+
+    @video_frames.setter
+    def video_frames(self, value):
+        if self._video_frames == 0:  # Allow setting only once
+            self._video_frames = value
+        else:
+            raise ValueError("video_frames has already been set")
+
+
+# A class to store frame dimensions.
 class FrameDimensions:
     _instance = None
 
@@ -33,7 +69,8 @@ class FrameDimensions:
     @width.setter
     def width(self, value):
         self._width = value
-        
+
+# A class to perform face detection and landmark detection using MediaPipe.
 class ModelProcessor:
 
     """
@@ -144,7 +181,7 @@ class ModelProcessor:
         try:
             video = cv2.VideoCapture(video_path)
         except Exception as e:
-            print(f"Exception occurred while trying to open video file. Exceptin: {e}")
+            gr.Warning(f"Exception occurred while trying to open video file. Exceptin: {e}")
             exit(1)
 
         # Get video properties
@@ -301,7 +338,7 @@ class ModelProcessor:
             return aligned_image
         else:
             # No face detected in the image
-            print("3D Alignment failed. No face detected in the image.")
+            gr.Warning("3D Alignment failed. No face detected in the image.")
             sys.exit(1)
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -320,13 +357,13 @@ class FaceHelpers:
             try:
                 self.landmarks_all = np.load(self.image_landmarks_path)
             except FileNotFoundError as e:
-                print("Image landmarks were not saved. Please report this issue.")
+                gr.Warning("Image landmarks were not saved. Please report this issue.")
                 exit(1)
         else:
             try:
                 self.landmarks_all = np.load(self.video_landmarks_path)
             except FileNotFoundError as e:
-                print("Video landmarks were not saved. Please report this issue.")
+                gr.Warning("Video landmarks were not saved. Please report this issue.")
                 exit(1)
 
     def gen_face_mask(self, frame_no=0):
@@ -457,7 +494,7 @@ class FaceHelpers:
                 # Perform the affine transformation to rotate the image
                 aligned_face = cv2.warpAffine(extracted_face, rotation_matrix, output_size)
             except Exception as e:
-                print(f"Error aligning face at frame no: {frame_no}, Saving the frame for manual inspection.")
+                gr.Warning(f"Error aligning face at frame no: {frame_no}, Saving the frame for manual inspection.")
                 os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
                 cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_{frame_no}.jpg'), extracted_face)
                 exit(1)
@@ -498,7 +535,7 @@ class FaceHelpers:
         return cropped_face, aligned_bbox, rotation_matrix
     
         
-    def gen_data_image_mode(self, cropped_face, mel_chunks):
+    def gen_data_image_mode(self, cropped_face, mel_chunks, total):
         """
         Generates data for inference in image mode.
         Batches the data to be fed into the model.
@@ -519,8 +556,11 @@ class FaceHelpers:
         try:
             cropped_face = cv2.resize(cropped_face, (96, 96), interpolation=cv2.INTER_AREA)
         except Exception as e:
-            print(f"Failed to resize face: {e}")
+            gr.Warning(f"Failed to resize face: {e}")
             exit(1)
+
+        total.mels=math.ceil(len(mel_chunks)/self.max_batch_size)
+        total.video_frames=math.ceil(len(cropped_face)/self.max_batch_size)
 
         # Generate data for inference
         for mel_chunk in mel_chunks:
@@ -548,7 +588,7 @@ class FaceHelpers:
 
             frame_batch = np.concatenate((img_masked, frame_batch), axis=3) / 255.
             mel_batch = np.reshape(mel_batch, [len(mel_batch), mel_batch.shape[1], mel_batch.shape[2], 1])
-
+            
             yield frame_batch, mel_batch
 
     def paste_back_black_bg(self, processed_face, aligned_bbox, full_frame, ml):
@@ -558,8 +598,8 @@ class FaceHelpers:
             processed_face = ml.restore_background(processed_face, 'RealESRGAN_x2plus', 400)[0]
             processed_ready[bbox[0,1]:bbox[1,1], bbox[0,0]:bbox[1,0]] = processed_face
         except IndexError as e:
-            print(f"Failed to paste face back onto full frame: {e}")
-            print(f"Saving the frame for manual inspection.")
+            gr.Warning(f"Failed to paste face back onto full frame: {e}")
+            gr.Warning(f"Saving the frame for manual inspection.")
             os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
             cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_paste.jpg'), processed_face)
             exit(1)
@@ -583,8 +623,8 @@ class FaceHelpers:
         try:
             ready_to_paste = cv2.warpAffine(processed_ready, rotation_matrix, (processed_ready.shape[1], processed_ready.shape[0]), flags=cv2.WARP_INVERSE_MAP)
         except Exception as e:
-            print(f"Failed to unwarp and unalign face: {e}")
-            print(f"Saving the frame for manual inspection.")
+            gr.Warning(f"Failed to unwarp and unalign face: {e}")
+            gr.Warning(f"Saving the frame for manual inspection.")
             os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
             cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_unwarp.jpg'), processed_ready)
             exit(1)
@@ -646,8 +686,8 @@ class FaceHelpers:
             final_blend = cv2.seamlessClone(result, original_img, half_mask, center_2, flags=cv2.NORMAL_CLONE)
             # final_blend = cv2.cvtColor(final_blend, cv2.COLOR_RGB2BGR)
         except IndexError as e:
-            print(f"Failed to paste face back onto background: {e}")
-            print(f"Saving the frame for manual inspection.")
+            gr.Warning(f"Failed to paste face back onto background: {e}")
+            gr.Warning(f"Saving the frame for manual inspection.")
             os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
             cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_paste_back.jpg'), ready_to_paste)
             exit(1)

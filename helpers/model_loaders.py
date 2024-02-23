@@ -53,7 +53,7 @@ class ModelLoader:
 
         if not torch.cuda.is_available():  # CPU
             import warnings
-            warnings.warn("YAVU uses RealESRGAN for backgound upscaling and it's inference is really slow on CPU. Please consider using GPU.")
+            warnings.warn("Lip_Wise uses RealESRGAN for backgound upscaling and it's inference is really slow on CPU. Please consider using GPU.")
             bg_upsampler = None
         else:
             if model_name == 'RealESRGAN_x4plus':  # x4 RRDBNet model
