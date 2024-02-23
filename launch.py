@@ -17,9 +17,39 @@ bg_upscalers = list(file_check.REAL_ESRGAN_MODEL_URL.keys())
 
 # Theme
 theme = gr.themes.Base(
-    primary_hue=gr.themes.Color(c100="#efe7ff", c200="#decefe", c300="#ccb7fd", c400="#ba9ffc", c50="#ffffff", c500="#a688fa", c600="#836bc3", c700="#61508e", c800="#41365d", c900="#241e30", c950="#25242a"),
-    secondary_hue=gr.themes.Color(c100="#e2e1e4", c200="#c6c5c9", c300="#aba9b0", c400="#908d96", c50="#ffffff", c500="#76737e", c600="#5e5b64", c700="#46444b", c800="#302f33", c900="#1b1b1d", c950="#25242a"),
-    neutral_hue=gr.themes.Color(c100="#e1e1e1", c200="#c4c4c4", c300="#a7a7a7", c400="#8c8c8c", c50="#ffffff", c500="#717171", c600="#5a5a5a", c700="#434343", c800="#2e2e2e", c900="#25242a", c950="#1b1b1b"),
+    primary_hue=gr.themes.Color(c100="#efe7ff", 
+                                c200="#decefe", 
+                                c300="#ccb7fd", 
+                                c400="#ba9ffc", 
+                                c50="#ffffff", 
+                                c500="#a688fa", 
+                                c600="#836bc3", 
+                                c700="#61508e", 
+                                c800="#41365d", 
+                                c900="#241e30", 
+                                c950="#25242a"),
+    secondary_hue=gr.themes.Color(c100="#e2e1e4", 
+                                  c200="#c6c5c9", 
+                                  c300="#aba9b0", 
+                                  c400="#908d96", 
+                                  c50="#ffffff", 
+                                  c500="#76737e", 
+                                  c600="#5e5b64", 
+                                  c700="#46444b", 
+                                  c800="#302f33", 
+                                  c900="#1b1b1d", 
+                                  c950="#25242a"),
+    neutral_hue=gr.themes.Color(c100="#e1e1e1", 
+                                c200="#c4c4c4", 
+                                c300="#a7a7a7", 
+                                c400="#8c8c8c", 
+                                c50="#ffffff", 
+                                c500="#717171", 
+                                c600="#5a5a5a", 
+                                c700="#434343", 
+                                c800="#2e2e2e", 
+                                c900="#25242a", 
+                                c950="#1b1b1b"),
     spacing_size="md",
     radius_size="lg",
 ).set(
@@ -59,13 +89,22 @@ def render_weight(face_restorer):
                             label="CodeFormer Weight",
                             info="0 for better quality, 1 for better identity."
                         )
-    else:
+    elif face_restorer == "GFPGAN":
         return gr.Slider(
                             minimum=0.0,
                             maximum=1.0,
                             step=0.1,
                             value=0.5,
                             label="GFPGAN Weight",
+                            info="0 for better identity, 1 for better quality."
+                        )
+    elif face_restorer == "RestoreFormer":
+        return gr.Slider(
+                            minimum=0.0,
+                            maximum=1.0,
+                            step=0.1,
+                            value=0.5,
+                            label="RestoreFormer Weight",
                             info="0 for better identity, 1 for better quality."
                         )
 
@@ -86,40 +125,101 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
             </header>
             '''
         )
+
     with gr.Tab(label="Process Image", elem_id="tab", elem_classes=["tabs"]):
         with gr.Row(elem_classes=["row"]):
             with gr.Column():
                 gr.Markdown("# INPUTS")
                 with gr.Accordion(label="Input Image and Audio", open=True, elem_classes=["inp_group", "accordion"]):
-                    image_input = gr.Image(type="filepath", label="Image", container=True)
-                    audio_input = gr.Audio(type="filepath", label="Audio", container=True, scale=0.5)
-
-                with gr.Accordion(label="OPTIONS", open=True, elem_classes=["opt_group", "accordion"]):
-                    with gr.Group():
-                        with gr.Row():
-                            fps = gr.Slider(minimum=1, maximum=60, step=1, value=25, label="FPS", info="Desired Frames per second (FPS) of the output video.")
-                            padding = gr.Slider(minimum=0, maximum=60, step=1, value=0, label="Padding", info="Increase if getting black outlines. The Value is in Pixels.")
-                        with gr.Row():
-                            alignment = gr.Checkbox(label = "Perform 3D_alignment", info = "This will improve the quality of the lip sync, but the output will be different from the original video.")
-                            upscale_bg = gr.Checkbox(label = "Upscale Background with REALESRGAN", value=False, info="This will improve the quality of the video, but will take longer to process.")
-                        with gr.Row():
-                            face_restorer = gr.Radio(["GFPGAN", "CodeFormer"], value='CodeFormer', label="Face Restorer", info="GFPGAN is faster, but CodeFormer is more accurate.", interactive=True)
-                            bg_model = gr.Dropdown(choices=bg_upscalers, label="REALESRGAN Model", value="RealESRGAN_x2plus", info="Choose the model to use for upscaling the background.", visible=False)
-                        with gr.Row():
-                            with gr.Column():
-                                mel_step_size = gr.Number(value=16, label="Mel Step Size", interactive=False, visible=False)
-                                weight = gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.6, label="CodeFormer Weight", info="0 for better quality, 1 for better identity.")
-                                upscale_bg.select(render_dd, upscale_bg, bg_model)
-                                face_restorer.select(render_weight, face_restorer, weight)
-                
-                process = gr.Button(value="Process Image", variant="primary", elem_id="gen-button")
-
-
+                    image_input = gr.Image(type="filepath", 
+                                           label="Image", 
+                                           container=True)
+                    
+                    audio_input = gr.Audio(type="filepath", 
+                                           label="Audio", 
+                                           container=True)
+                    
+                    process = gr.Button(value="Process Image", 
+                                        variant="primary", 
+                                        elem_id="gen-button")
+                    
             with gr.Column():
                 gr.Markdown("# OUTPUT")
-                image_output = gr.Video(sources='upload', label="Output", elem_classes=["output"])
+                image_output = gr.Video(sources='upload', 
+                                        label="Output", 
+                                        elem_classes=["output"])
 
-                process.click(infer.infer_image, [image_input, audio_input, padding, alignment, face_restorer, fps, mel_step_size, weight, upscale_bg, bg_model], [image_output])
+        with gr.Accordion(label="OPTIONS", open=True, elem_classes=["opt_group", "accordion"]):
+            with gr.Group():
+                with gr.Column(variant="panel"):
+                    with gr.Row():
+                        fps = gr.Slider(minimum=1, 
+                                        maximum=60, 
+                                        step=1, 
+                                        value=25, 
+                                        label="FPS", 
+                                        info="Desired Frames per second (FPS) of the output video.")
+                        
+                        padding = gr.Slider(minimum=0, 
+                                            maximum=60, 
+                                            step=1, 
+                                            value=0, 
+                                            label="Padding", 
+                                            info="Increase if getting black outlines. The Value is in Pixels.")
+                
+                    with gr.Row():
+                        gan = gr.Checkbox(label = "Use Wav2Lip_GAN?", 
+                                            value=False, 
+                                            info="This will use Wav2Lip_GAN instead of Wav2Lip. May get better results in some cases", 
+                                            interactive=True)
+                        
+                        alignment = gr.Checkbox(label = "Perform 3D_alignment", 
+                                                info = "This will improve the quality of the lip sync, but the output will be different from the original video.")
+                    
+                with gr.Column(variant="panel"):
+                    with gr.Row():
+                        face_restorer = gr.Radio(["GFPGAN", "CodeFormer", "RestoreFormer"], 
+                                                    value='CodeFormer', 
+                                                    label="Face Restorer", 
+                                                    info="GFPGAN is faster, but CodeFormer is more accurate.", # Needs Change
+                                                    interactive=True)
+                        
+                        weight = gr.Slider(minimum=0.0, 
+                                            maximum=1.0, 
+                                            step=0.1, 
+                                            value=0.6, 
+                                            label="CodeFormer Weight", 
+                                            info="0 for better quality, 1 for better identity.",
+                                            scale=2)
+                    
+                    with gr.Row():
+                            upscale_bg = gr.Checkbox(label = "Upscale Background with REALESRGAN",
+                                                    value=False, 
+                                                    info="This will improve the quality of the video, but will take longer to process.")
+                            
+                            bg_model = gr.Dropdown(choices=bg_upscalers, 
+                                                    label="REALESRGAN Model", 
+                                                    value="RealESRGAN_x2plus", 
+                                                    info="Choose the model to use for upscaling the background.", 
+                                                    visible=False,
+                                                    scale=2)
+
+                            mel_step_size = gr.Number(value=16, 
+                                                        label="Mel Step Size", 
+                                                        interactive=False, 
+                                                        visible=False)
+                        
+                # Event Triggers
+                upscale_bg.select(render_dd, 
+                                    upscale_bg, 
+                                    bg_model)
+                face_restorer.select(render_weight, 
+                                        face_restorer, 
+                                        weight)
+
+            process.click(infer.infer_image, 
+                            [image_input, audio_input, padding, alignment, face_restorer, fps, mel_step_size, weight, upscale_bg, bg_model], 
+                            [image_output])
 
     with gr.Tab(label="Process Video", elem_id="tab", elem_classes=["tabs"]):
         with gr.Row(elem_classes=["row"]):
@@ -127,30 +227,66 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
                 gr.Markdown("# INPUTS")
                 
                 with gr.Accordion("Input Video and Audio", open=True, elem_classes=["inp_group", "accordion"]):
-                    video_input = gr.Video(sources='upload',label="Video")
-                    audio_input = gr.Audio(type="filepath", label="Audio")
+                    video_input = gr.Video(sources='upload',
+                                           label="Video")
+                    audio_input = gr.Audio(type="filepath", 
+                                           label="Audio")
                 
                 with gr.Accordion(label="OPTIONS", open=True, elem_classes=["opt_group", "accordion"]):
                     with gr.Group():
-                        with gr.Column():
-                            padding = gr.Slider(minimum=0, maximum=60, step=1, value=0, label="Padding", info="Increase if getting black outlines. The Value is in Pixels.")
-                            face_restorer = gr.Radio(["GFPGAN", "CodeFormer"], value='CodeFormer', label="Face Restorer", info="GFPGAN is faster, but CodeFormer is more accurate.")
-                            mel_step_size = gr.Number(value=16, label="Mel Step Size", interactive=False, visible=False)
-                            weight = gr.Slider(minimum=0.0, maximum=1.0, step=0.1, value=0.6, label="CodeFormer Weight", info="0 for better quality, 1 for better identity.")
-                        with gr.Column():
-                            upscale_bg = gr.Checkbox(label = "Upscale Background with REALESRGAN", value=False, info="This will improve the quality of the video, but will take longer to process.")
-                            bg_model = gr.Dropdown(choices=bg_upscalers, label="REALESRGAN Model", value="RealESRGAN_x2plus", info="Choose the model to use for upscaling the background.", visible=False)
+                        with gr.Column():      
+                            padding = gr.Slider(minimum=0, 
+                                                maximum=60, 
+                                                step=1, 
+                                                value=0, 
+                                                label="Padding", 
+                                                info="Increase if getting black outlines. The Value is in Pixels.")
                             
+                            face_restorer = gr.Radio(["GFPGAN", "CodeFormer", "RestoreFormer"], 
+                                                     value='CodeFormer', 
+                                                     label="Face Restorer", 
+                                                     info="GFPGAN is faster, but CodeFormer is more accurate.")
+                            
+                            mel_step_size = gr.Number(value=16, 
+                                                      label="Mel Step Size", 
+                                                      interactive=False, 
+                                                      visible=False)
+                            
+                            weight = gr.Slider(minimum=0.0, 
+                                               maximum=1.0, 
+                                               step=0.1, 
+                                               value=0.6, 
+                                               label="CodeFormer Weight", 
+                                               info="0 for better quality, 1 for better identity.")
+                        
+                        with gr.Column():
+                            upscale_bg = gr.Checkbox(label = "Upscale Background with REALESRGAN", 
+                                                     value=False, 
+                                                     info="This will improve the quality of the video, but will take longer to process.")
+                            
+                            bg_model = gr.Dropdown(choices=bg_upscalers, 
+                                                   label="REALESRGAN Model", 
+                                                   value="RealESRGAN_x2plus", 
+                                                   info="Choose the model to use for upscaling the background.", 
+                                                   visible=False)
+                            
+                            # Event Triggers
                             upscale_bg.select(render_dd, upscale_bg, bg_model)
                             face_restorer.select(render_weight, face_restorer, weight)
                     
-                process = gr.Button(value="Process Video", variant="primary", elem_id="gen-button")
+                process = gr.Button(value="Process Video", 
+                                    variant="primary", 
+                                    elem_id="gen-button")
 
             with gr.Column():
                 gr.Markdown("# OUTPUT")
-                video_output = gr.Video(sources='upload', label="Output", elem_classes=["output"])
+                video_output = gr.Video(sources='upload', 
+                                        label="Output", 
+                                        elem_classes=["output"])
 
-                process.click(infer.infer_video, [video_input, audio_input, padding, face_restorer, mel_step_size, weight, upscale_bg, bg_model], [video_output])
+                process.click(infer.infer_video, 
+                              [video_input, audio_input, padding, face_restorer, mel_step_size, weight, upscale_bg, bg_model], 
+                              [video_output])
 
     with gr.Tab(label="Guide", elem_id="tab", elem_classes=["tabs"]):
         with gr.Accordion(label="Tips For Better Results", open=True, elem_classes=["guide"]):

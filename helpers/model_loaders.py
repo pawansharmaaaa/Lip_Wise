@@ -13,6 +13,7 @@ from basicsr.utils import img2tensor, tensor2img
 from torchvision.transforms.functional import normalize
 from models import Wav2Lip
 from gfpgan.archs.gfpganv1_clean_arch import GFPGANv1Clean
+from gfpgan.archs.restoreformer_arch import RestoreFormer
 from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from realesrgan import RealESRGANer
@@ -25,6 +26,8 @@ class ModelLoader:
         # self.wav2lip_model = self.load_wav2lip_model()
         if restorer == 'GFPGAN':
             self.restorer = self.load_gfpgan_model()
+        elif restorer == 'RestoreFormer':
+            self.restorer = self.load_restoreformer_model()
         elif restorer == 'CodeFormer':
             self.restorer = self.load_codeformer_model()
 
@@ -36,10 +39,15 @@ class ModelLoader:
                                     map_location=lambda storage, loc: storage)
         return checkpoint
 
-    def load_wav2lip_model(self):
+    def load_wav2lip_model(self, gan=False):
         model = Wav2Lip()
-        print(f"Loading wav2lip checkpoint from: {file_check.WAV2LIP_MODEL_PATH}")
-        checkpoint = self._load(file_check.WAV2LIP_MODEL_PATH)
+        if gan:
+            print(f"Loading wav2lipGAN checkpoint from: {file_check.WAV2LIP_GAN_MODEL_PATH}")
+            checkpoint = self._load(file_check.WAV2LIP_GAN_MODEL_PATH)
+        else:
+            print(f"Loading wav2lip checkpoint from: {file_check.WAV2LIP_MODEL_PATH}")
+            checkpoint = self._load(file_check.WAV2LIP_MODEL_PATH)
+
         s = checkpoint["state_dict"]
         new_s = {}
         for k, v in s.items():
@@ -90,19 +98,6 @@ class ModelLoader:
             
         return bg_upsampler
 
-    def load_wav2lip_gan_model(self):
-        model = Wav2Lip()
-        print(f"Loading wav2lip checkpoint from: {file_check.WAV2LIP_GAN_MODEL_PATH}")
-        checkpoint = self._load(file_check.WAV2LIP_GAN_MODEL_PATH)
-        s = checkpoint["state_dict"]
-        new_s = {}
-        for k, v in s.items():
-            new_s[k.replace('module.', '')] = v
-        model.load_state_dict(new_s)
-
-        model = model.to(self.device)
-        return model.eval()
-
     def load_gfpgan_model(self):
         
         print(f"Load GFPGAN checkpoint from: {file_check.GFPGAN_MODEL_PATH}")
@@ -128,6 +123,22 @@ class ModelLoader:
         gfpgan.load_state_dict(loadnet[keyname], strict=True)
         restorer = gfpgan.eval()
         return restorer.to(self.device)
+    
+    def load_restoreformer_model(self):
+        print(f"Load RestoreFormer checkpoint from: {file_check.RESTOREFORMER_MODEL_PATH}")
+
+        model = RestoreFormer()
+        
+        loadnet = torch.load(file_check.RESTOREFORMER_MODEL_PATH)
+        
+        if 'params_ema' in loadnet:
+            keyname = 'params_ema'
+        else:
+            keyname = 'params'
+        
+        model.load_state_dict(loadnet[keyname], strict=True)
+        restorer = model.eval()
+        return restorer.to(self.device)
 
     def load_codeformer_model(self):
         print(f"Load CodeFormer checkpoint from: {file_check.CODEFORMERS_MODEL_PATH}")
@@ -146,6 +157,22 @@ class ModelLoader:
         return background
     
     def restore_wGFPGAN(self, dubbed_face):
+        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_LANCZOS4)
+        dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
+        normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
+        dubbed_face_t = dubbed_face_t.unsqueeze(0).to(self.device)
+        
+        try:
+            output = self.restorer(dubbed_face_t, return_rgb=False, weight=self.weight)[0]
+            restored_face = tensor2img(output.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
+        except RuntimeError as error:
+            print(f'\tFailed inference for GFPGAN: {error}.')
+            restored_face = tensor2img(dubbed_face_t.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
+        
+        restored_face = restored_face.astype(np.uint8)
+        return restored_face
+    
+    def restore_wRF(self, dubbed_face):
         dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_LANCZOS4)
         dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
         normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)

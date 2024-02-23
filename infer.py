@@ -28,10 +28,17 @@ NPY_FILES_DIRECTORY = file_check.NPY_FILES_DIR
 OUTPUT_DIRECTORY = file_check.OUTPUT_DIR
 
 #################################################### IMAGE INFERENCE ####################################################
-def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = 'CodeFormer', fps=30, mel_step_size=16, weight = 1.0, upscale_bg = False, bgupscaler='RealESRGAN_x4plus'):
+def infer_image(frame_path, audio_path, pad, align_3d = False, 
+                face_restorer = 'CodeFormer', 
+                fps=30, 
+                mel_step_size=16, 
+                weight = 1.0, 
+                upscale_bg = False, 
+                bgupscaler='RealESRGAN_x4plus',
+                gan=False):
     
     # Perform checks to ensure that all required files are present
-    file_check.perform_check(model_name=bgupscaler)
+    file_check.perform_check(bg_model_name=bgupscaler, restorer=face_restorer, use_gan_version=gan)
 
     # Get input type
     input_type, img_ext = file_check.get_file_type(frame_path)
@@ -103,7 +110,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     print("Warping, cropping and aligning face...")
     cropped_face, aligned_bbox, rotation_matrix = helper.align_crop_face(extracted_face=extracted_face)
     cropped_face_height, cropped_face_width, _ = cropped_face.shape
-    
+
     total = pmp.Total_stat()
     # Generate data for inference
     print("Generating data for inference...")
@@ -115,7 +122,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     ml = model_loaders.ModelLoader(face_restorer, weight)
 
     # Load wav2lip model
-    w2l_model = ml.load_wav2lip_model()
+    w2l_model = ml.load_wav2lip_model(gan=gan)
 
     # Initialize video writer
     out = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
@@ -138,6 +145,9 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
         elif face_restorer == 'GFPGAN':
             with ThreadPoolExecutor() as executor:
                 restored_faces = list(executor.map(ml.restore_wGFPGAN, dubbed_faces))
+        elif face_restorer == 'RestoreFormer':
+            with ThreadPoolExecutor() as executor:
+                restored_faces = list(executor.map(ml.restore_wRF, dubbed_faces))
 
         for face in restored_faces:
             processed_face = cv2.resize(face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
@@ -166,9 +176,15 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
 
 ################################################## VIDEO INFERENCE ##################################################
 
-def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step_size=16, weight = 1.0, upscale_bg = False, bgupscaler='RealESRGAN_x4plus'):
+def infer_video(video_path, audio_path, pad, 
+                face_restorer='CodeFormer',
+                mel_step_size=16, 
+                weight = 1.0, 
+                upscale_bg = False, 
+                bgupscaler='RealESRGAN_x2plus',
+                gan=False):
     # Perform checks to ensure that all required files are present
-    file_check.perform_check(model_name=bgupscaler)
+    file_check.perform_check(model_name=bgupscaler, restorer=face_restorer, use_gan_version=gan)
 
     # Get input type
     input_type, vid_ext = file_check.get_file_type(video_path)
@@ -260,7 +276,7 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
     ml = model_loaders.ModelLoader(face_restorer, weight)
 
     # Load wav2lip model
-    w2l_model = ml.load_wav2lip_model()
+    w2l_model = ml.load_wav2lip_model(gan=gan)
 
     # Start image processing
     images = []
@@ -305,6 +321,9 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
                 elif face_restorer == 'GFPGAN':
                     with ThreadPoolExecutor() as executor:
                         restored_faces = list(executor.map(ml.restore_wGFPGAN, dubbed_faces))
+                elif face_restorer == 'RestoreFormer':
+                    with ThreadPoolExecutor() as executor:
+                        restored_faces = list(executor.map(ml.restore_wRF, dubbed_faces))
                 
                 # Post processing
                 resized_restored_faces = bp.face_resize_batch(restored_faces, cropped_faces)
@@ -331,7 +350,7 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
     video.release()
     writer.release()
 
-    command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, file_name)}"
+    command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 -shortest {os.path.join(OUTPUT_DIRECTORY, file_name)}"
     subprocess.call(command, shell=platform.system() != 'Windows')
     p_bar.__call__((est_total_batches, est_total_batches))
 
