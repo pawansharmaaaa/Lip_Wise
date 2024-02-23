@@ -322,7 +322,7 @@ def infer_video(video_path, audio_path, pad,
                     with ThreadPoolExecutor() as executor:
                         restored_faces = list(executor.map(ml.restore_wGFPGAN, dubbed_faces))
                 elif face_restorer == 'RestoreFormer':
-                    with ThreadPoolExecutor(max_workers=2) as executor:
+                    with ThreadPoolExecutor(max_workers=1) as executor:
                         restored_faces = list(executor.map(ml.restore_wRF, dubbed_faces))
                 
                 # Post processing
