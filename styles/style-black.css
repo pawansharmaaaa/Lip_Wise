@@ -1,52 +1,65 @@
 /* ------------------------------------------------------Colors and Gradients------------------------------------------------------ */
 :root {
-    --back_gradient_dark: linear-gradient(to right, #41295a, #2f0743);
-    --header_text: #efe7ff;
-    --header_text_shadow: hsla(0, 85%, 79%, 0.747) 0 1px 30px;
-    --tab_selected_background: rgba(0, 0, 0, 0.4);
-    --button_shadow_hover: #c6c4cf80 0 1px 30px;
-    --foreground_gradient_tr: radial-gradient( circle farthest-corner at -4% -12.9%,  rgb(32, 46, 54) 0.3%, rgba(30,33,48,1) 90.2% );
-    --primary_input: linear-gradient(315deg, rgba(141, 134, 169, 0.5) 0%, rgba(224, 28, 52, 0.5) 74%);
-    --primary_input_old: linear-gradient(315deg, #8d86a9 0%, #e01c34 74%);
-    --primary_input_button: linear-gradient(to right, #ff7e5f 0%, #feb47b  51%, #ff7e5f  100%);     
-    --primary_input_hover: rgba(80, 63, 205, 0.5) 0 1px 30px;
-    --primary_input_shadow: rgba(80, 63, 205, 0.5) 0 1px 30px;
-    --primary_grad_shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
-    --dropdown_background: rgb(0, 0, 0);
-    --secondary_color: #201c20;
+    --primary-background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5));
+    --options-background: #1E2533FF;
+    --tab-background: linear-gradient(to bottom right, #2B2926, #474543, #2B2926);
+    --tab-button-inactive: #1E2128FF;
+    --tab-button-active: #FFFFFFFF;
+    --font-primary: #FFFFFFFF;
+    --font-secondary: #9095A1FF;
+    --primary-button: #C494ACFF;
+    --secondary-button: #FFD3B6FF;
+    --small-inputs: #B12805FF;
+
+    --info-font: "Manrope";
+    --header-font: "Lexend";
 }
+
+/* Body */
+
+gradio-app {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' viewBox='0 0 1440 812' fill='none'%3E%3Ctitle%3ESimple Shiny%3C/title%3E%3Cg clip-path='url(%23clip0_192_2696)'%3E%3Cpath d='M3.05176e-05 498.965C72.061 497.366 145.003 517.756 211.269 476.673C284.266 431.417 354.436 361.22 389.157 257.697C424.169 153.305 426.168 26.0231 399.045 -83.1923C373.888 -184.491 308.304 -248.908 247.829 -311.38C198.433 -362.407 139.607 -378.264 82.9661 -409.706C20.4091 -444.431 -36.13 -519.69 -102.426 -505.805C-170.581 -491.531 -229.323 -419.237 -267.644 -336.277C-303.963 -257.651 -306.743 -158.542 -306.546 -63.9088C-306.371 20.2347 -280.123 94.7067 -266.575 176.524C-249.135 281.847 -272.827 416.757 -215.465 486.141C-159.126 554.287 -73.359 500.594 3.05176e-05 498.965Z' fill='%23474543' style='transform: scale(1.001) rotate(102.2deg);'/%3E%3Cpath style='transform-box: fill-box; transform-origin: center center; transform: scale(1.001) rotate(0deg);' d='M1440 1392.86C1534.39 1391.43 1628.22 1485.14 1715.94 1434.6C1807.36 1381.93 1862.07 1247.91 1909.06 1122.61C1958.67 990.283 2000.14 847.014 1992.57 696.8C1984.73 541.179 1934.16 397.468 1866.42 276.232C1797.12 152.217 1713.96 11.7928 1604.11 1.60075C1494.68 -8.55215 1426.57 181.305 1321.26 225.655C1215.46 270.218 1077.37 145.815 998.128 256.818C920.635 365.368 968.373 558.362 972.289 714.492C975.55 844.48 987.604 968.93 1019.05 1090.75C1052.56 1220.6 1074.63 1381.53 1160.32 1443.03C1246.25 1504.7 1344.13 1394.32 1440 1392.86Z' fill='%233c3b39'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_192_2696'%3E%3Crect width='1440' height='812' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E") !important;
+    background-color: rgb(43, 41, 38) !important;
+    background-position: center center !important;
+    background-attachment: fixed !important;
+    background-size: cover !important;
+}
+
 /* Title as Header*/
 header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: transparent; /* Change background color as needed */
+    background-color: var(--tab-button-inactive);
     margin-bottom: 0px;
+    padding: 2rem 2rem;
+    border-radius: 8px 8px 8px 8px;
 }
 
 .header-left {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem; /* Space between h1 and h2 */
+    gap: 0.5rem;
+    /* Space between h1 and h2 */
 }
 
 .header-left h1 {
-    color: #FAFAFA; 
-    font-size: 2.5em; 
-    font-weight: 700; 
-    text-align: left; 
+    color: var(--font-primary);
+    font-size: 2.5em;
+    font-weight: 700;
+    text-align: left;
     margin-bottom: 0.5em;
-    text-shadow: hsla(0, 85%, 79%, 0.747) 0 1px 30px;
+    text-shadow: hsla(0, 2%, 9%, 0.747) 0 1px 30px;
 }
 
 .header-left h2 {
-    color: #FAFAFA;
-    font-size: 1.5em; 
-    font-weight: 500; 
-    text-align: center; 
+    color: var(--font-primary);
+    font-size: 1.5em;
+    font-weight: 500;
+    text-align: center;
     margin-bottom: 1em;
     padding: 0.2rem;
-    text-shadow: hsla(0, 85%, 79%, 0.747) 0 1px 30px;
+    text-shadow: hsla(0, 2%, 9%, 0.747) 0 1px 30px;
 }
 
 .header-right {
@@ -54,14 +67,18 @@ header {
     align-items: center;
 }
 
-.header-left h1, .header-left h2 {
-    margin: 0; /* Remove default margin */
+.header-left h1,
+.header-left h2 {
+    margin: 0;
+    /* Remove default margin */
 }
 
 .header-right img {
-    max-width: 200px; /* Adjust max-width for your logo */
+    max-width: 200px;
+    /* Adjust max-width for your logo */
     height: auto;
 }
+
 /* ------------------------------------------------------Gradio Container----------------------------------------------------------------- */
 
 .gradio-container {
@@ -76,22 +93,20 @@ header {
 /* ------------------------------------------------------Gradio Content----------------------------------------------------------------- */
 
 /* Tabs */
-.tabs{
+.tabs {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
     border-radius: 8px 8px 8px 8px;
     border-style: hidden;
-    background: rgba(34, 34, 34, 1);
-}
-/* .tabs:hover{
+    padding: 8px 8px 8px 8px;
+    background-color: var(--tab-button-inactive);
     box-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
-    transition-duration: .5s;
-} */
+}
 
 /* Tab Headings */
-.tabs h1{
+.tabs h1 {
     font-size: 1.5rem;
     -webkit-text-fill-color: #FFFFFF;
     text-shadow: var(--header_text_shadow);
@@ -107,7 +122,7 @@ header {
 }
 
 /* Tab Button */
-#tab-button{
+#tab-button {
     border-radius: 8px 8px 8px 8px;
     margin: 5px 5px 5px 5px;
     border-style: none;
@@ -115,7 +130,7 @@ header {
     box-shadow: var(--primary_grad_shadow);
     cursor: pointer;
     flex-shrink: 0;
-    font-family: "JetBrains Mono","Inter UI","SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;
+    font-family: "Lexend", "JetBrains Mono", "Inter UI", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     font-size: 16px;
     font-weight: 500;
     height: 4rem;
@@ -126,18 +141,20 @@ header {
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
-    background-color: rgba(68, 68, 68, 1);
+    background-color: var(--tab-button-inactive);
     color: rgba(255, 255, 255, 0.6);
 }
+
 #tab-button:hover {
     /* background: linear-gradient(315deg, #090947 0%, #5a585a 74%); */
-    background: rgba(85, 85, 85, 1);
+    background: #ffffff80;
     box-shadow: var(--button_shadow_hover);
     transition-duration: .1s;
 }
+
 #tab-button.selected {
-    background: rgba(122, 110, 122, 1);
-    color: rgba(255, 255, 255, 1);
+    background: var(--tab-button-active);
+    color: #000000FF;
     /* background: var(--tab_selected_background); */
     transition-duration: .1s;
 }
@@ -150,23 +167,35 @@ header {
 /* Accordion */
 .accordion {
     /* background-color: #4d4855; */
-    background-image: var(--foreground_gradient_tr);
+    background-color: var(--options-background) !important;
+    border-radius: 8px 8px 8px 8px;
+    border-color: var(--tab-button-active);
+}
+
+.accordion.block {
+    background-color: var(--options-background);
     border-radius: 8px 8px 8px 8px;
 }
-.accordion .block {
-    background-image: var(--foreground_gradient_tr);
-    border-radius: auto;
+
+.opt_group.accordion div {
+    background-color: var(--options-background) !important;
+    border-radius: 8px 8px 8px 8px;
+}
+
+.opt_group.accordion div fieldset {
+    background-color: var(--options-background) !important;
+    border-radius: 8px 8px 8px 8px;
 }
 
 /* OPT Input */
 input[type="number"].svelte-3iwdd6 {
-    background-image: var(--primary_input);
+    background-color: var(--small-inputs);
     border-radius: 8px 8px 8px 8px;
 }
 
 /* Dropdown */
 .container.svelte-1evtqhp .wrap.svelte-1evtqhp {
-    background-image: var(--primary_input);
+    background-color: var(--small-inputs);
     border-radius: 8px 8px 8px 8px;
     padding: 0%;
     border-style: none;
@@ -174,7 +203,7 @@ input[type="number"].svelte-3iwdd6 {
 
 /* Dropdown fallback Colab */
 .container.svelte-vomtxz .wrap.svelte-vomtxz {
-    background-image: var(--primary_input);
+    background-color: var(--small-inputs);
     border-radius: 8px 8px 8px 8px;
     padding: 0%;
     border-style: none;
@@ -182,14 +211,13 @@ input[type="number"].svelte-3iwdd6 {
 
 /* Guide accordian */
 .guide {
-    background-image: var(--back_gradient_dark);
+    background-color: var(--options-background);
     border-radius: 8px 8px 8px 8px;
 }
+
 /* accordian-inner-block in guide */
-.guide .block div {
+.guide.block div {
     font-family: 'JetBrains Mono', 'sans-serif';
-    margin: 8px 0 8px 0;
-    padding: 8px 16px 8px 16px;
     border-radius: 8px 8px 8px 8px;
     background-color: transparent;
 }
@@ -206,6 +234,7 @@ input[type="number"].svelte-3iwdd6 {
 .guide button span {
     font-family: 'JetBrains Mono', 'sans-serif';
     font-size: 1.2rem;
+    color: var(--font-primary);
     -webkit-text-fill-color: var(--header_text);
     text-shadow: var(--header_text_shadow);
     justify-content: center;
@@ -216,14 +245,14 @@ input[type="number"].svelte-3iwdd6 {
 #gen-button {
     /* background-image: linear-gradient(92.88deg, #455EB5 9.16%, #5643CC 43.89%, #673FD7 64.72%); */
     /* background-image: linear-gradient(to right, #2C5364, #203A43, #0F2027); */
-    background-color:  rgba(195, 148, 172, 1);
+    background-color: var(--primary-button);
     border-radius: 8px;
     border-style: none;
     box-sizing: border-box;
     color: #FFFFFF;
     cursor: pointer;
     flex-shrink: 0;
-    font-family: "JetBrains","Inter UI","SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;
+    font-family: "JetBrains", "Inter UI", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     font-size: 16px;
     font-weight: 500;
     height: 4rem;
@@ -238,11 +267,13 @@ input[type="number"].svelte-3iwdd6 {
     background-size: 200% auto;
     display: block;
 }
+
 #gen-button:hover {
     background-position: right center;
     box-shadow: var(--primary_input_hover);
     transition-duration: .1s;
 }
+
 @media (min-width: 768px) {
     #gen-button {
         padding: 0 2.6rem;
@@ -252,26 +283,31 @@ input[type="number"].svelte-3iwdd6 {
 /* ---------------------------------------------------------Inputs----------------------------------------------------------------- */
 /* Slider Color */
 input[type="range"].svelte-3iwdd6 {
-    background-image: var(--primary_input);
+    background-color: var(--small-inputs);
 }
 
 /* Checked Box Color */
-input.svelte-3pzdsv.svelte-3pzdsv.svelte-3pzdsv:checked, input.svelte-3pzdsv.svelte-3pzdsv.svelte-3pzdsv:checked:hover, input.svelte-3pzdsv.svelte-3pzdsv.svelte-3pzdsv:checked:focus {
-    background-color: var(--primary_input);
-    border-color: var(--primary_input);
+input.svelte-3pzdsv.svelte-3pzdsv.svelte-3pzdsv:checked,
+input.svelte-3pzdsv.svelte-3pzdsv.svelte-3pzdsv:checked:hover,
+input.svelte-3pzdsv.svelte-3pzdsv.svelte-3pzdsv:checked:focus {
+    background-color: var(--small-inputs);
+    border-color: var(--small-inputs);
     box-shadow: var(--primary_input_shadow);
 }
 
 /* Radio Button Color */
 input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j {
-    background-color: var(--primary_input);
-    border-color: var(--primary_input);
+    background-color: var(--small-inputs);
+    border-color: var(--small-inputs);
     box-shadow: var(--primary_input_shadow);
 }
-input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j:checked, input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j:checked:hover, input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j:checked:focus {
-    background-color: var(--primary_input);
-    border-color: var(--primary_input);
-    box-shadow: var(--primary_input_shadow);
+
+input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j:checked,
+input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j:checked:hover,
+input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j:checked:focus {
+    background-color: var(--small-inputs);
+    border-color: var(--small-inputs);
+    box-shadow: var(--small-inputs);
 }
 
 /* Radio span */
@@ -283,5 +319,5 @@ label.svelte-1mhtq7j {
 /* ----------------------------------------------------------------------Output------------------------------------------------------------ */
 .output {
     font-family: 'JetBrains Mono', 'sans-serif';
-    background-image: radial-gradient( circle farthest-corner at -4% -12.9%,  rgb(32, 46, 54) 0.3%, rgba(30,33,48,1) 90.2% );
+    background-color: #2E2E2E;
 }
