@@ -58,7 +58,14 @@ def infer_image(frame_path, audio_path, pad, align_3d = False,
         audio_path = os.path.join(MEDIA_DIRECTORY, 'aud_input.wav')
     
     # Check for cuda
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    free_memory = torch.cuda.mem_get_info()[0]
+    print(f"Initial Free Memory: {free_memory/1024**3:.2f} GB")
+
+    # Limiting the number of threads to avoid vram issues
+    limit = free_memory // 2e9
+
+    # Do not use GPU if free memory is less than 2GB
+    device = 'cuda' if torch.cuda.is_available() and limit!=0 else 'cpu'
     print(f'Using {device} for inference.')
 
     # Generate audio spectrogram
@@ -117,8 +124,6 @@ def infer_image(frame_path, audio_path, pad, align_3d = False,
     print("Generating data for inference...")
     gen = helper.gen_data_image_mode(cropped_face, mel_chunks, total)
 
-    print(f"Total mels:  {total.mels}")
-
     # Create model loader object
     ml = model_loaders.ModelLoader(face_restorer, weight)
 
@@ -141,14 +146,18 @@ def infer_image(frame_path, audio_path, pad, align_3d = False,
         dubbed_faces = dubbed_faces.cpu().numpy().transpose(0, 2, 3, 1) * 255.
 
         if face_restorer == 'CodeFormer':
-            with ThreadPoolExecutor() as executor:
+            with ThreadPoolExecutor(max_workers=limit) as executor:
                 restored_faces = list(executor.map(ml.restore_wCodeFormer, dubbed_faces))
         elif face_restorer == 'GFPGAN':
-            with ThreadPoolExecutor() as executor:
+            with ThreadPoolExecutor(max_workers=limit) as executor:
                 restored_faces = list(executor.map(ml.restore_wGFPGAN, dubbed_faces))
         elif face_restorer == 'RestoreFormer':
-            with ThreadPoolExecutor() as executor:
+            with ThreadPoolExecutor(max_workers=limit) as executor:
                 restored_faces = list(executor.map(ml.restore_wRF, dubbed_faces))
+        elif face_restorer == "None":
+            restored_faces = dubbed_faces
+        else:
+            raise Exception("Invalid face restorer model. Please check the model name and try again.")
 
         for face in restored_faces:
             processed_face = cv2.resize(face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
@@ -212,7 +221,14 @@ def infer_video(video_path, audio_path, pad,
     processor.detect_for_video(video_path)
     
     # Check for cuda
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    free_memory = torch.cuda.mem_get_info()[0]
+    print(f"Initial Free Memory: {free_memory/1024**3:.2f} GB")
+
+    # Limiting the number of threads to avoid vram issues
+    limit = free_memory // 2e9
+
+    # Do not use GPU if free memory is less than 2GB
+    device = 'cuda' if torch.cuda.is_available() and limit!=0 else 'cpu'
     print(f'Using {device} for inference.')
 
     # Generate audio spectrogram
@@ -318,14 +334,18 @@ def infer_video(video_path, audio_path, pad,
                 dubbed_faces = dubbed_faces.cpu().numpy().transpose(0, 2, 3, 1) * 255.
 
                 if face_restorer == 'CodeFormer':
-                    with ThreadPoolExecutor() as executor:
+                    with ThreadPoolExecutor(max_workers=limit) as executor:
                         restored_faces = list(executor.map(ml.restore_wCodeFormer, dubbed_faces))
                 elif face_restorer == 'GFPGAN':
-                    with ThreadPoolExecutor() as executor:
+                    with ThreadPoolExecutor(max_workers=limit) as executor:
                         restored_faces = list(executor.map(ml.restore_wGFPGAN, dubbed_faces))
                 elif face_restorer == 'RestoreFormer':
-                    with ThreadPoolExecutor() as executor:
+                    with ThreadPoolExecutor(max_workers=limit) as executor:
                         restored_faces = list(executor.map(ml.restore_wRF, dubbed_faces))
+                elif face_restorer == "None":
+                    restored_faces = dubbed_faces
+                else:
+                    raise Exception("Invalid face restorer model. Please check the model name and try again.")
                 
                 # Post processing
                 resized_restored_faces = bp.face_resize_batch(restored_faces, cropped_faces)
