@@ -360,7 +360,7 @@ class ModelProcessor:
 
         dest_path = os.path.join(file_check.MEDIA_DIR, 'looped_video.mp4')
 
-        os.system(f"ffmpeg -stream_loop {loops} -i {video_path} -c copy -v 0 -f nut - | ffmpeg -thread_queue_size 10K -i - -i {audio_path} -c copy -map 0:v -map 1:a -shortest -y {dest_path}")
+        os.system(f"ffmpeg -stream_loop {loops} -i {video_path} -c copy -v 0 -y {dest_path}")
 
         return dest_path
         
