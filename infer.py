@@ -193,9 +193,10 @@ def infer_video(video_path, audio_path, pad,
                 weight = 1.0, 
                 upscale_bg = False, 
                 bgupscaler='RealESRGAN_x2plus',
-                gan=False):
+                gan=False,
+                loop=False):
     # Perform checks to ensure that all required files are present
-    file_check.perform_check(model_name=bgupscaler, restorer=face_restorer, use_gan_version=gan)
+    file_check.perform_check(bg_model_name=bgupscaler, restorer=face_restorer, use_gan_version=gan)
 
     # Get input type
     input_type, vid_ext = file_check.get_file_type(video_path)
@@ -216,13 +217,19 @@ def infer_video(video_path, audio_path, pad,
     # Create media_preprocess object and helper object
     processor = pmp.ModelProcessor(padding=pad)
 
+    if loop:
+        gr.Info("Looping video...")
+        video_path = processor.loop_video(video_path=video_path, audio_path=audio_path)
+    else:
+        pass
+
     # Get face landmarks
-    print("Getting face landmarks...")
+    gr.Info("Getting face landmarks...")
     processor.detect_for_video(video_path)
     
     # Check for cuda
     free_memory = torch.cuda.mem_get_info()[0]
-    print(f"Initial Free Memory: {free_memory/1024**3:.2f} GB")
+    gr.Info(f"Initial Free Memory: {free_memory/1024**3:.2f} GB")
 
     # Limiting the number of threads to avoid vram issues
     limit = free_memory // 2e9
@@ -372,6 +379,7 @@ def infer_video(video_path, audio_path, pad,
     video.release()
     writer.release()
 
+    gr.Info("Merging audio and video...")
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 -shortest {os.path.join(OUTPUT_DIRECTORY, file_name)}"
     subprocess.call(command, shell=platform.system() != 'Windows')
     p_bar.__call__((est_total_batches, est_total_batches))

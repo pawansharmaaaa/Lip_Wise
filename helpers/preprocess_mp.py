@@ -334,6 +334,38 @@ class ModelProcessor:
             gr.Warning("3D Alignment failed. No face detected in the image.")
             sys.exit(1)
 
+    def loop_video(self, video_path, audio_path):
+        """
+        Loops the video to make it of the same length as audio.
+
+        Args:
+            video_path: The path to the video file.
+            audio_path: The path to the audio file.
+
+        Returns:
+            The path to the new video file.
+        """
+        from pydub.utils import mediainfo
+
+        def get_duration(file_path):
+            info = mediainfo(file_path)
+            duration = info['duration']
+            return duration
+
+        # Replace 'audio.mp3' and 'video.mp4' with your actual file paths
+        audio_duration = get_duration(audio_path)
+        video_duration = get_duration(video_path)
+
+        loops = math.ceil(float(audio_duration) / float(video_duration))
+
+        dest_path = os.path.join(file_check.MEDIA_DIR, 'looped_video.mp4')
+
+        os.system(f"ffmpeg -stream_loop {loops} -i {video_path} -c copy -v 0 -f nut - | ffmpeg -thread_queue_size 10K -i - -i {audio_path} -c copy -map 0:v -map 1:a -shortest -y {dest_path}")
+
+        return dest_path
+        
+
+
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 class FaceHelpers:

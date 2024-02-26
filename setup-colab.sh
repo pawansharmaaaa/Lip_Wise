@@ -4,11 +4,13 @@ if ! command -v ffmpeg &> /dev/null
 then
     sudo apt-get install ffmpeg
 fi
+# Get python version:
+python_version=$(python -v)
 
 # Check if python3-venv is installed
-if ! dpkg-query -W -f='${Status}' python3.10-venv 2>/dev/null | grep -q "ok installed"; 
+if ! dpkg-query -W -f='${Status}' python${python_verison}-venv 2>/dev/null | grep -q "ok installed"; 
 then
-  sudo apt install python3.10-venv
+  sudo apt install python${python_verison}-venv
 fi
 
 # Check if CUDA is installed
