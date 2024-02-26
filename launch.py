@@ -325,7 +325,7 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
                     face_restorer.select(render_weight, face_restorer, weight)
 
                 process.click(infer.infer_video, 
-                              [video_input, audio_input, padding, face_restorer, mel_step_size, weight, upscale_bg, bg_model, gan],
+                              [video_input, audio_input, padding, face_restorer, mel_step_size, weight, upscale_bg, bg_model, gan, loop],
                               [video_output])
 
     with gr.Tab(label="Guide", elem_id="tab", elem_classes=["tabs"]):

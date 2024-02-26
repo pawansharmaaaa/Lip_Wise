@@ -362,13 +362,13 @@ def infer_video(video_path, audio_path, pad,
 
                 frames[mask_batch[batch_no]] = restored_images
 
-            print(f"Writing batch no: {batch_no} out of total {est_total_batches} batches.")
             for frame in frames:
                 if upscale_bg:
                     frame, _ = ml.restore_background(frame, bgupscaler, tile=400, outscale=1.0, half=False)
                 writer.write(frame)
             batch_no += 1
             p_bar.__call__((batch_no, est_total_batches))
+            print(f"Writing batch no: {batch_no} out of total {est_total_batches} batches.")
 
             images = []
 
