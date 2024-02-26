@@ -5,7 +5,7 @@ then
     sudo apt-get install ffmpeg
 fi
 # Get python version:
-python_version=$(python -v)
+python_version=$(python --version | cut -d " " -f 2 | cut -d "." -f 1,2)
 
 # Check if python3-venv is installed
 if ! dpkg-query -W -f='${Status}' python${python_verison}-venv 2>/dev/null | grep -q "ok installed"; 
