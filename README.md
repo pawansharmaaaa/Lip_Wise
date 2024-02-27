@@ -7,14 +7,77 @@
 
 ---
 
-<div style="display: flex; justify-content: flex-start; margin-top:20px;">
-    <img src="https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/84e0a59e-84c5-476c-9c20-c717b3519cf6">
+<style>
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #1E2533FF;
+        margin-bottom: 0px;
+        padding: 1rem 1rem;
+        border-radius: 8px 8px 8px 8px;
+    }
+
+    .header-left {
+        display: inline-block;
+        gap: 0rem;
+    }
+
+    .header-left h1 {
+        background-color: black;
+        color: white;
+        border-radius: 8px 8px 0px 0px;
+        font-size: 1rem;
+        font-weight: 700;
+        padding: 0.5rem;
+        text-align: left;
+        margin-bottom: 0.5em;
+        text-shadow: hsla(0, 2%, 9%, 0.747) 0 1px 30px;
+    }
+
+    .header-left h2 {
+        background-color: white;
+        color: black;
+        border-radius: 0px 0px 8px 8px; 
+        font-size: 0.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 1em;
+        padding: 0.2rem;
+        text-shadow: hsla(0, 2%, 9%, 0.747) 0 1px 30px;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+    }
+
+    .header-left h1,
+    .header-left h2 {
+        margin: 0;
+    }
+
+    .header-right img {
+        max-width: 20rem;
+        height: auto;
+        padding: 2px;
+        background-color: transparent;
+    }
+</style>
+
+<header>
+<div class="header-left">
+    <h1 class="text">GITHUB</h1>
+    <h2 class="text2">STATS</h2>
+</div>
+<div class="header-right">
     <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social">
     <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social">
     <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social">
     <img src="https://img.shields.io/github/contributors/pawansharmaaaa/Lip_Wise?style=social&logo=github">
     <img src="https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github">
 </div>
+</header>
 
 ---
 
@@ -67,53 +130,6 @@ LipWise is a powerful Lip-Syncing tool that leverages optimized inference for Wa
 > * Make `launch.sh` an executable
 >   * `chmod +x ./launch.sh`
 > * Run `launch.sh` by double clicking on it.
-
----
-
-## :memo: **TO-DO** List:
-
-#### URGENT REQUIREMENTS
-- [x] setup.bat / setup.sh
-    - [x] create venv
-    - [x] install requirements inside venv
-- [x] CodeFormer arch initialization
-- [ ] Documentation
-
-#### PREPROCESS
-- [x] Add directory check in inference in the beginning.
-- [x] Make preprocessing optimal.
-- [x] Clear ram after no_face_filter.
-- [x] Make face coordinates reusable:
-    - [x] Saving facial coordinates as .npy file.
-    - [x] Alter code to also include eye coordinates.
-
-#### IMPROVING GAN UPSCALING
-- [x] Merge Data Pipeline with preprocessor:
-    - [x] Remove need to recrop, realign and rewarp the image.
-
-#### IMPROVING WAV2LIP
-- [x] Merge all data Pipeline:
-    - [x] Remove the need to recrop, realign, renormalizing etc.
-    - [x] Devise a way to keep frames without face in the video.
-        - [x] Understand Mels and working of wav2lip model.
-
-#### OPTIONAL
-- [x] Gradio UI
-    - [x] A tab for Video, Audio and Output.
-    - [x] A tab for Image, Audio and output.
-
-#### FURTHER IMPROVEMENTS
-- [ ] Inference without restorer
-- [ ] Model Improvement
-- [ ] Implement no_face_filter too
-
-#### FUTURE PLANS
-- [ ] Face and Audio wise Lipsync using face recognition.
-- [ ] A separate tab for TTS.
-
-#### COLAB NOTEBOOK
-- [x] Optimize Inference.
-- [x] Implement Checks.
 
 ---
 
