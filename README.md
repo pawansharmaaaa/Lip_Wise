@@ -105,5 +105,6 @@
 
 * <a href="https://github.com/Rudrabha/Wav2Lip" target="_blank">Wav2Lip</a>
 * <a href="https://github.com/sczhou/CodeFormer" target="_blank">CodeFormer</a>
-* <a href="https://github.com/TencentARC/GFPGAN" target="_blank">GFPGAN</a>
+* <a href="https://github.com/TencentARC/GFPGAN" target="_blank">GFPGAN and RestoreFormer</a>
 * <a href="https://github.com/googlesamples/mediapipe" target="_blank">MediaPipe</a>
+* <a href="https://github.com/xinntao/Real-ESRGAN" target="_blank">RealESRGAN</a>
