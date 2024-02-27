@@ -83,6 +83,19 @@ Lip-Wise is a powerful Lip-Syncing tool that leverages optimized inference for W
 
 ---
 
+# **FEATURES**
+* **Face Restoration Empowered by CodeFormer or GFPGAN:**
+    * Streamlined inference through the elimination of redundant processes.
+    * Enhanced efficiency with multi-threading implemented for the majority of preprocessing steps.
+* **Easy to use UI**
+* **Unrestricted Video Compatibility:**
+    * The limitation of requiring a face in every frame of the video has been lifted, allowing for greater versatility.  
+* **Enhanced face detection using Mediapipe:**
+    * masks generated using facial landmarks, leading to superior pasting results.
+    * Facial landmarks are meticulously stored as npy files, conserving processing resources when utilizing the same video repeatedly.
+* **Effortless Setup:**
+    *  With the exception of manual CUDA installation, the setup process is remarkably seamless, as outlined below.
+
 ## :hugs: ACKNOWLEDGEMENTS:
 
 #### Thanks to the following open-source projects:
