@@ -11,10 +11,10 @@
 
 ---
 
-<center>
+<div align="center">
     > [!IMPORTANT]
     > Please Help by starring the repo. :grin:
-</center>
+</div>
 
 ---
 
