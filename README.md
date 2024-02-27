@@ -64,7 +64,6 @@
         background-color: transparent;
     }
 </style>
-
 <header>
 <div class="header-left">
     <h1 class="text">GITHUB</h1>
