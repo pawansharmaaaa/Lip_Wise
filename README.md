@@ -1,46 +1,49 @@
-<div style="display: flex; justify-content: space-between;">
-    <img src = "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/cca4987a-18e5-49f1-9eba-710f3c0655a7"></img>
-    <img src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5bc1b8af-879a-414b-b54a-db605a53c8f7"><img>
+<p align="center" style="padding: 1rem;">
+    <img style="width: 30rem;" src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5bc1b8af-879a-414b-b54a-db605a53c8f7"><img>
+</p>
+<div align="center" style="padding: 1rem;">
+    <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social" style="padding: 0.3rem;">
+    <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social" style="padding: 0.3rem;">
+    <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social" style="padding: 0.3rem;">
+    <img src="https://img.shields.io/github/contributors/pawansharmaaaa/Lip_Wise?style=social&logo=github" style="padding: 0.3rem;">
+    <img src="https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github" style="padding: 0.3rem;">
 </div>
+
+<h1 align="center" style="padding: 1rem;">
+    <a href='https://colab.research.google.com/drive/1RSqHSi-ufSQCOlBGxCr8WOma1ihJuX9I?usp=sharing' target="_blank"><img alt='Open in Google Colab' src='https://img.shields.io/badge/OPEN_IN COLAB-100000?style=for-the-badge&logo=Google Colab&logoColor=927123&labelColor=black&color=ffffff'/></a>
+</h1>
 
 > [!IMPORTANT]
 > Please Help by starring the repo. :grin:
 
 ---
 
-<div style="display: flex; justify-content: flex-start; margin-top:20px;">
-    <img src="https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/84e0a59e-84c5-476c-9c20-c717b3519cf6">
-    <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social">
-    <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social">
-    <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social">
-    <img src="https://img.shields.io/github/contributors/pawansharmaaaa/Lip_Wise?style=social&logo=github">
-    <img src="https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github">
-</div>
+**Lip-Wise leverages Wav2Lip for audio-to-lip generation, seamlessly integrating with cutting-edge face restoration models (CodeFormer, GFPGAN, RestoreFormer) for added realism. MediaPipe ensures precise facial landmark detection, while RealESRGAN enhances background quality. Simply provide an audio clip and a reference video, and Lip-Wise orchestrates the process to deliver stunning results.**
+
+**Here's what makes Lip-Wise stand out:**
+
+- **Effortless Workflow**: Unleash your creativity with an intuitive and user-friendly interface.
+- **Unleash Your Vision**: No more limitations - use any video, even those without a face in every frame.
+- **Precision Meets Efficiency**: Combining enhanced face detection, landmark recognition, and streamlined processing delivers superior results with significantly faster performance.
+- **Simplified Setup**: Get started quickly with minimal technical hassle - a breeze even for beginners.
 
 ---
 
-## **Introduction**
-
-LipWise is a powerful video dubbing tool that leverages optimized inference for Wav2Lip, a cutting-edge deep learning model dedicated to generating lip-synced videos. It functions by carefully processing an input audio clip alongside a reference video featuring a speaker. This process utilizes the advanced face restoration capabilities of state-of-the-art models like GFPGAN and CodeFormer. These sophisticated models seamlessly integrate the new audio with the lip movements of the reference video, resulting in a stunningly natural and realistic final output.
-
-* **Face Restoration Empowered by CodeFormer or GFPGAN:**
-    * Streamlined inference through the elimination of redundant processes.
-    * Enhanced efficiency with multi-threading implemented for the majority of preprocessing steps.
-* **Unrestricted Video Compatibility:**
-    * The limitation of requiring a face in every frame of the video has been lifted, allowing for greater versatility.  
-* **Enhanced face detection using Mediapipe:**
-    * masks generated using facial landmarks, leading to superior pasting results.
-    * Facial landmarks are meticulously stored as npy files, conserving processing resources when utilizing the same video repeatedly.
-* **Effortless Setup:**
-    *  With the exception of manual CUDA installation, the setup process is remarkably seamless, as outlined below.
-
----
+# UI Screenshots:
+<p align="center" style="padding: 1rem;">
+    <img height="400" padding="1rem" src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/c69c1973-5350-4b1b-a6d7-1c00212d1757"></img>
+    <img height="400" padding="1rem" src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/87749293-2bdf-48fa-8744-c3a4fdf72925"></img>
+</p>
 
 # :eyeglasses: **INSTALLATION**
-### :softball: **TRIAL**
-<a href='https://colab.research.google.com/drive/1RSqHSi-ufSQCOlBGxCr8WOma1ihJuX9I?usp=sharing' target="_blank"><img alt='Open in Google Colab' src='https://img.shields.io/badge/OPEN_IN COLAB-100000?style=for-the-badge&logo=Google Colab&logoColor=927123&labelColor=black&color=ffffff'/></a>
-> [!TIP]
-> Use GPU runtime for faster processing.
+### :softball: **GETTING STARTED** 
+<div align="center">
+    <a href='https://colab.research.google.com/drive/1RSqHSi-ufSQCOlBGxCr8WOma1ihJuX9I?usp=sharing' target="_blank"><img alt='Open in Google Colab' src='https://img.shields.io/badge/OPEN_IN COLAB-100000?style=for-the-badge&logo=Google Colab&logoColor=927123&labelColor=black&color=ffffff'/></a>
+</div>
+
+<div align="center">
+    <p style="padding: 0.5rem;">💡Tip: Make sure to use GPU runtime for faster processing.</p>
+</div>
 
 ---
 
@@ -70,59 +73,38 @@ LipWise is a powerful video dubbing tool that leverages optimized inference for 
 
 ---
 
-## :memo: **TO-DO** List:
+# **FEATURES**
 
-#### URGENT REQUIREMENTS
-- [x] setup.bat / setup.sh
-    - [x] create venv
-    - [x] install requirements inside venv
-- [x] CodeFormer arch initialization
-- [ ] Documentation
+**LipWise empowers you to create stunningly realistic and natural results, combining the power of AI with user-friendly features:**
 
-#### PREPROCESS
-- [x] Add directory check in inference in the beginning.
-- [x] Make preprocessing optimal.
-- [x] Clear ram after no_face_filter.
-- [x] Make face coordinates reusable:
-    - [x] Saving facial coordinates as .npy file.
-    - [x] Alter code to also include eye coordinates.
+#### **Media Versatility:**
 
-#### IMPROVING GAN UPSCALING
-- [x] Merge Data Pipeline with preprocessor:
-    - [x] Remove need to recrop, realign and rewarp the image.
+- **Process both images and videos:** Breathe life into your visuals, regardless of format.
+- **Advanced image and video preprocessing:** Ensure optimal quality for exceptional results.
 
-#### IMPROVING WAV2LIP
-- [x] Merge all data Pipeline:
-    - [x] Remove the need to recrop, realign, renormalizing etc.
-    - [x] Devise a way to keep frames without face in the video.
-        - [x] Understand Mels and working of wav2lip model.
+#### **Cutting-edge Restoration:**
 
-#### OPTIONAL
-- [x] Gradio UI
-    - [x] A tab for Video, Audio and Output.
-    - [x] A tab for Image, Audio and output.
+- **Harness the power of leading models:** GFPGAN, RestoreFormer, and CodeFormer work in tandem to deliver exceptional detail and clarity.
+- **RealESRGAN integration:** Enhance the background quality of your visuals effortlessly.
 
-#### FURTHER IMPROVEMENTS
-- [ ] Inference without restorer
-- [ ] Model Improvement
-- [ ] Implement no_face_filter too
+#### **Image Processing:**
 
-#### FUTURE PLANS
-- [ ] Face and Audio wise Lipsync using face recognition.
-- [ ] A separate tab for TTS.
+- **3D alignment in process image:** Achieve unparalleled realism with precise facial landmark detection.
 
-#### COLAB NOTEBOOK
-- [x] Optimize Inference.
-- [x] Implement Checks.
+#### **Video Processing:**
 
----
+- **No need for face in every frame:** LipWise intelligently interpolates missing frames, ensuring smooth transitions and realistic lip movements.
+- **Fast inference:** Enjoy a fluid experience with rapid video processing.
+- **Video looping:** Create seamless looping videos with consistent results.
+- **RealESRGAN integration:** Elevate the background quality of your videos effortlessly
 
 ## :hugs: ACKNOWLEDGEMENTS:
 
-#### Thanks to the following open-source projects:
+### Thanks to the following open-source projects:
 [![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)[![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)](https://www.tensorflow.org/)
 
 * <a href="https://github.com/Rudrabha/Wav2Lip" target="_blank">Wav2Lip</a>
 * <a href="https://github.com/sczhou/CodeFormer" target="_blank">CodeFormer</a>
-* <a href="https://github.com/TencentARC/GFPGAN" target="_blank">GFPGAN</a>
+* <a href="https://github.com/TencentARC/GFPGAN" target="_blank">GFPGAN and RestoreFormer</a>
 * <a href="https://github.com/googlesamples/mediapipe" target="_blank">MediaPipe</a>
+* <a href="https://github.com/xinntao/Real-ESRGAN" target="_blank">RealESRGAN</a>

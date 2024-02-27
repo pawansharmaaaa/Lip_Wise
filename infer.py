@@ -28,10 +28,18 @@ NPY_FILES_DIRECTORY = file_check.NPY_FILES_DIR
 OUTPUT_DIRECTORY = file_check.OUTPUT_DIR
 
 #################################################### IMAGE INFERENCE ####################################################
-def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = 'CodeFormer', fps=30, mel_step_size=16, weight = 1.0, upscale_bg = False, bgupscaler='RealESRGAN_x4plus'):
+@torch.no_grad()
+def infer_image(frame_path, audio_path, pad, align_3d = False, 
+                face_restorer = 'CodeFormer', 
+                fps=30, 
+                mel_step_size=16, 
+                weight = 1.0, 
+                upscale_bg = False, 
+                bgupscaler='RealESRGAN_x4plus',
+                gan=False):
     
     # Perform checks to ensure that all required files are present
-    file_check.perform_check(model_name=bgupscaler)
+    file_check.perform_check(bg_model_name=bgupscaler, restorer=face_restorer, use_gan_version=gan)
 
     # Get input type
     input_type, img_ext = file_check.get_file_type(frame_path)
@@ -43,14 +51,21 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     if audio_type != "audio":
         raise Exception("Input file is not an audio.")
     if aud_ext != "wav":
-        print("Audio file is not a wav file. Converting to wav...")
+        gr.Info("Audio file is not a wav file. Converting to wav...")
         # Convert audio to wav
         command = 'ffmpeg -y -i {} -strict -2 {}'.format(audio_path, os.path.join(MEDIA_DIRECTORY, 'aud_input.wav'))
         subprocess.call(command, shell=True)
         audio_path = os.path.join(MEDIA_DIRECTORY, 'aud_input.wav')
     
     # Check for cuda
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    free_memory = torch.cuda.mem_get_info()[0]
+    print(f"Initial Free Memory: {free_memory/1024**3:.2f} GB")
+
+    # Limiting the number of threads to avoid vram issues
+    limit = free_memory // 2e9
+
+    # Do not use GPU if free memory is less than 2GB
+    device = 'cuda' if torch.cuda.is_available() and limit!=0 else 'cpu'
     print(f'Using {device} for inference.')
 
     # Generate audio spectrogram
@@ -92,6 +107,9 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     # Create face helper object from landmarks
     helper = pmp.FaceHelpers(image_mode=True)
 
+    # Create progress bar
+    p_bar = gr.Progress()
+
     # extract face from image
     print("Extracting face from image...")
     extracted_face, mask, inv_mask, center, bbox = helper.extract_face(original_img=frame)
@@ -101,22 +119,25 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
     cropped_face, aligned_bbox, rotation_matrix = helper.align_crop_face(extracted_face=extracted_face)
     cropped_face_height, cropped_face_width, _ = cropped_face.shape
 
+    total = pmp.Total_stat()
     # Generate data for inference
     print("Generating data for inference...")
-    gen = helper.gen_data_image_mode(cropped_face, mel_chunks)
+    gen = helper.gen_data_image_mode(cropped_face, mel_chunks, total)
 
     # Create model loader object
     ml = model_loaders.ModelLoader(face_restorer, weight)
 
     # Load wav2lip model
-    w2l_model = ml.load_wav2lip_model()
+    w2l_model = ml.load_wav2lip_model(gan=gan)
 
     # Initialize video writer
     out = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
     print("Processing.....")
+    p_bar.__call__(0, desc=f"Initializing Lip Sync...")
+    batch_no = 1
     # Feed to model:
-    for (img_batch, mel_batch) in gr.Progress(track_tqdm=True).tqdm(gen, total=len(mel_chunks)):
+    for (img_batch, mel_batch) in gen:
         img_batch = torch.FloatTensor(np.transpose(img_batch, (0, 3, 1, 2))).to(device)
         mel_batch = torch.FloatTensor(np.transpose(mel_batch, (0, 3, 1, 2))).to(device)
 
@@ -126,37 +147,62 @@ def infer_image(frame_path, audio_path, pad, align_3d = False, face_restorer = '
         dubbed_faces = dubbed_faces.cpu().numpy().transpose(0, 2, 3, 1) * 255.
 
         if face_restorer == 'CodeFormer':
-            with ThreadPoolExecutor() as executor:
+            with ThreadPoolExecutor(max_workers=limit) as executor:
                 restored_faces = list(executor.map(ml.restore_wCodeFormer, dubbed_faces))
         elif face_restorer == 'GFPGAN':
-            with ThreadPoolExecutor() as executor:
+            with ThreadPoolExecutor(max_workers=limit) as executor:
                 restored_faces = list(executor.map(ml.restore_wGFPGAN, dubbed_faces))
+        elif face_restorer == 'RestoreFormer':
+            with ThreadPoolExecutor(max_workers=limit) as executor:
+                restored_faces = list(executor.map(ml.restore_wRF, dubbed_faces))
+        elif face_restorer == "None":
+            restored_faces = dubbed_faces
+        else:
+            raise Exception("Invalid face restorer model. Please check the model name and try again.")
 
-        for face in restored_faces:
+        up_progress = gr.Progress()
+        for idx, face in enumerate(restored_faces):
             processed_face = cv2.resize(face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
-            processed_ready = helper.paste_back_black_bg(processed_face, aligned_bbox, frame)
+            processed_ready = helper.paste_back_black_bg(processed_face, aligned_bbox, frame, ml)
             ready_to_paste = helper.unwarp_align(processed_ready, rotation_matrix)
             final = helper.paste_back(ready_to_paste, frame, mask, inv_mask, center)
 
             if upscale_bg:
+                up_progress.__call__((idx, len(restored_faces)), desc=f"Upscaling frame: {idx} out of {len(restored_faces)} in batch: {batch_no}/{total.mels}")
                 final, _ = ml.restore_background(final, bgupscaler, tile=400, outscale=1.0, half=False)
 
             out.write(final)
+        p_bar.__call__((batch_no, total.mels), desc=f"Processed batch: {batch_no} out of {total.mels}")
+        batch_no += 1
                 
     out.release()
     del gen
+    
+    p_bar2 = gr.Progress()
+    p_bar2.__call__((25, 100), desc=f"Merging audio and video...")
+    
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, file_name)}"
     subprocess.call(command, shell=platform.system() != 'Windows')
 
-    print(f"Done! Check {file_name} in output directory.")
+    p_bar2.__call__((100, 100), desc=f"Done!")
+
+    gr.Info(f"Done! Check {file_name} in output directory.")
 
     return os.path.join(OUTPUT_DIRECTORY, file_name)
 
 ################################################## VIDEO INFERENCE ##################################################
 
-def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step_size=16, weight = 1.0, upscale_bg = False, bgupscaler='RealESRGAN_x4plus'):
+@torch.no_grad()
+def infer_video(video_path, audio_path, pad, 
+                face_restorer='CodeFormer',
+                mel_step_size=16, 
+                weight = 1.0, 
+                upscale_bg = False, 
+                bgupscaler='RealESRGAN_x2plus',
+                gan=False,
+                loop=False):
     # Perform checks to ensure that all required files are present
-    file_check.perform_check(model_name=bgupscaler)
+    file_check.perform_check(bg_model_name=bgupscaler, restorer=face_restorer, use_gan_version=gan)
 
     # Get input type
     input_type, vid_ext = file_check.get_file_type(video_path)
@@ -168,7 +214,7 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
     if audio_type != "audio":
         raise Exception("Input file is not an audio.")
     if aud_ext != "wav":
-        print("Audio file is not a wav file. Converting to wav...")
+        gr.Info("Audio file is not a wav file. Converting to wav...")
         # Convert audio to wav
         command = 'ffmpeg -y -i {} -strict -2 {}'.format(audio_path, os.path.join(MEDIA_DIRECTORY, 'aud_input.wav'))
         subprocess.call(command, shell=True)
@@ -177,12 +223,25 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
     # Create media_preprocess object and helper object
     processor = pmp.ModelProcessor(padding=pad)
 
+    if loop:
+        gr.Info("Looping video...")
+        video_path = processor.loop_video(video_path=video_path, audio_path=audio_path)
+    else:
+        pass
+
     # Get face landmarks
-    print("Getting face landmarks...")
+    gr.Info("Getting face landmarks...")
     processor.detect_for_video(video_path)
     
     # Check for cuda
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    free_memory = torch.cuda.mem_get_info()[0]
+    gr.Info(f"Initial Free Memory: {free_memory/1024**3:.2f} GB")
+
+    # Limiting the number of threads to avoid vram issues
+    limit = free_memory // 2e9
+
+    # Do not use GPU if free memory is less than 2GB
+    device = 'cuda' if torch.cuda.is_available() and limit!=0 else 'cpu'
     print(f'Using {device} for inference.')
 
     # Generate audio spectrogram
@@ -215,10 +274,10 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
         i += 1
 
     if len(mel_chunks) > frame_count:
-        print("Audio is longer than video. Truncating audio...")
+        gr.Info("Audio is longer than video. Truncating audio...")
         mel_chunks = mel_chunks[:frame_count]
     elif len(mel_chunks) < frame_count:
-        print("Video is longer than audio. Truncating video...")
+        gr.Info("Video is longer than audio. Truncating video...")
         frame_count = len(mel_chunks)
 
     # Creating Boolean mask
@@ -248,14 +307,15 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
     ml = model_loaders.ModelLoader(face_restorer, weight)
 
     # Load wav2lip model
-    w2l_model = ml.load_wav2lip_model()
+    w2l_model = ml.load_wav2lip_model(gan=gan)
 
     # Start image processing
     images = []
     batch_no = 0
-    est_total_batches = len(mel_chunks_batch) + 1
+    est_total_batches = len(mel_chunks_batch)
 
     p_bar = gr.Progress()
+    p_bar.__call__((0, est_total_batches), desc=f"Initializing Lip Sync...")
 
     while True:
         ret, frame = video.read()
@@ -288,39 +348,53 @@ def infer_video(video_path, audio_path, pad, face_restorer='CodeFormer',mel_step
                 dubbed_faces = dubbed_faces.cpu().numpy().transpose(0, 2, 3, 1) * 255.
 
                 if face_restorer == 'CodeFormer':
-                    with ThreadPoolExecutor() as executor:
+                    with ThreadPoolExecutor(max_workers=limit) as executor:
                         restored_faces = list(executor.map(ml.restore_wCodeFormer, dubbed_faces))
                 elif face_restorer == 'GFPGAN':
-                    with ThreadPoolExecutor() as executor:
+                    with ThreadPoolExecutor(max_workers=limit) as executor:
                         restored_faces = list(executor.map(ml.restore_wGFPGAN, dubbed_faces))
+                elif face_restorer == 'RestoreFormer':
+                    with ThreadPoolExecutor(max_workers=limit) as executor:
+                        restored_faces = list(executor.map(ml.restore_wRF, dubbed_faces))
+                elif face_restorer == "None":
+                    restored_faces = dubbed_faces
+                else:
+                    raise Exception("Invalid face restorer model. Please check the model name and try again.")
                 
                 # Post processing
                 resized_restored_faces = bp.face_resize_batch(restored_faces, cropped_faces)
-                pasted_ready_faces = bp.paste_back_black_bg_batch(resized_restored_faces, aligned_bboxes, frames_to_input)
+                pasted_ready_faces = bp.paste_back_black_bg_batch(resized_restored_faces, aligned_bboxes, frames_to_input, ml)
                 ready_to_paste = bp.unwarp_align_batch(pasted_ready_faces, rotation_matrices)
                 restored_images = bp.paste_back_batch(ready_to_paste, frames_to_input, face_masks, inv_masks, centers)
 
                 frames[mask_batch[batch_no]] = restored_images
 
-            print(f"Writing batch no: {batch_no} out of total {est_total_batches} batches.")
-            for frame in frames:
+            up_progress = gr.Progress()
+            for idx, frame in enumerate(frames):
                 if upscale_bg:
+                    up_progress.__call__((idx, len(frames)), desc=f"Upscaling frame: {idx} out of {len(restored_faces)} in batch: {batch_no}/{est_total_batches}")
                     frame, _ = ml.restore_background(frame, bgupscaler, tile=400, outscale=1.0, half=False)
                 writer.write(frame)
+            
+            p_bar.__call__((batch_no+1, est_total_batches), desc=f"Processed batch: {batch_no} out of {est_total_batches}")
+            print(f"Writing batch no: {batch_no+1} out of total {est_total_batches} batches.")
             batch_no += 1
-            p_bar.__call__((batch_no, est_total_batches))
 
             images = []
 
             if batch_no == len(mel_chunks_batch):
-                print("Reached end of Audio, Video has been dubbed.")
+                gr.Info("Reached end of Audio, Video has been dubbed.")
                 break
 
     video.release()
     writer.release()
 
-    command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, file_name)}"
+    p_bar2 = gr.Progress()
+    p_bar2.__call__((25, 100), desc=f"Merging audio and video...")
+    
+    command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 -shortest {os.path.join(OUTPUT_DIRECTORY, file_name)}"
     subprocess.call(command, shell=platform.system() != 'Windows')
-    p_bar.__call__((est_total_batches, est_total_batches))
+    
+    p_bar2.__call__((100,100), desc="Merging audio and video...")
 
     return os.path.join(OUTPUT_DIRECTORY, file_name)

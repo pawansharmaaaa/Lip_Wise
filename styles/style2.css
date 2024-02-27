@@ -1,0 +1,302 @@
+/* ------------------------------------------------------Colors and Gradients------------------------------------------------------ */
+:root {
+    --back_gradient_dark: linear-gradient(315deg, #0cbaba 0%, #380036 74%);
+    --header_text: #efe7ff;
+    --header_text_shadow: hsla(0, 85%, 79%, 0.747) 0 1px 30px;
+    --tab_selected_background: rgba(0, 0, 0, 0.4);
+    --button_shadow_hover: #503fcd80 0 1px 30px;
+    --foreground_gradient_tr: radial-gradient( circle farthest-corner at -4% -12.9%,  rgb(32, 46, 54) 0.3%, rgba(30,33,48,1) 90.2% );
+    --primary_input: linear-gradient(315deg, rgba(141, 134, 169, 0.5) 0%, rgba(224, 28, 52, 0.5) 74%);
+    --primary_input_old: linear-gradient(315deg, #8d86a9 0%, #e01c34 74%);
+    --primary_input_button: linear-gradient(to right, #ff7e5f 0%, #feb47b  51%, #ff7e5f  100%);     
+             
+    .btn-grad {
+        background-image: linear-gradient(to right, #141E30 0%, #243B55  51%, #141E30  100%);
+        margin: 10px;
+        padding: 15px 45px;
+        text-align: center;
+        text-transform: uppercase;
+        transition: 0.5s;
+        background-size: 200% auto;
+        color: white;            
+        box-shadow: 0 0 20px #eee;
+        border-radius: 10px;
+        display: block;
+      }
+
+      .btn-grad:hover {
+        background-position: right center; /* change the direction of the change here */
+        color: #fff;
+        text-decoration: none;
+      }
+
+    --primary_input_hover: rgba(80, 63, 205, 0.5) 0 1px 30px;
+    --primary_input_shadow: rgba(80, 63, 205, 0.5) 0 1px 30px;
+    --primary_grad_shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
+    --dropdown_background: rgb(0, 0, 0);
+}
+/* Title as Header*/
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: transparent; /* Change background color as needed */
+    margin-bottom: 0px;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Space between h1 and h2 */
+}
+
+.header-left h1 {
+    color: #efe7ff; 
+    font-size: 2.5em; 
+    font-weight: 700; 
+    text-align: left; 
+    margin-bottom: 0.5em;
+    text-shadow: hsla(0, 85%, 79%, 0.747) 0 1px 30px;
+}
+
+.header-left h2 {
+    color: #efe7ff; 
+    font-size: 1.5em; 
+    font-weight: 500; 
+    text-align: center; 
+    margin-bottom: 1em;
+    padding: 0.2rem;
+    text-shadow: hsla(0, 85%, 79%, 0.747) 0 1px 30px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.header-left h1, .header-left h2 {
+    margin: 0; /* Remove default margin */
+}
+
+.header-right img {
+    max-width: 200px; /* Adjust max-width for your logo */
+    height: auto;
+}
+/* ------------------------------------------------------Gradio Container----------------------------------------------------------------- */
+
+.gradio-container {
+    display: flex;
+    background: transparent;
+}
+
+.app.svelte-182fdeq.svelte-182fdeq {
+    padding: 16px 16px 16px 16px;
+}
+
+/* ------------------------------------------------------Gradio Content----------------------------------------------------------------- */
+
+/* Tabs */
+.tabs{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px 8px 8px 8px;
+    border-style: hidden;
+    background: transparent;
+}
+/* .tabs:hover{
+    box-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
+    transition-duration: .5s;
+} */
+
+/* Tab Headings */
+.tabs h1{
+    font-size: 2rem;
+    -webkit-text-fill-color: var(--header_text);
+    text-shadow: var(--header_text_shadow);
+    place-items: center;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    background-image: var(--primary_input);
+    border-radius: 8px 8px 8px 8px;
+    box-shadow: var(--primary_grad_shadow);
+}
+
+/* Tab Button */
+#tab-button{
+    border-radius: 8px 8px 8px 8px;
+    margin: 5px 5px 5px 5px;
+    border-style: none;
+    box-sizing: border-box;
+    box-shadow: var(--primary_grad_shadow);
+    cursor: pointer;
+    flex-shrink: 0;
+    font-family: "JetBrains Mono","Inter UI","SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    height: 4rem;
+    padding: 0 1.6rem;
+    text-align: center;
+    text-shadow: var(--header_text_shadow);
+    transition: all .5s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+#tab-button:hover {
+    /* background: linear-gradient(315deg, #090947 0%, #5a585a 74%); */
+    background: var(--tab_selected_background);
+    box-shadow: var(--button_shadow_hover);
+    transition-duration: .1s;
+}
+#tab-button.selected {
+    background: linear-gradient(to right, #141E30 0%, #243B55  51%, #141E30  100%);
+    /* background: var(--tab_selected_background); */
+    transition-duration: .1s;
+}
+
+/* rows */
+.row {
+    font-family: 'JetBrains Mono', 'sans-serif';
+}
+
+/* Accordion */
+.accordion {
+    /* background-color: #4d4855; */
+    background-image: var(--foreground_gradient_tr);
+    border-radius: 8px 8px 8px 8px;
+}
+.accordion .block {
+    background-image: var(--foreground_gradient_tr);
+    border-radius: auto;
+}
+
+/* OPT Input */
+input[type="number"].svelte-3iwdd6 {
+    background-image: var(--primary_input);
+    border-radius: 8px 8px 8px 8px;
+}
+
+/* Dropdown */
+.container.svelte-1evtqhp .wrap.svelte-1evtqhp {
+    background-image: var(--primary_input);
+    border-radius: 8px 8px 8px 8px;
+    padding: 0%;
+    border-style: none;
+}
+
+/* Dropdown fallback Colab */
+.container.svelte-vomtxz .wrap.svelte-vomtxz {
+    background-image: var(--primary_input);
+    border-radius: 8px 8px 8px 8px;
+    padding: 0%;
+    border-style: none;
+}
+
+/* Guide accordian */
+.guide {
+    background-image: var(--back_gradient_dark);
+    border-radius: 8px 8px 8px 8px;
+}
+/* accordian-inner-block in guide */
+.guide .block div {
+    font-family: 'JetBrains Mono', 'sans-serif';
+    margin: 8px 0 8px 0;
+    padding: 8px 16px 8px 16px;
+    border-radius: 8px 8px 8px 8px;
+    background-color: transparent;
+}
+
+.guide blockquote {
+    font-family: 'JetBrains Mono', 'sans-serif';
+    text-shadow: var(--header_text_shadow);
+    margin: 8px 0 8px 0;
+    padding: 8px 16px 8px 16px;
+    border-radius: 8px 8px 8px 8px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.guide button span {
+    font-family: 'JetBrains Mono', 'sans-serif';
+    font-size: 1.2rem;
+    -webkit-text-fill-color: var(--header_text);
+    text-shadow: var(--header_text_shadow);
+    justify-content: center;
+    align-items: center;
+}
+
+/* Standard Button */
+#gen-button {
+    /* background-image: linear-gradient(92.88deg, #455EB5 9.16%, #5643CC 43.89%, #673FD7 64.72%); */
+    /* background-image: linear-gradient(to right, #2C5364, #203A43, #0F2027); */
+    background-image: var(--primary_input_button);
+    border-radius: 8px;
+    border-style: none;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-family: "JetBrains","Inter UI","SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    height: 4rem;
+    padding: 0 1.6rem;
+    text-align: center;
+    text-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
+    transition: all .5s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    transition: 0.5s;
+    background-size: 200% auto;
+    display: block;
+}
+#gen-button:hover {
+    background-position: right center;
+    box-shadow: var(--primary_input_hover);
+    transition-duration: .1s;
+}
+@media (min-width: 768px) {
+    #gen-button {
+        padding: 0 2.6rem;
+    }
+}
+
+/* ---------------------------------------------------------Inputs----------------------------------------------------------------- */
+/* Slider Color */
+input[type="range"].svelte-3iwdd6 {
+    background-image: var(--primary_input);
+}
+
+/* Checked Box Color */
+input.svelte-3pzdsv.svelte-3pzdsv.svelte-3pzdsv:checked, input.svelte-3pzdsv.svelte-3pzdsv.svelte-3pzdsv:checked:hover, input.svelte-3pzdsv.svelte-3pzdsv.svelte-3pzdsv:checked:focus {
+    background-color: var(--primary_input);
+    border-color: var(--primary_input);
+    box-shadow: var(--primary_input_shadow);
+}
+
+/* Radio Button Color */
+input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j {
+    background-color: var(--primary_input);
+    border-color: var(--primary_input);
+    box-shadow: var(--primary_input_shadow);
+}
+input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j:checked, input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j:checked:hover, input.svelte-1mhtq7j.svelte-1mhtq7j.svelte-1mhtq7j:checked:focus {
+    background-color: var(--primary_input);
+    border-color: var(--primary_input);
+    box-shadow: var(--primary_input_shadow);
+}
+
+/* Radio span */
+label.svelte-1mhtq7j {
+    background-color: transparent;
+    border-radius: 8px 8px 8px 8px;
+}
+
+/* ----------------------------------------------------------------------Output------------------------------------------------------------ */
+.output {
+    font-family: 'JetBrains Mono', 'sans-serif';
+    background-image: radial-gradient( circle farthest-corner at -4% -12.9%,  rgb(32, 46, 54) 0.3%, rgba(30,33,48,1) 90.2% );
+}

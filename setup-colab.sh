@@ -5,12 +5,6 @@ then
     sudo apt-get install ffmpeg
 fi
 
-# Check if python3-venv is installed
-if ! dpkg-query -W -f='${Status}' python3.10-venv 2>/dev/null | grep -q "ok installed"; 
-then
-  sudo apt install python3.10-venv
-fi
-
 # Check if CUDA is installed
 if [ -z "$CUDA_PATH" ]
 then
