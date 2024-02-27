@@ -213,7 +213,8 @@ class ModelProcessor:
         video_landmarks = np.zeros((frame_count, 486, 2)).astype(np.float64)
         norm_pad_x = self.padding / dim.width
         norm_pad_y = self.padding / dim.height
-
+        
+        progress = gr.Progress()
         with FaceLandmarker.create_from_options(options_lan) as landmarker,FaceDetector.create_from_options(options_det) as detector:
             while video.isOpened():
 
@@ -225,6 +226,9 @@ class ModelProcessor:
                 # Convert frame to RGB and convert to MediaPipe image
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 mp_frame = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
+
+                # Show progress
+                progress.__call__((frame_no+1, frame_count), desc=f"Detecting faces at frame {frame_no} of {frame_count}")
 
                 # Run face detector and face landmark models in IMAGE mode
                 result_landmarker = landmarker.detect(mp_frame)
@@ -334,7 +338,7 @@ class ModelProcessor:
             gr.Warning("3D Alignment failed. No face detected in the image.")
             sys.exit(1)
 
-    def loop_video(self, video_path, audio_path):
+    def loop_video(self, video_path, audio_path, progress=gr.Progress()):
         """
         Loops the video to make it of the same length as audio.
 
@@ -346,21 +350,23 @@ class ModelProcessor:
             The path to the new video file.
         """
         from pydub.utils import mediainfo
+        progress.__call__((0,100), desc="Looping Video...")
 
         def get_duration(file_path):
             info = mediainfo(file_path)
             duration = info['duration']
             return duration
 
-        # Replace 'audio.mp3' and 'video.mp4' with your actual file paths
         audio_duration = get_duration(audio_path)
         video_duration = get_duration(video_path)
 
         loops = math.ceil(float(audio_duration) / float(video_duration))
+        progress.__call__((25,100), desc=f"Looping {loops} times...")
 
         dest_path = os.path.join(file_check.MEDIA_DIR, 'looped_video.mp4')
 
         os.system(f"ffmpeg -stream_loop {loops} -i {video_path} -c copy -v 0 -y {dest_path}")
+        progress.__call__((100,100), desc="Video Looping Complete")
 
         return dest_path
         

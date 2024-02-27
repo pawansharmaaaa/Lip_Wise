@@ -134,6 +134,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False,
     out = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
     print("Processing.....")
+    p_bar.__call__(0, desc=f"Initializing Lip Sync...")
     batch_no = 1
     # Feed to model:
     for (img_batch, mel_batch) in gen:
@@ -159,26 +160,31 @@ def infer_image(frame_path, audio_path, pad, align_3d = False,
         else:
             raise Exception("Invalid face restorer model. Please check the model name and try again.")
 
-        for face in restored_faces:
+        up_progress = gr.Progress()
+        for idx, face in enumerate(restored_faces):
             processed_face = cv2.resize(face, (cropped_face_width, cropped_face_height), interpolation=cv2.INTER_LANCZOS4)
             processed_ready = helper.paste_back_black_bg(processed_face, aligned_bbox, frame, ml)
             ready_to_paste = helper.unwarp_align(processed_ready, rotation_matrix)
             final = helper.paste_back(ready_to_paste, frame, mask, inv_mask, center)
 
             if upscale_bg:
+                up_progress.__call__((idx, len(restored_faces)), desc=f"Upscaling frame: {idx} out of {len(restored_faces)} in batch: {batch_no}/{total.mels}")
                 final, _ = ml.restore_background(final, bgupscaler, tile=400, outscale=1.0, half=False)
 
             out.write(final)
-
-        p_bar.__call__((batch_no, total.mels+1))
+        p_bar.__call__((batch_no, total.mels), desc=f"Processed batch: {batch_no} out of {total.mels}")
         batch_no += 1
                 
     out.release()
     del gen
+    
+    p_bar2 = gr.Progress()
+    p_bar2.__call__((25, 100), desc=f"Merging audio and video...")
+    
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 {os.path.join(OUTPUT_DIRECTORY, file_name)}"
     subprocess.call(command, shell=platform.system() != 'Windows')
 
-    p_bar.__call__((batch_no, total.mels+1))
+    p_bar2.__call__((100, 100), desc=f"Done!")
 
     gr.Info(f"Done! Check {file_name} in output directory.")
 
@@ -306,9 +312,10 @@ def infer_video(video_path, audio_path, pad,
     # Start image processing
     images = []
     batch_no = 0
-    est_total_batches = len(mel_chunks_batch) + 1
+    est_total_batches = len(mel_chunks_batch)
 
     p_bar = gr.Progress()
+    p_bar.__call__((0, est_total_batches), desc=f"Initializing Lip Sync...")
 
     while True:
         ret, frame = video.read()
@@ -362,13 +369,16 @@ def infer_video(video_path, audio_path, pad,
 
                 frames[mask_batch[batch_no]] = restored_images
 
-            for frame in frames:
+            up_progress = gr.Progress()
+            for idx, frame in enumerate(frames):
                 if upscale_bg:
+                    up_progress.__call__((idx, len(frames)), desc=f"Upscaling frame: {idx} out of {len(restored_faces)} in batch: {batch_no}/{est_total_batches}")
                     frame, _ = ml.restore_background(frame, bgupscaler, tile=400, outscale=1.0, half=False)
                 writer.write(frame)
+            
+            p_bar.__call__((batch_no+1, est_total_batches), desc=f"Processed batch: {batch_no} out of {est_total_batches}")
+            print(f"Writing batch no: {batch_no+1} out of total {est_total_batches} batches.")
             batch_no += 1
-            p_bar.__call__((batch_no, est_total_batches))
-            print(f"Writing batch no: {batch_no} out of total {est_total_batches} batches.")
 
             images = []
 
@@ -379,9 +389,12 @@ def infer_video(video_path, audio_path, pad,
     video.release()
     writer.release()
 
-    gr.Info("Merging audio and video...")
+    p_bar2 = gr.Progress()
+    p_bar2.__call__((25, 100), desc=f"Merging audio and video...")
+    
     command = f"ffmpeg -y -i {audio_path} -i {os.path.join(MEDIA_DIRECTORY, 'temp.mp4')} -strict -2 -q:v 1 -shortest {os.path.join(OUTPUT_DIRECTORY, file_name)}"
     subprocess.call(command, shell=platform.system() != 'Windows')
-    p_bar.__call__((est_total_batches, est_total_batches))
+    
+    p_bar2.__call__((100,100), desc="Merging audio and video...")
 
     return os.path.join(OUTPUT_DIRECTORY, file_name)

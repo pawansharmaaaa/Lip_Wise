@@ -55,7 +55,13 @@ theme = gr.themes.Base(
 ).set(
     shadow_drop='*shadow_inset',
     shadow_drop_lg='*button_shadow_hover',
-    block_info_text_weight='500',
+    block_info_text_size='md',
+    block_info_text_weight='800',
+    block_info_text_color_dark="#C494ACFF",
+    block_title_text_color_dark="#FFFFFFFF",
+    slider_color_dark="#B12805FF",
+    panel_border_color_dark="#B12805FF",
+    loader_color_dark="#C494ACFF",
     # body_background_fill="radial-gradient( circle farthest-corner at -4% -12.9%,  rgba(255,255,255,1) 0.3%, rgba(255,255,255,1) 90.2% );",
     # body_background_fill_dark= "linear-gradient(315deg, #0cbaba 0%, #380036 74%);"
     )
@@ -75,7 +81,6 @@ def render_dd(bg_upscale):
                         label="REALESRGAN Model",
                         value="RealESRGAN_x2plus",
                         info="Choose the model to use for upscaling the background.",
-                        # Initially disabled and hidden
                         visible=bg_upscale
                     )
 
@@ -158,15 +163,27 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
                                            label="Audio", 
                                            container=True)
                     
-                    process = gr.Button(value="Process Image", 
-                                        variant="primary", 
-                                        elem_id="gen-button")
-                    
             with gr.Column():
                 # gr.Markdown("# OUTPUT")
-                image_output = gr.Video(sources='upload', 
-                                        label="Output", 
-                                        elem_classes=["output"])
+                with gr.Column(scale=2):
+                    image_output = gr.Video(sources='upload', 
+                                            label="Output", 
+                                            elem_classes=["output"],
+                                            container=True,
+                                            show_share_button=True)
+                with gr.Column(scale=3):
+                    gr.HTML(
+                            '''
+                            <div class="separator"></div>
+                            ''')
+                with gr.Column(variant="panel", scale=2):
+                    process = gr.Button(value="Process Image",
+                                        variant="primary", 
+                                        elem_id="gen-button")
+                    clear = gr.ClearButton([image_input, audio_input, image_output],
+                                            value="Clear",
+                                            variant="secondary",
+                                            elem_id="clear-button")
 
         with gr.Accordion(label="OPTIONS", open=True, elem_classes=["opt_group", "accordion"]):
             with gr.Group():
@@ -247,7 +264,11 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
 
             process.click(infer.infer_image, 
                             [image_input, audio_input, padding, alignment, face_restorer, fps, mel_step_size, weight, upscale_bg, bg_model, gan],
-                            [image_output])
+                            [image_output],
+                            show_progress="full",
+                            trigger_mode="once")
+            
+            
 
     with gr.Tab(label="Process Video", elem_id="tab", elem_classes=["tabs"]):
         with gr.Row(elem_classes=["row"]):
@@ -258,15 +279,30 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
                                            label="Video")
                     audio_input = gr.Audio(type="filepath", 
                                            label="Audio")
-                    process = gr.Button(value="Process Video", 
-                                        variant="primary", 
-                                        elem_id="gen-button")
                     
             with gr.Column():
                 # gr.Markdown("# OUTPUT")
-                video_output = gr.Video(sources='upload', 
-                                        label="Output", 
-                                        elem_classes=["output"])
+                with gr.Column(scale=2):
+                    video_output = gr.Video(sources='upload', 
+                                            label="Output", 
+                                            elem_classes=["output"],
+                                            container=True,
+                                            show_share_button=True)
+                
+                with gr.Column(scale=3):
+                    gr.HTML(
+                            '''
+                            <div class="separator"></div>
+                            ''')
+                
+                with gr.Column(variant="panel"):
+                    process = gr.Button(value="Process Video", 
+                                        variant="primary", 
+                                        elem_id="gen-button")
+                    clear = gr.ClearButton([video_input, audio_input, video_output],
+                                            value="Clear",
+                                            variant="secondary",
+                                            elem_id="clear-button")
                 
         with gr.Accordion(label="OPTIONS", open=True, elem_classes=["opt_group", "accordion"]):
             with gr.Group():
@@ -326,7 +362,9 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
 
                 process.click(infer.infer_video, 
                               [video_input, audio_input, padding, face_restorer, mel_step_size, weight, upscale_bg, bg_model, gan, loop],
-                              [video_output])
+                              [video_output],
+                              trigger_mode="once",
+                              show_progress="full")
 
     with gr.Tab(label="Guide", elem_id="tab", elem_classes=["tabs"]):
         with gr.Accordion(label="Tips For Better Results", open=True, elem_classes=["guide"]):

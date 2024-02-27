@@ -10,6 +10,8 @@
     --primary-button: #C494ACFF;
     --secondary-button: #FFD3B6FF;
     --small-inputs: #B12805FF;
+    --primary-input-hover-shadow: #00ff80 0 0 0 3px, transparent 0 0 0 0;
+    --secondary-input-hover-shadow: #ff0000 0 0 0 3px, transparent 0 0 0 0;
 
     --info-font: "Manrope";
     --header-font: "Lexend";
@@ -243,34 +245,38 @@ input[type="number"].svelte-3iwdd6 {
 
 /* Standard Button */
 #gen-button {
-    /* background-image: linear-gradient(92.88deg, #455EB5 9.16%, #5643CC 43.89%, #673FD7 64.72%); */
-    /* background-image: linear-gradient(to right, #2C5364, #203A43, #0F2027); */
+    align-items: center;
     background-color: var(--primary-button);
-    border-radius: 8px;
-    border-style: none;
+    border-radius: 12px;
+    box-shadow: transparent 0 0 0 3px,rgba(18, 18, 18, .1) 0 6px 20px;
     box-sizing: border-box;
-    color: #FFFFFF;
+    max-height: 18rem;
+    min-height: 5rem;
+    color: #121212;
     cursor: pointer;
-    flex-shrink: 0;
-    font-family: "JetBrains", "Inter UI", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    height: 4rem;
-    padding: 0 1.6rem;
+    display: inline-flex;
+    flex: 1 1 auto;
+    font-family: Inter,sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    justify-content: center;
+    line-height: 1;
+    margin: 0;
+    outline: none;
+    padding: 1rem 1.2rem;
     text-align: center;
-    text-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
-    transition: all .5s;
+    text-decoration: none;
+    transition: box-shadow .2s,-webkit-box-shadow .2s;
+    white-space: nowrap;
+    border: 0;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
-    transition: 0.5s;
-    background-size: 200% auto;
-    display: block;
 }
 
 #gen-button:hover {
     background-position: right center;
-    box-shadow: var(--primary_input_hover);
+    box-shadow: var(--primary-input-hover-shadow);
     transition-duration: .1s;
 }
 
@@ -280,11 +286,63 @@ input[type="number"].svelte-3iwdd6 {
     }
 }
 
+/* Secondary Button */
+#clear-button {
+    align-items: center;
+    background-color: var(--secondary-button);
+    border-radius: 12px;
+    box-shadow: transparent 0 0 0 3px,rgba(18, 18, 18, .1) 0 6px 20px;
+    box-sizing: border-box;
+    max-height: 5rem;
+    min-height: 3rem;
+    color: #121212;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 1 1 auto;
+    font-family: Inter,sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    justify-content: center;
+    line-height: 1;
+    margin: 0;
+    outline: none;
+    padding: 1rem 1.2rem;
+    text-align: center;
+    text-decoration: none;
+    transition: box-shadow .2s,-webkit-box-shadow .2s;
+    white-space: nowrap;
+    border: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+#clear-button:hover {
+    background-position: right center;
+    box-shadow: var(--secondary-input-hover-shadow);
+    transition-duration: .1s;
+}
+
+@media (min-width: 768px) {
+    #clear-button {
+        padding: 0 2.6rem;
+    }
+}
+
+/*-----------blank Divs-----------*/
+.separator {
+    background-color: transparent;
+    border-radius: 8px 8px 8px 8px;
+    border-style: none;
+    padding: 0;
+    height: 6rem;
+}
+
 /* ---------------------------------------------------------Inputs----------------------------------------------------------------- */
 /* Slider Color */
-input[type="range"].svelte-3iwdd6 {
+/* input[type="range"].svelte-3iwdd6 {
     background-color: var(--small-inputs);
-}
+} */
 
 /* Checked Box Color */
 input.svelte-3pzdsv.svelte-3pzdsv.svelte-3pzdsv:checked,
