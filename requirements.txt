@@ -10,5 +10,5 @@ opencv-contrib-python>=4.8.1.78
 opencv-python>=4.8.1.78
 realesrgan>=0.3.0
 torch>=2.1.2
-torchvision>=0.16.2
+torchvision==0.16.2
 tqdm>=4.66.1
