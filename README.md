@@ -46,7 +46,7 @@ Lip-Wise is a powerful Lip-Syncing tool that leverages optimized inference for W
 ---
 
 # :eyeglasses: **INSTALLATION**
-### | :softball: **GETTING STARTED** |
+### :softball: **GETTING STARTED** 
 <div align="center">
     <a href='https://colab.research.google.com/drive/1RSqHSi-ufSQCOlBGxCr8WOma1ihJuX9I?usp=sharing' target="_blank"><img alt='Open in Google Colab' src='https://img.shields.io/badge/OPEN_IN COLAB-100000?style=for-the-badge&logo=Google Colab&logoColor=927123&labelColor=black&color=ffffff'/></a>
 </div>
