@@ -364,9 +364,13 @@ class ModelProcessor:
         progress.__call__((25,100), desc=f"Looping {loops} times...")
 
         dest_path = os.path.join(file_check.MEDIA_DIR, 'looped_video.mp4')
-
-        os.system(f"ffmpeg -stream_loop {loops} -i {video_path} -c copy -v 0 -y {dest_path}")
-        progress.__call__((100,100), desc="Video Looping Complete")
+        if loops > 1:
+            os.system(f"ffmpeg -stream_loop {loops} -i {video_path} -c copy -v 0 -y {dest_path}")
+            progress.__call__((100,100), desc="Video Looping Complete")
+        else:
+            dest_path = video_path
+            progress.__call__((100,100), desc="Video Looping Not Required")
+            print("Video is bigger than audio, no need to loop.")
 
         return dest_path
         
