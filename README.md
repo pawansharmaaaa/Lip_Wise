@@ -51,8 +51,10 @@ Lip-Wise is a powerful Lip-Syncing tool that leverages optimized inference for W
     <a href='https://colab.research.google.com/drive/1RSqHSi-ufSQCOlBGxCr8WOma1ihJuX9I?usp=sharing' target="_blank"><img alt='Open in Google Colab' src='https://img.shields.io/badge/OPEN_IN COLAB-100000?style=for-the-badge&logo=Google Colab&logoColor=927123&labelColor=black&color=ffffff'/></a>
 </div>
 
-> [!TIP]
-> Make sure to use GPU runtime for faster processing.
+---
+
+>> [!TIP]
+>> Make sure to use GPU runtime for faster processing.
 
 ---
 
