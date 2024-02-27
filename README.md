@@ -68,32 +68,33 @@ Lip-Wise leverages Wav2Lip for audio-to-lip generation, seamlessly integrating w
 ---
 
 # **FEATURES**
-LipWise empowers you to create stunningly realistic and natural results, combining the power of AI with user-friendly features:
 
-Media Versatility:
+**LipWise empowers you to create stunningly realistic and natural results, combining the power of AI with user-friendly features:**
 
-Process both images and videos: Breathe life into your visuals, regardless of format.
-Advanced image and video preprocessing: Ensure optimal quality for exceptional results.
-Cutting-edge Restoration:
+#### **Media Versatility:**
 
-Harness the power of leading models: GFPGAN, RestoreFormer, and CodeFormer work in tandem to deliver exceptional detail and clarity.
-RealESRGAN integration: Enhance the background quality of your visuals effortlessly.
-Performance Boost:
+- **Process both images and videos:** Breathe life into your visuals, regardless of format.
+- **Advanced image and video preprocessing:** Ensure optimal quality for exceptional results.
 
-Faster inference: Experience lightning-fast processing times for a seamless workflow.
-Image Processing:
+#### **Cutting-edge Restoration:**
 
-3D alignment in process image: Achieve unparalleled realism with precise facial landmark detection.
-Video Processing (Coming Soon!):
+- **Harness the power of leading models:** GFPGAN, RestoreFormer, and CodeFormer work in tandem to deliver exceptional detail and clarity.
+- **RealESRGAN integration:** Enhance the background quality of your visuals effortlessly.
 
-No need for face in every frame: LipWise intelligently interpolates missing frames, ensuring smooth transitions and realistic lip movements.
-Fast inference: Enjoy a fluid experience with rapid video processing.
-Video looping: Create seamless looping videos with consistent results.
-RealESRGAN integration: Elevate the background quality of your videos effortlessly
+#### **Image Processing:**
+
+- **3D alignment in process image:** Achieve unparalleled realism with precise facial landmark detection.
+
+#### **Video Processing:**
+
+- **No need for face in every frame:** LipWise intelligently interpolates missing frames, ensuring smooth transitions and realistic lip movements.
+- **Fast inference:** Enjoy a fluid experience with rapid video processing.
+- **Video looping:** Create seamless looping videos with consistent results.
+- **RealESRGAN integration:** Elevate the background quality of your videos effortlessly
 
 ## :hugs: ACKNOWLEDGEMENTS:
 
-#### Thanks to the following open-source projects:
+### Thanks to the following open-source projects:
 [![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)[![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)](https://www.tensorflow.org/)
 
 * <a href="https://github.com/Rudrabha/Wav2Lip" target="_blank">Wav2Lip</a>
