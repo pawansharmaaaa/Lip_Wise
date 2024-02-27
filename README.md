@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="readme-style.css">
 <div style="display: flex; justify-content: space-between;">
     <img src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5bc1b8af-879a-414b-b54a-db605a53c8f7"><img>
 </div>
@@ -5,19 +6,20 @@
 > [!IMPORTANT]
 > Please Help by starring the repo. :grin:
 
----
+![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=pawansharmaaaa&show_icons=true&theme=dark)
 
-<header style="display: flex; align-items: center; justify-content: space-between; background-color: #1E2533FF; margin-bottom: 0px; padding: 1rem 1rem; border-radius: 8px 8px 8px 8px;">
-    <div style="display: inline-block; gap: 0rem;">
-        <h1 style="background-color: black; color: white; border-radius: 8px 8px 0px 0px; font-size: 1rem; font-weight: 700; padding: 0.5rem; text-align: left; margin-bottom: 0.5em; text-shadow: hsla(0, 2%, 9%, 0.747) 0 1px 30px;">GITHUB</h1>
-        <h2 style="background-color: white; color: black; border-radius: 0px 0px 8px 8px; font-size: 0.5rem; font-weight: 700; text-align: center; margin-bottom: 1em; padding: 0.2rem; text-shadow: hsla(0, 2%, 9%, 0.747) 0 1px 30px;">STATS</h2>
-    </div>
-    <div style="display: flex; align-items: center;">
-        <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social" style="max-width: 20rem; height: auto; padding: 2px; background-color: transparent;">
-        <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social" style="max-width: 20rem; height: auto; padding: 2px; background-color: transparent;">
-        <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social" style="max-width: 20rem; height: auto; padding: 2px; background-color: transparent;">
-        <img src="https://img.shields.io/github/contributors/pawansharmaaaa/Lip_Wise?style=social&logo=github" style="max-width: 20rem; height: auto; padding: 2px; background-color: transparent;">
-        <img src="https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github" style="max-width: 20rem; height: auto; padding: 2px; background-color: transparent;">
+---
+<header class="header">
+  <div class="title-container">
+    <h1 class="title">LIP WISE</h1>
+    <h2 class="stats">STATS</h2>
+  </div>
+  <div class="badge-container">
+        <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social" class="badge">
+        <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social" class="badge">
+        <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social" class="badge">
+        <img src="https://img.shields.io/github/contributors/pawansharmaaaa/Lip_Wise?style=social&logo=github" class="badge">
+        <img src="https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github" class="badge">
     </div>
 </header>
 
