@@ -31,8 +31,8 @@
 
 # UI Screenshots:
 <p align="center" style="padding: 1rem;">
-    <img height="400" padding="1rem" src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/c69c1973-5350-4b1b-a6d7-1c00212d1757"></img>
-    <img height="400" padding="1rem" src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/87749293-2bdf-48fa-8744-c3a4fdf72925"></img>
+    <img height="300" padding="1rem" src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/c69c1973-5350-4b1b-a6d7-1c00212d1757"></img>
+    <img height="300" padding="1rem" src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/87749293-2bdf-48fa-8744-c3a4fdf72925"></img>
 </p>
 
 # :eyeglasses: **INSTALLATION**
