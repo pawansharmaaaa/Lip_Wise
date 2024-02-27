@@ -52,7 +52,7 @@ Lip-Wise is a powerful Lip-Syncing tool that leverages optimized inference for W
 </div>
 
 <div align="center">
-    <p>💡Tip: Make sure to use GPU runtime for faster processing.</p>
+    <p style="padding: 0.5rem;">💡Tip: Make sure to use GPU runtime for faster processing.</p>
 </div>
 
 ---
