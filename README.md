@@ -11,16 +11,16 @@
 
 ---
 
-<div align="center">
-    > [!IMPORTANT]
-    > Please Help by starring the repo. :grin:
-</div>
+
+> [!IMPORTANT]
+> Please Help by starring the repo. :grin:
+
 
 ---
 
-Powered by cutting-edge technology like Wav2Lip and advanced face restoration models [CodeFormer, GFPGAN & RestoreFormer], LipWise empowers you to create stunningly realistic and natural results. Simply provide any audio clip and a reference video, and LipWise will do the rest.
+Lip-Wise leverages Wav2Lip for audio-to-lip generation, seamlessly integrating with cutting-edge face restoration models (CodeFormer, GFPGAN, RestoreFormer) for added realism. MediaPipe ensures precise facial landmark detection, while RealESRGAN enhances background quality. Simply provide an audio clip and a reference video, and Lip-Wise orchestrates the process to deliver stunning results
 
-**Here's what makes LipWise stand out:**
+**Here's what makes Lip-Wise stand out:**
 
 - **Effortless Workflow**: Unleash your creativity with an intuitive and user-friendly interface.
 - **Unleash Your Vision**: No more limitations - use any video, even those without a face in every frame.
@@ -29,7 +29,7 @@ Powered by cutting-edge technology like Wav2Lip and advanced face restoration mo
 
 <!-- ## **Introduction**
 
-LipWise is a powerful Lip-Syncing tool that leverages optimized inference for Wav2Lip, a cutting-edge deep learning model dedicated to generating lip-synced videos. It functions by carefully processing an input audio clip alongside a reference video featuring a speaker. This process utilizes the advanced face restoration capabilities of state-of-the-art models like GFPGAN and CodeFormer. These sophisticated models seamlessly integrate the new audio with the lip movements of the reference video, resulting in a stunningly natural and realistic final output.
+Lip-Wise is a powerful Lip-Syncing tool that leverages optimized inference for Wav2Lip, a cutting-edge deep learning model dedicated to generating lip-synced videos. It functions by carefully processing an input audio clip alongside a reference video featuring a speaker. This process utilizes the advanced face restoration capabilities of state-of-the-art models like GFPGAN and CodeFormer. These sophisticated models seamlessly integrate the new audio with the lip movements of the reference video, resulting in a stunningly natural and realistic final output.
 
 * **Face Restoration Empowered by CodeFormer or GFPGAN:**
     * Streamlined inference through the elimination of redundant processes.
@@ -46,7 +46,7 @@ LipWise is a powerful Lip-Syncing tool that leverages optimized inference for Wa
 ---
 
 # :eyeglasses: **INSTALLATION**
-### :softball: **GETTING STARTED**
+### | :softball: **GETTING STARTED** |
 <div align="center">
     <a href='https://colab.research.google.com/drive/1RSqHSi-ufSQCOlBGxCr8WOma1ihJuX9I?usp=sharing' target="_blank"><img alt='Open in Google Colab' src='https://img.shields.io/badge/OPEN_IN COLAB-100000?style=for-the-badge&logo=Google Colab&logoColor=927123&labelColor=black&color=ffffff'/></a>
 </div>
