@@ -2,26 +2,18 @@
 <div style="display: flex; justify-content: space-between;">
     <img src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5bc1b8af-879a-414b-b54a-db605a53c8f7"><img>
 </div>
+<div style="display: flex; justify-content: center;">
+    <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social" style="padding: 2px;">
+    <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social" style="padding: 2px;">
+    <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social" style="padding: 2px;">
+    <img src="https://img.shields.io/github/contributors/pawansharmaaaa/Lip_Wise?style=social&logo=github" style="padding: 2px;">
+    <img src="https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github" style="padding: 2px;">
+</div>
+
+---
 
 > [!IMPORTANT]
 > Please Help by starring the repo. :grin:
-
-![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=pawansharmaaaa&show_icons=true&theme=dark)
-
----
-<header class="header">
-  <div class="title-container">
-    <h1 class="title">LIP WISE</h1>
-    <h2 class="stats">STATS</h2>
-  </div>
-  <div class="badge-container">
-        <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social" class="badge">
-        <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social" class="badge">
-        <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social" class="badge">
-        <img src="https://img.shields.io/github/contributors/pawansharmaaaa/Lip_Wise?style=social&logo=github" class="badge">
-        <img src="https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github" class="badge">
-    </div>
-</header>
 
 ---
 
