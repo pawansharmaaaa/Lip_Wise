@@ -1,7 +1,7 @@
-<p align="center">
+<p align="center" style="padding: 1rem;">
     <img style="width: 30rem;" src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5bc1b8af-879a-414b-b54a-db605a53c8f7"><img>
 </p>
-<div align="center">
+<div align="center" style="padding: 1rem;">
     <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social" style="padding: 0.3rem;">
     <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social" style="padding: 0.3rem;">
     <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social" style="padding: 0.3rem;">
@@ -9,12 +9,12 @@
     <img src="https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github" style="padding: 0.3rem;">
 </div>
 
----
-
+<h1 align="center" style="padding: 1rem;">
+    <a href='https://colab.research.google.com/drive/1RSqHSi-ufSQCOlBGxCr8WOma1ihJuX9I?usp=sharing' target="_blank"><img alt='Open in Google Colab' src='https://img.shields.io/badge/OPEN_IN COLAB-100000?style=for-the-badge&logo=Google Colab&logoColor=927123&labelColor=black&color=ffffff'/></a>
+</h1>
 
 > [!IMPORTANT]
 > Please Help by starring the repo. :grin:
-
 
 ---
 
@@ -26,22 +26,6 @@ Lip-Wise leverages Wav2Lip for audio-to-lip generation, seamlessly integrating w
 - **Unleash Your Vision**: No more limitations - use any video, even those without a face in every frame.
 - **Precision Meets Efficiency**: Combining enhanced face detection, landmark recognition, and streamlined processing delivers superior results with significantly faster performance.
 - **Simplified Setup**: Get started quickly with minimal technical hassle - a breeze even for beginners.
-
-<!-- ## **Introduction**
-
-Lip-Wise is a powerful Lip-Syncing tool that leverages optimized inference for Wav2Lip, a cutting-edge deep learning model dedicated to generating lip-synced videos. It functions by carefully processing an input audio clip alongside a reference video featuring a speaker. This process utilizes the advanced face restoration capabilities of state-of-the-art models like GFPGAN and CodeFormer. These sophisticated models seamlessly integrate the new audio with the lip movements of the reference video, resulting in a stunningly natural and realistic final output.
-
-* **Face Restoration Empowered by CodeFormer or GFPGAN:**
-    * Streamlined inference through the elimination of redundant processes.
-    * Enhanced efficiency with multi-threading implemented for the majority of preprocessing steps.
-* **Easy to use UI**
-* **Unrestricted Video Compatibility:**
-    * The limitation of requiring a face in every frame of the video has been lifted, allowing for greater versatility.  
-* **Enhanced face detection using Mediapipe:**
-    * masks generated using facial landmarks, leading to superior pasting results.
-    * Facial landmarks are meticulously stored as npy files, conserving processing resources when utilizing the same video repeatedly.
-* **Effortless Setup:**
-    *  With the exception of manual CUDA installation, the setup process is remarkably seamless, as outlined below. -->
 
 ---
 
@@ -84,17 +68,28 @@ Lip-Wise is a powerful Lip-Syncing tool that leverages optimized inference for W
 ---
 
 # **FEATURES**
-* **Face Restoration Empowered by CodeFormer or GFPGAN:**
-    * Streamlined inference through the elimination of redundant processes.
-    * Enhanced efficiency with multi-threading implemented for the majority of preprocessing steps.
-* **Easy to use UI**
-* **Unrestricted Video Compatibility:**
-    * The limitation of requiring a face in every frame of the video has been lifted, allowing for greater versatility.  
-* **Enhanced face detection using Mediapipe:**
-    * masks generated using facial landmarks, leading to superior pasting results.
-    * Facial landmarks are meticulously stored as npy files, conserving processing resources when utilizing the same video repeatedly.
-* **Effortless Setup:**
-    *  With the exception of manual CUDA installation, the setup process is remarkably seamless, as outlined below.
+LipWise empowers you to create stunningly realistic and natural results, combining the power of AI with user-friendly features:
+
+Media Versatility:
+
+Process both images and videos: Breathe life into your visuals, regardless of format.
+Advanced image and video preprocessing: Ensure optimal quality for exceptional results.
+Cutting-edge Restoration:
+
+Harness the power of leading models: GFPGAN, RestoreFormer, and CodeFormer work in tandem to deliver exceptional detail and clarity.
+RealESRGAN integration: Enhance the background quality of your visuals effortlessly.
+Performance Boost:
+
+Faster inference: Experience lightning-fast processing times for a seamless workflow.
+Image Processing:
+
+3D alignment in process image: Achieve unparalleled realism with precise facial landmark detection.
+Video Processing (Coming Soon!):
+
+No need for face in every frame: LipWise intelligently interpolates missing frames, ensuring smooth transitions and realistic lip movements.
+Fast inference: Enjoy a fluid experience with rapid video processing.
+Video looping: Create seamless looping videos with consistent results.
+RealESRGAN integration: Elevate the background quality of your videos effortlessly
 
 ## :hugs: ACKNOWLEDGEMENTS:
 
