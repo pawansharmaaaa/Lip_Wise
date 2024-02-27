@@ -1,5 +1,4 @@
 <div style="display: flex; justify-content: space-between;">
-    <img src = "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/cca4987a-18e5-49f1-9eba-710f3c0655a7"></img>
     <img src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5bc1b8af-879a-414b-b54a-db605a53c8f7"><img>
 </div>
 
@@ -21,11 +20,12 @@
 
 ## **Introduction**
 
-LipWise is a powerful video dubbing tool that leverages optimized inference for Wav2Lip, a cutting-edge deep learning model dedicated to generating lip-synced videos. It functions by carefully processing an input audio clip alongside a reference video featuring a speaker. This process utilizes the advanced face restoration capabilities of state-of-the-art models like GFPGAN and CodeFormer. These sophisticated models seamlessly integrate the new audio with the lip movements of the reference video, resulting in a stunningly natural and realistic final output.
+LipWise is a powerful Lip-Syncing tool that leverages optimized inference for Wav2Lip, a cutting-edge deep learning model dedicated to generating lip-synced videos. It functions by carefully processing an input audio clip alongside a reference video featuring a speaker. This process utilizes the advanced face restoration capabilities of state-of-the-art models like GFPGAN and CodeFormer. These sophisticated models seamlessly integrate the new audio with the lip movements of the reference video, resulting in a stunningly natural and realistic final output.
 
 * **Face Restoration Empowered by CodeFormer or GFPGAN:**
     * Streamlined inference through the elimination of redundant processes.
     * Enhanced efficiency with multi-threading implemented for the majority of preprocessing steps.
+* **Easy to use UI**
 * **Unrestricted Video Compatibility:**
     * The limitation of requiring a face in every frame of the video has been lifted, allowing for greater versatility.  
 * **Enhanced face detection using Mediapipe:**
