@@ -169,8 +169,7 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
                     image_output = gr.Video(sources='upload', 
                                             label="Output", 
                                             elem_classes=["output"],
-                                            container=True,
-                                            show_share_button=True)
+                                            container=True)
                 with gr.Column(scale=3):
                     gr.HTML(
                             '''
@@ -286,8 +285,7 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
                     video_output = gr.Video(sources='upload', 
                                             label="Output", 
                                             elem_classes=["output"],
-                                            container=True,
-                                            show_share_button=True)
+                                            container=True)
                 
                 with gr.Column(scale=3):
                     gr.HTML(
