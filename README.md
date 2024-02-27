@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="readme-style.css">
 <p align="center">
     <img style="width: 30rem;" src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5bc1b8af-879a-414b-b54a-db605a53c8f7"><img>
 </p>
@@ -12,12 +11,23 @@
 
 ---
 
+<center>
 > [!IMPORTANT]
 > Please Help by starring the repo. :grin:
+</center>
 
 ---
 
-## **Introduction**
+Powered by cutting-edge technology like Wav2Lip and advanced face restoration models [CodeFormer, GFPGAN & RestoreFormer], LipWise empowers you to create stunningly realistic and natural results. Simply provide any audio clip and a reference video, and LipWise will do the rest.
+
+**Here's what makes LipWise stand out:**
+
+- **Effortless Workflow**: Unleash your creativity with an intuitive and user-friendly interface.
+- **Unleash Your Vision**: No more limitations - use any video, even those without a face in every frame.
+- **Precision Meets Efficiency**: Combining enhanced face detection, landmark recognition, and streamlined processing delivers superior results with significantly faster performance.
+- **Simplified Setup**: Get started quickly with minimal technical hassle - a breeze even for beginners.
+
+<!-- ## **Introduction**
 
 LipWise is a powerful Lip-Syncing tool that leverages optimized inference for Wav2Lip, a cutting-edge deep learning model dedicated to generating lip-synced videos. It functions by carefully processing an input audio clip alongside a reference video featuring a speaker. This process utilizes the advanced face restoration capabilities of state-of-the-art models like GFPGAN and CodeFormer. These sophisticated models seamlessly integrate the new audio with the lip movements of the reference video, resulting in a stunningly natural and realistic final output.
 
@@ -31,15 +41,18 @@ LipWise is a powerful Lip-Syncing tool that leverages optimized inference for Wa
     * masks generated using facial landmarks, leading to superior pasting results.
     * Facial landmarks are meticulously stored as npy files, conserving processing resources when utilizing the same video repeatedly.
 * **Effortless Setup:**
-    *  With the exception of manual CUDA installation, the setup process is remarkably seamless, as outlined below.
+    *  With the exception of manual CUDA installation, the setup process is remarkably seamless, as outlined below. -->
 
 ---
 
 # :eyeglasses: **INSTALLATION**
-### :softball: **TRIAL**
+### :softball: **GETTING STARTED**
+<center>
 <a href='https://colab.research.google.com/drive/1RSqHSi-ufSQCOlBGxCr8WOma1ihJuX9I?usp=sharing' target="_blank"><img alt='Open in Google Colab' src='https://img.shields.io/badge/OPEN_IN COLAB-100000?style=for-the-badge&logo=Google Colab&logoColor=927123&labelColor=black&color=ffffff'/></a>
+
 > [!TIP]
-> Use GPU runtime for faster processing.
+> Make sure to use GPU runtime for faster processing.
+</center>
 
 ---
 
