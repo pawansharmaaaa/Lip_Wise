@@ -29,6 +29,12 @@
 
 ---
 
+# UI Screenshots:
+<p align="center" style="padding: 1rem;">
+    <img style="width: 30rem;" src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5bc1b8af-879a-414b-b54a-db605a53c8f7"><img>
+</p>
+
+
 # :eyeglasses: **INSTALLATION**
 ### :softball: **GETTING STARTED** 
 <div align="center">
