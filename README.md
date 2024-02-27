@@ -7,75 +7,18 @@
 
 ---
 
-<style>
-    header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background-color: #1E2533FF;
-        margin-bottom: 0px;
-        padding: 1rem 1rem;
-        border-radius: 8px 8px 8px 8px;
-    }
-
-    .header-left {
-        display: inline-block;
-        gap: 0rem;
-    }
-
-    .header-left h1 {
-        background-color: black;
-        color: white;
-        border-radius: 8px 8px 0px 0px;
-        font-size: 1rem;
-        font-weight: 700;
-        padding: 0.5rem;
-        text-align: left;
-        margin-bottom: 0.5em;
-        text-shadow: hsla(0, 2%, 9%, 0.747) 0 1px 30px;
-    }
-
-    .header-left h2 {
-        background-color: white;
-        color: black;
-        border-radius: 0px 0px 8px 8px; 
-        font-size: 0.5rem;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 1em;
-        padding: 0.2rem;
-        text-shadow: hsla(0, 2%, 9%, 0.747) 0 1px 30px;
-    }
-
-    .header-right {
-        display: flex;
-        align-items: center;
-    }
-
-    .header-left h1,
-    .header-left h2 {
-        margin: 0;
-    }
-
-    .header-right img {
-        max-width: 20rem;
-        height: auto;
-        padding: 2px;
-        background-color: transparent;
-    }
-</style>
-<header>
-<div class="header-left">
-    <h1 class="text">GITHUB</h1>
-    <h2 class="text2">STATS</h2>
-</div>
-<div class="header-right">
-    <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social">
-    <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social">
-    <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social">
-    <img src="https://img.shields.io/github/contributors/pawansharmaaaa/Lip_Wise?style=social&logo=github">
-    <img src="https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github">
-</div>
+<header style="display: flex; align-items: center; justify-content: space-between; background-color: #1E2533FF; margin-bottom: 0px; padding: 1rem 1rem; border-radius: 8px 8px 8px 8px;">
+    <div style="display: inline-block; gap: 0rem;">
+        <h1 style="background-color: black; color: white; border-radius: 8px 8px 0px 0px; font-size: 1rem; font-weight: 700; padding: 0.5rem; text-align: left; margin-bottom: 0.5em; text-shadow: hsla(0, 2%, 9%, 0.747) 0 1px 30px;">GITHUB</h1>
+        <h2 style="background-color: white; color: black; border-radius: 0px 0px 8px 8px; font-size: 0.5rem; font-weight: 700; text-align: center; margin-bottom: 1em; padding: 0.2rem; text-shadow: hsla(0, 2%, 9%, 0.747) 0 1px 30px;">STATS</h2>
+    </div>
+    <div style="display: flex; align-items: center;">
+        <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social" style="max-width: 20rem; height: auto; padding: 2px; background-color: transparent;">
+        <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social" style="max-width: 20rem; height: auto; padding: 2px; background-color: transparent;">
+        <img src="https://img.shields.io/github/watchers/pawansharmaaaa/Lip_Wise?style=social" style="max-width: 20rem; height: auto; padding: 2px; background-color: transparent;">
+        <img src="https://img.shields.io/github/contributors/pawansharmaaaa/Lip_Wise?style=social&logo=github" style="max-width: 20rem; height: auto; padding: 2px; background-color: transparent;">
+        <img src="https://img.shields.io/github/commit-activity/w/pawansharmaaaa/Lip_Wise?style=social&logo=github" style="max-width: 20rem; height: auto; padding: 2px; background-color: transparent;">
+    </div>
 </header>
 
 ---
