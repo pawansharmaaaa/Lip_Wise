@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="readme-style.css">
-<center>
+<p align="center">
     <img style="width: 30rem;" src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5bc1b8af-879a-414b-b54a-db605a53c8f7"><img>
-</center>
+</p>
 <div align="center">
     <img src="https://img.shields.io/github/forks/pawansharmaaaa/Lip_Wise?style=social" style="padding: 0.3rem;">
     <img src="https://img.shields.io/github/stars/pawansharmaaaa/Lip_Wise?style=social" style="padding: 0.3rem;">
