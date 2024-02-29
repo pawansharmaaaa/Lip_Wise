@@ -36,7 +36,7 @@
 </p>
 
 # :eyeglasses: **INSTALLATION**
-### :softball: **GETTING STARTED** 
+### **:zap: QUICK INFERENCE**
 <div align="center">
     <a href='https://colab.research.google.com/drive/1RSqHSi-ufSQCOlBGxCr8WOma1ihJuX9I?usp=sharing' target="_blank"><img alt='Open in Google Colab' src='https://img.shields.io/badge/OPEN_IN COLAB-100000?style=for-the-badge&logo=Google Colab&logoColor=927123&labelColor=black&color=ffffff'/></a>
 </div>
@@ -98,13 +98,64 @@
 - **Video looping:** Create seamless looping videos with consistent results.
 - **RealESRGAN integration:** Elevate the background quality of your videos effortlessly
 
-## :hugs: ACKNOWLEDGEMENTS:
+## :scroll: LICENSE AND ACKNOWLEDGEMENT
 
-### Thanks to the following open-source projects:
-[![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)[![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)](https://www.tensorflow.org/)
+Lip-Wise is released under Apache License Version 2.0.
 
-* <a href="https://github.com/Rudrabha/Wav2Lip" target="_blank">Wav2Lip</a>
-* <a href="https://github.com/sczhou/CodeFormer" target="_blank">CodeFormer</a>
-* <a href="https://github.com/TencentARC/GFPGAN" target="_blank">GFPGAN and RestoreFormer</a>
+[![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black)
+
 * <a href="https://github.com/googlesamples/mediapipe" target="_blank">MediaPipe</a>
+
+### Citations
+* <a href="https://github.com/Rudrabha/Wav2Lip" target="_blank">Wav2Lip</a>
+```
+    @inproceedings{10.1145/3394171.3413532,
+        author = {Prajwal, K R and Mukhopadhyay, Rudrabha and Namboodiri, Vinay P. and Jawahar, C.V.},
+        title = {A Lip Sync Expert Is All You Need for Speech to Lip Generation In the Wild},
+        year = {2020},
+        isbn = {9781450379885},
+        publisher = {Association for Computing Machinery},
+        address = {New York, NY, USA},
+        url = {https://doi.org/10.1145/3394171.3413532},
+        doi = {10.1145/3394171.3413532},
+        booktitle = {Proceedings of the 28th ACM International Conference on Multimedia},
+        pages = {484–492},
+        numpages = {9},
+        keywords = {lip sync, talking face generation, video generation},
+        location = {Seattle, WA, USA},
+        series = {MM '20}
+    }
+```
+* <a href="https://github.com/sczhou/CodeFormer" target="_blank">CodeFormer</a>
+```
+    @inproceedings{zhou2022codeformer,
+        author = {Zhou, Shangchen and Chan, Kelvin C.K. and Li, Chongyi and Loy, Chen Change},
+        title = {Towards Robust Blind Face Restoration with Codebook Lookup TransFormer},
+        booktitle = {NeurIPS},
+        year = {2022}
+    }
+```
+* <a href="https://github.com/TencentARC/GFPGAN" target="_blank">GFPGAN and RestoreFormer</a>
+```
+    @InProceedings{wang2021gfpgan,
+        author = {Xintao Wang and Yu Li and Honglun Zhang and Ying Shan},
+        title = {Towards Real-World Blind Face Restoration with Generative Facial Prior},
+        booktitle={The IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+        year = {2021}
+    }
+```
 * <a href="https://github.com/xinntao/Real-ESRGAN" target="_blank">RealESRGAN</a>
+```
+    @InProceedings{wang2021realesrgan,
+        author    = {Xintao Wang and Liangbin Xie and Chao Dong and Ying Shan},
+        title     = {Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data},
+        booktitle = {International Conference on Computer Vision Workshops (ICCVW)},
+        date      = {2021}
+    }
+```
+
+<!-- ### :hugs: Thanks to the following open-source projects: -->
+
+## :e-mail: Contact
+
+Reach out to me @ `lipwisedev@gmail.com`
