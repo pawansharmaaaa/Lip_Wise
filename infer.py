@@ -98,7 +98,11 @@ def infer_image(frame_path, audio_path, pad, align_3d = False,
       frame = cv2.imread(frame_path)
     height, width, _ = frame.shape
 
-    file_name = os.path.basename(frame_path).split('.')[0] + '_output.mp4'
+    file_name_check = os.path.basename(frame_path).split('.')
+    if len(file_name_check) > 2:
+        return "Please remove unneccesary periods('.') from file name and try again."
+    else:
+        file_name = file_name_check[0] + '_output.mp4'
 
     # Get face landmarks
     print("Getting face landmarks...")
