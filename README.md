@@ -102,7 +102,22 @@
 
 Lip-Wise is released under Apache License Version 2.0.
 
-[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org/)[![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)](https://numpy.org/)![OpenCV](https://img.shields.io/badge/OpenCV-27338e?style=for-the-badge&logo=OpenCV&logoColor=white)
+
+<div align="left">
+    <a href="https://pytorch.org/">
+        <img src="https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white" height="30" alt="PyTorch">
+    </a>
+    <a href="https://numpy.org/">
+        <img src="https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white" height="30" alt="NumPy">
+    </a>
+    <a href="https://opencv.org/">
+        <img src="https://img.shields.io/badge/OpenCV-27338e?style=for-the-badge&logo=OpenCV&logoColor=white" height="30" alt="OpenCV">
+    </a>
+    <a href="https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5d8d14f3-c12d-431c-a7da-bc08ca823147">
+        <img src="https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5d8d14f3-c12d-431c-a7da-bc08ca823147" height="30" alt="MediaPipe">
+    </a>
+</div>
+
 
 * <a href="https://github.com/googlesamples/mediapipe" target="_blank">MediaPipe</a>
 
