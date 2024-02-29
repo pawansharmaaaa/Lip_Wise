@@ -29,7 +29,7 @@
 
 ---
 
-# UI Screenshots:
+# :framed_picture: UI Screenshots:
 <p align="center" style="padding: 1rem;">
     <img height="300" padding="1rem" src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/c69c1973-5350-4b1b-a6d7-1c00212d1757"></img>
     <img height="300" padding="1rem" src= "https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/87749293-2bdf-48fa-8744-c3a4fdf72925"></img>
@@ -73,7 +73,7 @@
 
 ---
 
-# **FEATURES**
+# :control_knobs: **FEATURES**
 
 **LipWise empowers you to create stunningly realistic and natural results, combining the power of AI with user-friendly features:**
 
