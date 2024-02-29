@@ -266,7 +266,7 @@ def infer_video(video_path, audio_path, pad,
     
     # Create mel chunks array
     mel_chunks = []
-    #The mel_idx_multiplier aligns audio chunks with video frames for consistent processing and analysis.
+    # The mel_idx_multiplier aligns audio chunks with video frames for consistent processing and analysis.
     mel_idx_multiplier = 80./fps
     i = 0
     while 1:
