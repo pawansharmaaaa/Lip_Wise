@@ -113,13 +113,10 @@ Lip-Wise is released under Apache License Version 2.0.
     <a href="https://opencv.org/">
         <img src="https://img.shields.io/badge/OpenCV-27338e?style=for-the-badge&logo=OpenCV&logoColor=white" height="30" alt="OpenCV">
     </a>
-    <a href="https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5d8d14f3-c12d-431c-a7da-bc08ca823147">
+    <a href="https://github.com/googlesamples/mediapipe">
         <img src="https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5d8d14f3-c12d-431c-a7da-bc08ca823147" height="30" alt="MediaPipe">
     </a>
 </div>
-
-
-* <a href="https://github.com/googlesamples/mediapipe" target="_blank">MediaPipe</a>
 
 ### Citations
 * <a href="https://github.com/Rudrabha/Wav2Lip" target="_blank">Wav2Lip</a>
