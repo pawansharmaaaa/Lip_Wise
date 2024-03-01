@@ -350,10 +350,10 @@ def infer_video(video_path, audio_path, pad,
             mels_to_input = mel_chunks_batch[batch_no][mask_batch[batch_no]]
             frames_to_input = frames[mask_batch[batch_no]]
             
-            cv2.imwrite(os.path.join(list_directory, lists[0], f'image{batch_no}.png'),frames_to_input[0])
-            mels_list.append(mels_to_input[0])
-            
             if len(frames_to_input) != 0 and len(mels_to_input) != 0:
+                cv2.imwrite(os.path.join(list_directory, lists[0], f'image{batch_no}.png'),frames_to_input[0])
+                mels_list.append(mels_to_input[0])
+                
                 extracted_faces, face_masks, inv_masks, centers, bboxes = bp.extract_face_batch(frames_to_input, frame_nos_to_input)
 
                 # Save Data
