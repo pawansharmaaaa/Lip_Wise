@@ -318,7 +318,23 @@ def infer_video(video_path, audio_path, pad,
     p_bar = gr.Progress()
     p_bar.__call__((0, est_total_batches), desc=f"Initializing Lip Sync...")
 
-    while True:
+    # Create a directory inside the data directory
+    data_directory = "data"
+    list_directory = os.path.join(data_directory, "lists")
+    os.makedirs(list_directory, exist_ok=True)
+
+    # Create directories with the name of each list
+    lists = ["images_list", "mels_list", "extracted_faces_list", "face_masks_list", "inv_masks_list", "cropped_faces_list", "frame_batch_list", "mel_batch_list", "dubbed_faces_list", "restored_faces_list", "resized_restored_faces_list", "pasted_ready_faces_list", "ready_to_paste_list", "restored_images_list", "upscaled_bg_list"]
+
+    for list_name in lists:
+        list_path = os.path.join(list_directory, list_name)
+        os.makedirs(list_path, exist_ok=True)
+
+    mels_list = []
+    mel_batch_list = []
+    frame_batch_list = []
+
+    while batch_no<24:
         ret, frame = video.read()
 
         if not ret:
@@ -334,10 +350,30 @@ def infer_video(video_path, audio_path, pad,
             mels_to_input = mel_chunks_batch[batch_no][mask_batch[batch_no]]
             frames_to_input = frames[mask_batch[batch_no]]
             
+            cv2.imwrite(os.path.join(list_directory, lists[0], f'image{batch_no}.png'),frames_to_input[0])
+            mels_list.append(mels_to_input[0])
+            
             if len(frames_to_input) != 0 and len(mels_to_input) != 0:
                 extracted_faces, face_masks, inv_masks, centers, bboxes = bp.extract_face_batch(frames_to_input, frame_nos_to_input)
+
+                # Save Data
+                cv2.imwrite(os.path.join(list_directory, lists[2], f'image{batch_no}.png'), extracted_faces[0])
+                cv2.imwrite(os.path.join(list_directory, lists[3], f'image{batch_no}.png'), face_masks[0])
+                cv2.imwrite(os.path.join(list_directory, lists[4], f'image{batch_no}.png'), inv_masks[0])
+
+
                 cropped_faces, aligned_bboxes, rotation_matrices = bp.align_crop_batch(extracted_faces, frame_nos_to_input)
+                
+                # Save Data
+                cv2.imwrite(os.path.join(list_directory, lists[5], f'image{batch_no}.png'), cropped_faces[0])
+
+
                 frame_batch, mel_batch = bp.gen_data_video_mode(cropped_faces, mels_to_input)
+                
+                # Save Data
+                frame_batch_list.append(frame_batch[0])
+                mel_batch_list.append(mel_batch[0])
+
 
                 # Feed to wav2lip model:
                 frame_batch = torch.FloatTensor(np.transpose(frame_batch, (0, 3, 1, 2))).to(device)
@@ -347,6 +383,8 @@ def infer_video(video_path, audio_path, pad,
                     dubbed_faces = w2l_model(mel_batch, frame_batch)
                 
                 dubbed_faces = dubbed_faces.cpu().numpy().transpose(0, 2, 3, 1) * 255.
+                # Save Data
+                cv2.imwrite(os.path.join(list_directory, lists[8], f'image{batch_no}.png'), dubbed_faces[0])
 
                 if face_restorer == 'CodeFormer':
                     with ThreadPoolExecutor(max_workers=limit) as executor:
@@ -362,19 +400,27 @@ def infer_video(video_path, audio_path, pad,
                 else:
                     raise Exception("Invalid face restorer model. Please check the model name and try again.")
                 
+                # Save Data
+                cv2.imwrite(os.path.join(list_directory, lists[9], f'image{batch_no}.png'), restored_faces[0])
+                
                 # Post processing
                 resized_restored_faces = bp.face_resize_batch(restored_faces, cropped_faces)
+                cv2.imwrite(os.path.join(list_directory, lists[10], f'image{batch_no}.png'), resized_restored_faces[0])
                 pasted_ready_faces = bp.paste_back_black_bg_batch(resized_restored_faces, aligned_bboxes, frames_to_input, ml)
+                cv2.imwrite(os.path.join(list_directory, lists[11], f'image{batch_no}.png'), pasted_ready_faces[0])
                 ready_to_paste = bp.unwarp_align_batch(pasted_ready_faces, rotation_matrices)
+                cv2.imwrite(os.path.join(list_directory, lists[12], f'image{batch_no}.png'), ready_to_paste[0])
                 restored_images = bp.paste_back_batch(ready_to_paste, frames_to_input, face_masks, inv_masks, centers)
+                cv2.imwrite(os.path.join(list_directory, lists[13], f'image{batch_no}.png'), restored_images[0])
 
                 frames[mask_batch[batch_no]] = restored_images
 
             up_progress = gr.Progress()
             for idx, frame in enumerate(frames):
-                if upscale_bg:
+                if upscale_bg and idx==0:
                     up_progress.__call__((idx, len(frames)), desc=f"Upscaling frame: {idx} out of {len(restored_faces)} in batch: {batch_no}/{est_total_batches}")
                     frame, _ = ml.restore_background(frame, bgupscaler, tile=400, outscale=1.0, half=False)
+                    cv2.imwrite(os.path.join(list_directory, lists[14], f'image{batch_no}.png'), frame)
                 writer.write(frame)
             
             p_bar.__call__((batch_no+1, est_total_batches), desc=f"Processed batch: {batch_no} out of {est_total_batches}")
@@ -386,6 +432,14 @@ def infer_video(video_path, audio_path, pad,
             if batch_no == len(mel_chunks_batch):
                 gr.Info("Reached end of Audio, Video has been dubbed.")
                 break
+    
+    mels_list = np.asarray(mels_list)
+    mel_batch_list = np.asarray(mel_batch_list)
+    frame_batch_list = np.asarray(frame_batch_list)
+
+    np.save(os.path.join(list_directory, lists[1], 'mels_list.npy'), mels_list)
+    np.save(os.path.join(list_directory, lists[6], 'frame_batch_list.npy'), frame_batch_list)
+    np.save(os.path.join(list_directory, lists[7], 'mels_batch_list.npy'), mel_batch_list)
 
     video.release()
     writer.release()
