@@ -57,7 +57,7 @@ class ModelLoader:
         model = model.to(self.device)
         return model.eval()
     
-    def load_realesrgan_model(self, model_name, tile, half=False):
+    def load_realesrgan_model(self, model_name, tile, half=True):
 
         if not torch.cuda.is_available():  # CPU
             import warnings

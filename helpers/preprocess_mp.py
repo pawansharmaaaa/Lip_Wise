@@ -447,6 +447,7 @@ class FaceHelpers:
         """
         mask, inv_mask, center, bbox = self.gen_face_mask(frame_no)
         extracted_face = cv2.bitwise_and(original_img, original_img, mask=mask)
+        # extracted_face = original_img[bbox[1]:bbox[1]+bbox[3], bbox[0]:bbox[0]+bbox[2]]
 
         return extracted_face, mask, inv_mask, center, bbox
     

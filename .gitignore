@@ -47,3 +47,7 @@ Experiments/helpers/audio.py
 Experiments/helpers/__init__.py
 Experiments/infer.py
 Experiments/__init__.py
+Result_Analytics/aud_wO_BU/data.zip
+Result_Analytics/aud_wO_BU/frame_batch_list/frame_batch_list.npy
+Result_Analytics/aud_wO_BU/mel_batch_list/mels_batch_list.npy
+Result_Analytics/
