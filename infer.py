@@ -156,6 +156,9 @@ def infer_image(frame_path, audio_path, pad, align_3d = False,
         elif face_restorer == 'RestoreFormer':
             with ThreadPoolExecutor(max_workers=limit) as executor:
                 restored_faces = list(executor.map(ml.restore_wRF, dubbed_faces))
+        elif face_restorer == "VQFR1" or face_restorer == "VQFR2":
+            with ThreadPoolExecutor(max_workers=limit) as executor:
+                restored_faces = list(executor.map(ml.restore_wVQFR, dubbed_faces))
         elif face_restorer == "None":
             restored_faces = dubbed_faces
         else:
@@ -395,6 +398,12 @@ def infer_video(video_path, audio_path, pad,
                 elif face_restorer == 'RestoreFormer':
                     with ThreadPoolExecutor(max_workers=limit) as executor:
                         restored_faces = list(executor.map(ml.restore_wRF, dubbed_faces))
+                elif face_restorer == "VQFR1":
+                    with ThreadPoolExecutor(max_workers=limit) as executor:
+                        restored_faces = list(executor.map(ml.restore_wVQFR1, dubbed_faces))
+                elif face_restorer == "VQFR2":
+                    with ThreadPoolExecutor(max_workers=limit) as executor:
+                        restored_faces = list(executor.map(ml.restore_wVQFR2, dubbed_faces))
                 elif face_restorer == "None":
                     restored_faces = dubbed_faces
                 else:
