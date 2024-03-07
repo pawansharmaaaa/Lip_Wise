@@ -22,7 +22,7 @@ from realesrgan import RealESRGANer
 
 class ModelLoader:
 
-    def __init__(self, restorer, weight, bg_upsampler="RealESRGAN_x2plus", half=True):
+    def __init__(self, restorer, weight, bg_upsampler="RealESRGAN_x2plus", half=False):
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.weight = weight
         # self.wav2lip_model = self.load_wav2lip_model()
@@ -38,7 +38,7 @@ class ModelLoader:
             self.restorer = self.load_vqfr_model(2)
         
         if bg_upsampler is not None:
-            self.bg = self.load_realesrgan_model(bg_upsampler, 512, half=half)
+            self.bg = self.load_realesrgan_model(model_name=bg_upsampler, tile=512, half=half)
 
     def _load(self, checkpoint_path):
         if self.device == 'cuda':
@@ -66,7 +66,7 @@ class ModelLoader:
         model = model.to(self.device)
         return model.eval()
     
-    def load_realesrgan_model(self, model_name, tile, half=True):
+    def load_realesrgan_model(self, model_name, tile, half=False):
 
         if not torch.cuda.is_available():  # CPU
             import warnings
@@ -276,8 +276,8 @@ class ModelLoader:
             print(f'\tFailed inference for GFPGAN: {error}.')
             restored_face = tensor2img(dubbed_face_t.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
         
-        restored_face = restored_face.astype(np.uint8)
         restored_face = self.restore_background(restored_face, outscale=1.0)
+        restored_face = restored_face.astype(np.uint8)
         return restored_face
     
     @torch.no_grad()
@@ -294,8 +294,8 @@ class ModelLoader:
             print(f'\tFailed inference for GFPGAN: {error}.')
             restored_face = tensor2img(dubbed_face_t.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
         
-        restored_face = restored_face.astype(np.uint8)
         restored_face = self.restore_background(restored_face, outscale=1.0)
+        restored_face = restored_face.astype(np.uint8)
         return restored_face
     
     @torch.no_grad()
@@ -315,8 +315,8 @@ class ModelLoader:
             print(f'\tFailed inference for CodeFormer: {error}.')
             restored_face = tensor2img(dubbed_face_t, rgb2bgr=True, min_max=(-1, 1))
         
-        restored_face = restored_face.astype(np.uint8)
         restored_face = self.restore_background(restored_face, outscale=1.0)
+        restored_face = restored_face.astype(np.uint8)
         return restored_face
     
     @torch.no_grad()
