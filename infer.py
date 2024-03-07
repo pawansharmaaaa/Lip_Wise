@@ -126,7 +126,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False,
     gen = helper.gen_data_image_mode(cropped_face, mel_chunks, total)
 
     # Create model loader object
-    ml = model_loaders.ModelLoader(face_restorer, weight, bgupscaler=bgupscaler, half=True)
+    ml = model_loaders.ModelLoader(face_restorer, weight, bg_upsampler=bgupscaler, half=True)
 
     # Load wav2lip model
     w2l_model = ml.load_wav2lip_model(gan=gan)
