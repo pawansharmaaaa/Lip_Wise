@@ -126,7 +126,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False,
     gen = helper.gen_data_image_mode(cropped_face, mel_chunks, total)
 
     # Create model loader object
-    ml = model_loaders.ModelLoader(face_restorer, weight)
+    ml = model_loaders.ModelLoader(face_restorer, weight, bgupscaler=bgupscaler, half=True)
 
     # Load wav2lip model
     w2l_model = ml.load_wav2lip_model(gan=gan)
@@ -173,7 +173,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False,
 
             if upscale_bg:
                 up_progress.__call__((idx, len(restored_faces)), desc=f"Upscaling frame: {idx} out of {len(restored_faces)} in batch: {batch_no}/{total.mels}")
-                final, _ = ml.restore_background(final, bgupscaler, tile=400, outscale=1.0, half=False)
+                final, _ = ml.restore_background(final, outscale=1.0)
 
             out.write(final)
         p_bar.__call__((batch_no, total.mels), desc=f"Processed batch: {batch_no} out of {total.mels}")
@@ -308,7 +308,7 @@ def infer_video(video_path, audio_path, pad,
     writer = cv2.VideoWriter(os.path.join(MEDIA_DIRECTORY, 'temp.mp4'), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
     # Create model loader object
-    ml = model_loaders.ModelLoader(face_restorer, weight)
+    ml = model_loaders.ModelLoader(face_restorer, weight, bg_upsampler=bgupscaler, half=True)
 
     # Load wav2lip model
     w2l_model = ml.load_wav2lip_model(gan=gan)
