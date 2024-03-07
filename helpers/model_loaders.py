@@ -259,7 +259,7 @@ class ModelLoader:
     def restore_background(self, background, outscale=1.0):
         # bgupsampler = self.load_realesrgan_model(model_name, tile, half=True)
         if self.bg is not None:
-            background = self.bg.enhance(background, outscale=outscale)
+            background = self.bg.enhance(background, outscale=outscale)[0]
         return background
     
     @torch.no_grad()
