@@ -14,6 +14,8 @@ from torchvision.transforms.functional import normalize
 from models import Wav2Lip
 from gfpgan.archs.gfpganv1_clean_arch import GFPGANv1Clean
 from gfpgan.archs.restoreformer_arch import RestoreFormer
+from vqfr.archs.vqfrv1_arch import VQFRv1
+from vqfr.archs.vqfrv2_arch import VQFRv2
 from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from realesrgan import RealESRGANer
@@ -30,6 +32,10 @@ class ModelLoader:
             self.restorer = self.load_restoreformer_model()
         elif restorer == 'CodeFormer':
             self.restorer = self.load_codeformer_model()
+        elif restorer == 'VQFR1':
+            self.restorer = self.load_vqfr_model(1)
+        elif restorer == 'VQFR2':
+            self.restorer = self.load_vqfr_model(2)
 
     def _load(self, checkpoint_path):
         if self.device == 'cuda':
@@ -150,6 +156,102 @@ class ModelLoader:
         model.load_state_dict(checkpoint)
         return model.eval()
     
+    def load_vqfr_model(self, version):
+        if version == 1:
+            model_path = file_check.VQFR1_MODEL_PATH
+            vqfr = VQFRv1(
+                base_channels=128,
+                proj_patch_size=32,
+                resolution_scale_rates=[1, 2, 2, 2, 2, 2],
+                channel_multipliers=[1, 1, 2, 2, 2, 4],
+                encoder_num_blocks=2,
+                decoder_num_blocks=3,
+                quant_level=['Level_32'],
+                fix_keys=['embedding'],
+                inpfeat_extraction_opt={
+                    'in_dim': 3,
+                    'out_dim': 32
+                },
+                align_from_patch=32,
+                align_opt={
+                    'Level_32': {
+                        'cond_channels': 32,
+                        'cond_downscale_rate': 32,
+                        'deformable_groups': 4
+                    },
+                    'Level_16': {
+                        'cond_channels': 32,
+                        'cond_downscale_rate': 16,
+                        'deformable_groups': 4
+                    },
+                    'Level_8': {
+                        'cond_channels': 32,
+                        'cond_downscale_rate': 8,
+                        'deformable_groups': 4
+                    },
+                    'Level_4': {
+                        'cond_channels': 32,
+                        'cond_downscale_rate': 4,
+                        'deformable_groups': 4
+                    },
+                    'Level_2': {
+                        'cond_channels': 32,
+                        'cond_downscale_rate': 2,
+                        'deformable_groups': 4
+                    },
+                    'Level_1': {
+                        'cond_channels': 32,
+                        'cond_downscale_rate': 1,
+                        'deformable_groups': 4
+                    }
+                },
+                quantizer_opt={
+                    'Level_32': {
+                        'type': 'L2VectorQuantizer',
+                        'in_dim': 512,
+                        'num_code': 1024,
+                        'code_dim': 256,
+                        'reservoir_size': 16384,
+                        'reestimate_iters': 2000,
+                        'reestimate_maxiters': -1,
+                        'warmup_iters': -1
+                    }
+                })
+        elif version == 2:
+            model_path = file_check.VQFR2_MODEL_PATH
+            vqfr = VQFRv2(
+                base_channels=64,
+                channel_multipliers=[1, 2, 2, 4, 4, 8],
+                num_enc_blocks=2,
+                use_enc_attention=True,
+                num_dec_blocks=2,
+                use_dec_attention=True,
+                code_dim=256,
+                inpfeat_dim=32,
+                align_opt={
+                    'cond_channels': 32,
+                    'deformable_groups': 4
+                },
+                code_selection_mode='Predict',  # Predict/Nearest
+                quantizer_opt={
+                    'type': 'L2VectorQuantizer',
+                    'num_code': 1024,
+                    'code_dim': 256,
+                    'spatial_size': [16, 16]
+                })
+            
+        loadnet = torch.load(model_path)
+        if 'params_ema' in loadnet:
+            keyname = 'params_ema'
+        else:
+            keyname = 'params'
+        vqfr.load_state_dict(loadnet[keyname], strict=True)
+        vqfr.eval()
+        vqfr = vqfr.to(self.device)
+
+        return vqfr
+
+    
     @torch.no_grad()
     def restore_background(self, background, model_name, tile, outscale=1.0, half=False):
         bgupsampler = self.load_realesrgan_model(model_name, tile, half=False)
@@ -209,4 +311,20 @@ class ModelLoader:
             restored_face = tensor2img(dubbed_face_t, rgb2bgr=True, min_max=(-1, 1))
         
         restored_face = restored_face.astype(np.uint8)
+        return restored_face
+    
+    @torch.no_grad()
+    def restore_wVQFR(self, dubbed_face):
+        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_LANCZOS4)
+        dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
+        normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
+        dubbed_face_t = dubbed_face_t.unsqueeze(0).to(self.device)
+        
+        try:
+            output = self.restorer(dubbed_face_t, fidelity_ratio=self.weight)['main_dec'][0]
+            restored_face = tensor2img(output.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
+        except RuntimeError as error:
+            print(f'\tFailed inference for VQFR: {error}.')
+            restored_face = tensor2img(dubbed_face_t, rgb2bgr=True, min_max=(-1, 1))
+        
         return restored_face

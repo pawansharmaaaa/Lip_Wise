@@ -217,7 +217,7 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
                     
                 with gr.Column(variant="panel"):
                     with gr.Row():
-                        face_restorer = gr.Radio(["GFPGAN", "CodeFormer", "RestoreFormer", "None"], 
+                        face_restorer = gr.Radio(["GFPGAN", "CodeFormer", "RestoreFormer", "VQFR1","VQFR2","None"], 
                                                     value='CodeFormer', 
                                                     label="Face Restorer", 
                                                     info="GFPGAN is faster, but CodeFormer is more accurate.", # Needs Change

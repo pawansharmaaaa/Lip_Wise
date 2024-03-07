@@ -23,6 +23,8 @@ REAL_ESRGAN_MODEL_URL = {
             'realesr-general-wdn-x4v3': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-wdn-x4v3.pth',
             'realesr-general-x4v3': 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth'
         }
+VQFR2_MODEL_URL = 'https://github.com/TencentARC/VQFR/releases/download/v2.0.0/VQFR_v2.pth'
+VQFR1_MODEL_URL = 'https://github.com/TencentARC/VQFR/releases/download/v1.0.0/VQFR_v1-33a1fac5.pth'
 
 CURRENT_FILE_DIRECTORY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CSS_FILE_PATH = os.path.join(CURRENT_FILE_DIRECTORY, 'styles', 'style-black.css')
@@ -34,6 +36,7 @@ CODEFORMERS_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'codeformers')
 RESTOREFORMER_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'restoreformer')
 WAV2LIP_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'wav2lip')
 REALESRGAN_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'realesrgan')
+VQFR_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'vqfr')
 
 TEMP_DIR = os.path.join(CURRENT_FILE_DIRECTORY, 'temp')
 NPY_FILES_DIR = os.path.join(TEMP_DIR, 'npy_files')
@@ -48,6 +51,8 @@ CODEFORMERS_MODEL_PATH = os.path.join(CODEFORMERS_WEIGHTS_DIR, 'codeformer.pth')
 RESTOREFORMER_MODEL_PATH = os.path.join(RESTOREFORMER_WEIGHTS_DIR, 'restoreformer.pth')
 WAV2LIP_MODEL_PATH = os.path.join(WAV2LIP_WEIGHTS_DIR, 'wav2lip.pth')
 WAV2LIP_GAN_MODEL_PATH = os.path.join(WAV2LIP_WEIGHTS_DIR, 'wav2lip_gan.pth')
+VQFR1_MODEL_PATH = os.path.join(VQFR_WEIGHTS_DIR, 'VQFR_v1-33a1fac5.pth')
+VQFR2_MODEL_PATH = os.path.join(VQFR_WEIGHTS_DIR, 'VQFR_v2.pth')
 
 def __init__():
     perform_check()
@@ -123,6 +128,22 @@ def perform_check(bg_model_name='RealESRGAN_x2plus', restorer='CodeFormer', use_
                                 model_dir=RESTOREFORMER_WEIGHTS_DIR,
                                 progress=True,
                                 file_name='restoreformer.pth')
+                
+        elif restorer == 'VQFR1':
+            if not os.path.exists(VQFR1_MODEL_PATH):
+                print("Downloading VQFR model...")
+                load_file_from_url(url=VQFR1_MODEL_URL,
+                                model_dir=VQFR_WEIGHTS_DIR,
+                                progress=True,
+                                file_name='VQFR_v1-33a1fac5.pth')
+                
+        elif restorer == 'VQFR2':
+            if not os.path.exists(VQFR2_MODEL_PATH):
+                print("Downloading VQFR model...")
+                load_file_from_url(url=VQFR2_MODEL_URL,
+                                model_dir=VQFR_WEIGHTS_DIR,
+                                progress=True,
+                                file_name='VQFR_v2.pth')
         
         # Download lip sync model
         if use_gan_version:
