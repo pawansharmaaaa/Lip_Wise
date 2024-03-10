@@ -54,6 +54,8 @@ WAV2LIP_GAN_MODEL_PATH = os.path.join(WAV2LIP_WEIGHTS_DIR, 'wav2lip_gan.pth')
 VQFR1_MODEL_PATH = os.path.join(VQFR_WEIGHTS_DIR, 'VQFR_v1-33a1fac5.pth')
 VQFR2_MODEL_PATH = os.path.join(VQFR_WEIGHTS_DIR, 'VQFR_v2.pth')
 
+PLATE_PATH = os.path.join(MEDIA_DIR, 'plate.png')
+
 def __init__():
     perform_check()
     archs.__init__()

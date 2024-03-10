@@ -25,7 +25,7 @@ class ModelLoader:
     def __init__(self, restorer, weight, bg_upsampler="RealESRGAN_x2plus", half=False):
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.weight = weight
-        # self.wav2lip_model = self.load_wav2lip_model()
+        
         if restorer == 'GFPGAN':
             self.restorer = self.load_gfpgan_model()
         elif restorer == 'RestoreFormer':
@@ -39,6 +39,9 @@ class ModelLoader:
         
         if bg_upsampler is not None:
             self.bg = self.load_realesrgan_model(model_name=bg_upsampler, tile=512, half=half)
+
+        # Create Plate
+        self.plate = np.full((512, 512, 3), (128, 128, 128), dtype=np.uint8)
 
     def _load(self, checkpoint_path):
         if self.device == 'cuda':
@@ -256,7 +259,7 @@ class ModelLoader:
 
     
     @torch.no_grad()
-    def restore_background(self, background, outscale=1.0):
+    def restore_background(self, background, outscale=1):
         # bgupsampler = self.load_realesrgan_model(model_name, tile, half=True)
         if self.bg is not None:
             background = self.bg.enhance(background, outscale=outscale)[0]
@@ -264,8 +267,12 @@ class ModelLoader:
     
     @torch.no_grad()
     def restore_wGFPGAN(self, dubbed_face):
-        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_LANCZOS4)
-        dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
+        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8), (300, 300), interpolation=cv2.INTER_LANCZOS4)
+        bkg = self.plate.copy()
+        bkg[106:406, 106:406] = dubbed_face
+        dubbed_face = bkg
+
+        dubbed_face_t = img2tensor(dubbed_face / 255., bgr2rgb=True, float32=True)
         normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
         dubbed_face_t = dubbed_face_t.unsqueeze(0).to(self.device)
         
@@ -276,14 +283,18 @@ class ModelLoader:
             print(f'\tFailed inference for GFPGAN: {error}.')
             restored_face = tensor2img(dubbed_face_t.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
         
-        restored_face = self.restore_background(restored_face, outscale=1.0)
-        restored_face = restored_face.astype(np.uint8)
+        restored_face = restored_face.astype('uint8')
+        restored_face = restored_face[106:406, 106:406]
         return restored_face
     
     @torch.no_grad()
     def restore_wRF(self, dubbed_face):
-        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_LANCZOS4)
-        dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
+        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8), (300, 300), interpolation=cv2.INTER_LANCZOS4)
+        bkg = self.plate.copy()
+        bkg[106:406, 106:406] = dubbed_face
+        dubbed_face = bkg
+
+        dubbed_face_t = img2tensor(dubbed_face / 255., bgr2rgb=True, float32=True)
         normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
         dubbed_face_t = dubbed_face_t.unsqueeze(0).to(self.device)
         
@@ -294,14 +305,18 @@ class ModelLoader:
             print(f'\tFailed inference for GFPGAN: {error}.')
             restored_face = tensor2img(dubbed_face_t.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
         
-        restored_face = self.restore_background(restored_face, outscale=1.0)
-        restored_face = restored_face.astype(np.uint8)
+        restored_face = restored_face.astype('uint8')
+        restored_face = restored_face[106:406, 106:406]
         return restored_face
     
     @torch.no_grad()
     def restore_wCodeFormer(self, dubbed_face):
-        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_LANCZOS4)
-        dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
+        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8), (300, 300), interpolation=cv2.INTER_LANCZOS4)
+        bkg = self.plate.copy()
+        bkg[106:406, 106:406] = dubbed_face
+        dubbed_face = bkg
+
+        dubbed_face_t = img2tensor(dubbed_face/255., bgr2rgb=True, float32=True)
         normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
         dubbed_face_t = dubbed_face_t.unsqueeze(0).to(self.device)
         
@@ -315,14 +330,18 @@ class ModelLoader:
             print(f'\tFailed inference for CodeFormer: {error}.')
             restored_face = tensor2img(dubbed_face_t, rgb2bgr=True, min_max=(-1, 1))
         
-        restored_face = self.restore_background(restored_face, outscale=1.0)
-        restored_face = restored_face.astype(np.uint8)
+        restored_face = restored_face.astype('uint8')
+        restored_face = restored_face[106:406, 106:406]
         return restored_face
     
     @torch.no_grad()
     def restore_wVQFR(self, dubbed_face):
-        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8) / 255., (512, 512), interpolation=cv2.INTER_LANCZOS4)
-        dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
+        dubbed_face = cv2.resize(dubbed_face.astype(np.uint8), (300, 300), interpolation=cv2.INTER_LANCZOS4)
+        bkg = self.plate.copy()
+        bkg[106:406, 106:406] = dubbed_face
+        dubbed_face = bkg
+
+        dubbed_face_t = img2tensor(dubbed_face / 255., bgr2rgb=True, float32=True)
         normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
         dubbed_face_t = dubbed_face_t.unsqueeze(0).to(self.device)
         
@@ -333,5 +352,6 @@ class ModelLoader:
             print(f'\tFailed inference for VQFR: {error}.')
             restored_face = tensor2img(dubbed_face_t, rgb2bgr=True, min_max=(-1, 1))
 
-        restored_face = self.restore_background(restored_face, outscale=1.0)
+        restored_face = restored_face.astype('uint8')
+        restored_face = restored_face[106:406, 106:406]
         return restored_face
