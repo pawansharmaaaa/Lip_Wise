@@ -167,7 +167,7 @@ class ModelLoader:
         bkg[106:406, 106:406] = dubbed_face
         dubbed_face = bkg
     
-        dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
+        dubbed_face_t = img2tensor(dubbed_face / 255., bgr2rgb=True, float32=True)
         normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
         dubbed_face_t = dubbed_face_t.unsqueeze(0).to(self.device)
         
@@ -189,7 +189,7 @@ class ModelLoader:
         bkg[106:406, 106:406] = dubbed_face
         dubbed_face = bkg
 
-        dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
+        dubbed_face_t = img2tensor(dubbed_face / 255., bgr2rgb=True, float32=True)
         normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
         dubbed_face_t = dubbed_face_t.unsqueeze(0).to(self.device)
         
@@ -211,7 +211,7 @@ class ModelLoader:
         bkg[106:406, 106:406] = dubbed_face
         dubbed_face = bkg
 
-        dubbed_face_t = img2tensor(dubbed_face, bgr2rgb=True, float32=True)
+        dubbed_face_t = img2tensor(dubbed_face / 255., bgr2rgb=True, float32=True)
         normalize(dubbed_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
         dubbed_face_t = dubbed_face_t.unsqueeze(0).to(self.device)
         

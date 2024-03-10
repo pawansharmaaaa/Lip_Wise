@@ -630,7 +630,7 @@ class FaceHelpers:
         bbox = np.asarray(([aligned_bbox[0], aligned_bbox[1]], [aligned_bbox[0]+aligned_bbox[2], aligned_bbox[1]+aligned_bbox[3]]))
         processed_ready = np.zeros_like(full_frame)
         try:
-            processed_face = ml.restore_background(processed_face, 'RealESRGAN_x2plus', 400)[0]
+            # processed_face = ml.restore_background(processed_face, 'RealESRGAN_x2plus', 512)[0]
             processed_ready[bbox[0,1]:bbox[1,1], bbox[0,0]:bbox[1,0]] = processed_face
         except IndexError as e:
             gr.Warning(f"Failed to paste face back onto full frame: {e}")
