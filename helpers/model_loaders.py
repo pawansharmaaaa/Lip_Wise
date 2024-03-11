@@ -160,7 +160,7 @@ class ModelLoader:
         if self.bgupsampler is None:
             self.bgupsampler = self.load_realesrgan_model(model_name, tile, half=False)
         
-        background = self.bgupsampler.enhance(background, outscale=outscale)
+        background = self.bgupsampler.enhance(background, outscale=outscale)[0]
         return background
     
     @torch.no_grad()
