@@ -182,7 +182,7 @@ class ModelLoader:
             restored_face = tensor2img(dubbed_face_t.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
         
         restored_face = restored_face.astype(np.uint8)
-        restored_face = self.restore_background(restored_face, 'RealESRGAN_x4plus', tile=512, half=False)
+        restored_face = self.restore_background(restored_face, 'RealESRGAN_x2plus', tile=512, half=False)
         restored_face = restored_face[106:406, 106:406]
         return restored_face
     
@@ -205,7 +205,7 @@ class ModelLoader:
             restored_face = tensor2img(dubbed_face_t.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
         
         restored_face = restored_face.astype(np.uint8)
-        restored_face = self.restore_background(restored_face, 'RealESRGAN_x4plus', tile=512, half=False)
+        restored_face = self.restore_background(restored_face, 'RealESRGAN_x2plus', tile=512, half=False)
         restored_face = restored_face[106:406, 106:406]
         return restored_face
     
@@ -231,6 +231,6 @@ class ModelLoader:
             restored_face = tensor2img(dubbed_face_t, rgb2bgr=True, min_max=(-1, 1))
         
         restored_face = restored_face.astype(np.uint8)
-        restored_face = self.restore_background(restored_face, 'RealESRGAN_x4plus', tile=512, half=False)
+        restored_face = self.restore_background(restored_face, 'RealESRGAN_x2plus', tile=512, half=False)
         restored_face = restored_face[106:406, 106:406]
         return restored_face
