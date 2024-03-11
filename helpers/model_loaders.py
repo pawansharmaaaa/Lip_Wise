@@ -34,6 +34,8 @@ class ModelLoader:
         # Create Plate
         self.plate = np.full((512, 512, 3), (128, 128, 128), dtype=np.uint8)
 
+        self.bgupsampler = None
+
     def _load(self, checkpoint_path):
         if self.device == 'cuda':
             checkpoint = torch.load(checkpoint_path)
@@ -155,9 +157,10 @@ class ModelLoader:
     
     @torch.no_grad()
     def restore_background(self, background, model_name, tile, outscale=1.0, half=False):
-        bgupsampler = self.load_realesrgan_model(model_name, tile, half=False)
-        if bgupsampler is not None:
-            background = bgupsampler.enhance(background, outscale=outscale)
+        if self.bgupsampler is None:
+            self.bgupsampler = self.load_realesrgan_model(model_name, tile, half=False)
+        
+        background = self.bgupsampler.enhance(background, outscale=outscale)
         return background
     
     @torch.no_grad()
@@ -179,6 +182,7 @@ class ModelLoader:
             restored_face = tensor2img(dubbed_face_t.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
         
         restored_face = restored_face.astype(np.uint8)
+        restored_face = self.restore_background(restored_face, 'RealESRGAN_x4plus', tile=512, half=False)
         restored_face = restored_face[106:406, 106:406]
         return restored_face
     
@@ -201,6 +205,7 @@ class ModelLoader:
             restored_face = tensor2img(dubbed_face_t.squeeze(0), rgb2bgr=True, min_max=(-1, 1))
         
         restored_face = restored_face.astype(np.uint8)
+        restored_face = self.restore_background(restored_face, 'RealESRGAN_x4plus', tile=512, half=False)
         restored_face = restored_face[106:406, 106:406]
         return restored_face
     
@@ -226,5 +231,6 @@ class ModelLoader:
             restored_face = tensor2img(dubbed_face_t, rgb2bgr=True, min_max=(-1, 1))
         
         restored_face = restored_face.astype(np.uint8)
+        restored_face = self.restore_background(restored_face, 'RealESRGAN_x4plus', tile=512, half=False)
         restored_face = restored_face[106:406, 106:406]
         return restored_face
