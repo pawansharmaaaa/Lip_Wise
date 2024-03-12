@@ -170,7 +170,7 @@ def infer_image(frame_path, audio_path, pad, align_3d = False,
 
             if upscale_bg:
                 up_progress.__call__((idx, len(restored_faces)), desc=f"Upscaling frame: {idx} out of {len(restored_faces)} in batch: {batch_no}/{total.mels}")
-                final, _ = ml.restore_background(final, bgupscaler, tile=400, outscale=1.0, half=False)
+                final = ml.restore_background(final, bgupscaler, tile=400, outscale=1.0, half=False)
 
             out.write(final)
         p_bar.__call__((batch_no, total.mels), desc=f"Processed batch: {batch_no} out of {total.mels}")
@@ -374,7 +374,7 @@ def infer_video(video_path, audio_path, pad,
             for idx, frame in enumerate(frames):
                 if upscale_bg:
                     up_progress.__call__((idx, len(frames)), desc=f"Upscaling frame: {idx} out of {len(restored_faces)} in batch: {batch_no}/{est_total_batches}")
-                    frame, _ = ml.restore_background(frame, bgupscaler, tile=400, outscale=1.0, half=False)
+                    frame = ml.restore_background(frame, bgupscaler, tile=400, outscale=1.0, half=False)
                 writer.write(frame)
             
             p_bar.__call__((batch_no+1, est_total_batches), desc=f"Processed batch: {batch_no} out of {est_total_batches}")
