@@ -23,7 +23,7 @@ class ModelLoader:
     def __init__(self, restorer, weight):
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.weight = weight
-        # self.wav2lip_model = self.load_wav2lip_model()
+        
         if restorer == 'GFPGAN':
             self.restorer = self.load_gfpgan_model()
         elif restorer == 'RestoreFormer':
