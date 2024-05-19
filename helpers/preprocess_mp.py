@@ -169,6 +169,33 @@ class ModelProcessor:
             
             image_landmarks[0] = data
             np.save(os.path.join(self.npy_directory,'image_landmarks.npy'), image_landmarks)
+            
+    def low_pass_filter(coordinates, alpha):
+        """
+        Applies a low-pass filter to face landmark coordinates.
+
+        Args:
+            coordinates: A numpy array of shape (N, 486, 2) where each row represents a set of face landmarks.
+            alpha: The smoothing factor (0 < alpha <= 1). Higher alpha means more smoothing.
+
+        Returns:
+            A numpy array of filtered coordinates with the same shape as the input.
+        """
+
+        filtered_coords = np.zeros_like(coordinates)
+        non_zero_indices = np.all(coordinates != 0, axis=(1, 2))  # Find frames where all landmarks are non-zero
+
+        # Get the first non-zero frame
+        first_non_zero_index = np.where(non_zero_indices)[0][0]
+        filtered_coords[first_non_zero_index] = coordinates[first_non_zero_index]
+
+        for i in range(first_non_zero_index + 1, len(coordinates)):
+            if non_zero_indices[i]:  # Only apply filtering if the frame is not all zeros
+                filtered_coords[i] = alpha * coordinates[i] + (1 - alpha) * filtered_coords[i - 1]
+            else:
+                filtered_coords[i] = filtered_coords[i - 1]  # If the frame is all zeros, use the previous frame
+
+        return filtered_coords
 
     def detect_for_video(self, video_path):
         try:
@@ -272,6 +299,9 @@ class ModelProcessor:
             
                 # Increment frame number
                 frame_no += 1
+                
+            # Low pass filter: Apply a low-pass filter to the landmarks
+            video_landmarks = self.low_pass_filter(video_landmarks, 0.99)
             
             # Save video landmarks
             np.save(os.path.join(self.npy_directory,'video_landmarks.npy'), video_landmarks)
