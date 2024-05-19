@@ -488,84 +488,123 @@ class FaceHelpers:
         euclidean_distance = np.sqrt(euclidean_distance)
         return euclidean_distance
 
-    #this function is inspired from the deepface repository: https://github.com/serengil/deepface/blob/master/deepface/commons/functions.py
+    # #this function is inspired from the deepface repository: https://github.com/serengil/deepface/blob/master/deepface/commons/functions.py
+    # def alignment_procedure(self, extracted_face, frame_no=0):
+
+    #     height, width = extracted_face.shape[:2]
+
+    #     left_eye = self.landmarks_all[frame_no][480] *  [width, height]# Left eye index is 480, and also unzipping
+    #     right_eye = self.landmarks_all[frame_no][481] * [width, height] # Right eye index is 481, and also unzipping
+    #     #this function aligns given face in img based on left and right eye coordinates
+
+    #     #left eye is the eye appearing on the left (right eye of the person)
+    #     #left top point is (0, 0)
+
+    #     left_eye_x = left_eye[0]
+    #     left_eye_y = left_eye[1]
+    #     right_eye_x = right_eye[0]
+    #     right_eye_y = right_eye[1]
+
+    #     #-----------------------
+    #     #decide the image is inverse
+
+    #     center_eyes = (int((left_eye_x + right_eye_x) / 2), int((left_eye_y + right_eye_y) / 2))
+
+    #     center = (extracted_face.shape[1] / 2, extracted_face.shape[0] / 2)
+
+    #     output_size = (extracted_face.shape[1], extracted_face.shape[0])
+        
+
+    #     #-----------------------
+    #     #find rotation direction
+
+    #     if left_eye_y > right_eye_y:
+    #         point_3rd = (right_eye_x, left_eye_y)
+    #         direction = -1 #rotate same direction to clock
+    #     else:
+    #         point_3rd = (left_eye_x, right_eye_y)
+    #         direction = 1 #rotate inverse direction of clock
+
+    #     #-----------------------
+    #     #find length of triangle edges
+
+    #     a = self.findEuclideanDistance(np.array(left_eye), np.array(point_3rd))
+    #     b = self.findEuclideanDistance(np.array(right_eye), np.array(point_3rd))
+    #     c = self.findEuclideanDistance(np.array(right_eye), np.array(left_eye))
+
+    #     #-----------------------
+
+    #     #apply cosine rule
+
+    #     if b != 0 and c != 0: #this multiplication causes division by zero in cos_a calculation
+
+    #         cos_a = (b*b + c*c - a*a)/(2*b*c)
+            
+    #         #PR15: While mathematically cos_a must be within the closed range [-1.0, 1.0], floating point errors would produce cases violating this
+    #         #In fact, we did come across a case where cos_a took the value 1.0000000169176173, which lead to a NaN from the following np.arccos step
+            
+    #         cos_a = np.clip(cos_a, -1.0, 1.0)
+    #         angle = np.arccos(cos_a) #angle in radian
+    #         angle = (angle * 180) / math.pi #radian to degree
+
+    #         #-----------------------
+    #         #rotate base image
+
+    #         if direction == -1:
+    #             angle = 90 - angle
+
+    #         try:
+    #             # Get the rotation matrix
+    #             rotation_matrix = cv2.getRotationMatrix2D(center, direction * angle, 1)
+
+    #             # Perform the affine transformation to rotate the image
+    #             aligned_face = cv2.warpAffine(extracted_face, rotation_matrix, output_size)
+    #         except Exception as e:
+    #             gr.Warning(f"Error aligning face at frame no: {frame_no}, Saving the frame for manual inspection.")
+    #             os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
+    #             cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_{frame_no}.jpg'), extracted_face)
+    #             exit(1)
+
+    #     return aligned_face, rotation_matrix  #return img and inverse afiine matrix anyway
+
     def alignment_procedure(self, extracted_face, frame_no=0):
 
         height, width = extracted_face.shape[:2]
 
-        left_eye = self.landmarks_all[frame_no][480] *  [width, height]# Left eye index is 480, and also unzipping
-        right_eye = self.landmarks_all[frame_no][481] * [width, height] # Right eye index is 481, and also unzipping
-        #this function aligns given face in img based on left and right eye coordinates
+        left_eye = self.landmarks_all[frame_no][480] * [width, height]  # Left eye index is 480, and also unzipping
+        right_eye = self.landmarks_all[frame_no][481] * [width, height]  # Right eye index is 481, and also unzipping
 
-        #left eye is the eye appearing on the left (right eye of the person)
-        #left top point is (0, 0)
+        # Calculate the center of the eyes
+        center_eyes = ((left_eye[0] + right_eye[0]) / 2, (left_eye[1] + right_eye[1]) / 2)
 
-        left_eye_x = left_eye[0]
-        left_eye_y = left_eye[1]
-        right_eye_x = right_eye[0]
-        right_eye_y = right_eye[1]
-
-        #-----------------------
-        #decide the image is inverse
-
-        center_eyes = (int((left_eye_x + right_eye_x) / 2), int((left_eye_y + right_eye_y) / 2))
-
+        # Calculate the center of the image
         center = (extracted_face.shape[1] / 2, extracted_face.shape[0] / 2)
 
-        output_size = (extracted_face.shape[1], extracted_face.shape[0])
-        
+        # Calculate the angle between the eyes and the horizontal axis
+        angle = math.atan2(right_eye[1] - left_eye[1], right_eye[0] - left_eye[0])
 
-        #-----------------------
-        #find rotation direction
+        # Calculate the rotation matrix
+        rotation_matrix = cv2.getRotationMatrix2D(center_eyes, -math.degrees(angle), 1)
 
-        if left_eye_y > right_eye_y:
-            point_3rd = (right_eye_x, left_eye_y)
-            direction = -1 #rotate same direction to clock
-        else:
-            point_3rd = (left_eye_x, right_eye_y)
-            direction = 1 #rotate inverse direction of clock
+        # Perform the affine transformation to rotate the image
+        aligned_face = cv2.warpAffine(extracted_face, rotation_matrix, (extracted_face.shape[1], extracted_face.shape[0]))
 
-        #-----------------------
-        #find length of triangle edges
+        # Apply additional adjustments to ensure a straight face:
 
-        a = self.findEuclideanDistance(np.array(left_eye), np.array(point_3rd))
-        b = self.findEuclideanDistance(np.array(right_eye), np.array(point_3rd))
-        c = self.findEuclideanDistance(np.array(right_eye), np.array(left_eye))
+        # 1. Calculate the distance between the eyes
+        eye_distance = np.linalg.norm(right_eye - left_eye)
 
-        #-----------------------
+        # 2. Calculate the ideal eye separation for a straight face
+        ideal_eye_distance = 0.3 * width  # Adjust this value as needed
 
-        #apply cosine rule
+        # 3. Calculate the scaling factor to adjust the eye separation
+        scaling_factor = ideal_eye_distance / eye_distance
 
-        if b != 0 and c != 0: #this multiplication causes division by zero in cos_a calculation
+        # 4. Apply scaling to the aligned face
+        aligned_face = cv2.resize(aligned_face, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_AREA)
 
-            cos_a = (b*b + c*c - a*a)/(2*b*c)
-            
-            #PR15: While mathematically cos_a must be within the closed range [-1.0, 1.0], floating point errors would produce cases violating this
-            #In fact, we did come across a case where cos_a took the value 1.0000000169176173, which lead to a NaN from the following np.arccos step
-            
-            cos_a = np.clip(cos_a, -1.0, 1.0)
-            angle = np.arccos(cos_a) #angle in radian
-            angle = (angle * 180) / math.pi #radian to degree
+        return aligned_face, rotation_matrix
 
-            #-----------------------
-            #rotate base image
-
-            if direction == -1:
-                angle = 90 - angle
-
-            try:
-                # Get the rotation matrix
-                rotation_matrix = cv2.getRotationMatrix2D(center, direction * angle, 1)
-
-                # Perform the affine transformation to rotate the image
-                aligned_face = cv2.warpAffine(extracted_face, rotation_matrix, output_size)
-            except Exception as e:
-                gr.Warning(f"Error aligning face at frame no: {frame_no}, Saving the frame for manual inspection.")
-                os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
-                cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_{frame_no}.jpg'), extracted_face)
-                exit(1)
-
-        return aligned_face, rotation_matrix  #return img and inverse afiine matrix anyway
     
     def align_crop_face(self, extracted_face, frame_no=0):
         """
@@ -698,63 +737,40 @@ class FaceHelpers:
 
 
     def paste_back(self, ready_to_paste, original_img, face_mask, inv_mask, center):
-        """
-        Pastes the face back on the background.
-
-        Args:
-            ready_to_paste: Full image with the face.
-            background: The background on which the face is to be pasted.
-
-        Returns:
-            The background with the face pasted on it.
-        """
-        # print("Pasting face back...")
-        try:
-            # Remove the face from the background
-            inv_half_mask = inv_mask.copy()
-            inv_half_mask[:center[1], :] = 255
-            background = cv2.bitwise_and(original_img, original_img, mask=inv_half_mask)
-
-            half_mask = cv2.bitwise_not(inv_half_mask)
-            lower_jaw = cv2.bitwise_and(ready_to_paste, ready_to_paste, mask=half_mask)
-            
-            del ready_to_paste
-            del inv_half_mask
-
-            # Add the new face to the background
-            result = cv2.add(background, lower_jaw)
-
-            del background
-            del lower_jaw
-
-            # Blend the face with the background
-            # flags = int(cv2.NORMAL_CLONE*0.5) | int(cv2.MIXED_CLONE*0.5)
-            # result = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
-            # original_img = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
-            # half_mask = cv2.erode(half_mask, (7, 7), iterations=10)
-            # half_mask = cv2.GaussianBlur(half_mask, (7, 7), 10)
-
-            # Assuming 'mask' is binary mask
-            contours, _ = cv2.findContours(half_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-            # The center of the largest contour
-            largest_contour = max(contours, key=cv2.contourArea)
-
-            # Calculate the bounding rectangle
-            x, y, w, h = cv2.boundingRect(largest_contour)
-
-            # Calculate the center of the bounding rectangle
-            center_x = x + w // 2
-            center_y = y + h // 2
-
-            center_2 = (center_x, center_y)
-
-            final_blend = cv2.seamlessClone(result, original_img, half_mask, center_2, flags=cv2.NORMAL_CLONE)
-            # final_blend = cv2.cvtColor(final_blend, cv2.COLOR_RGB2BGR)
-        except IndexError as e:
-            gr.Warning(f"Failed to paste face back onto background: {e}")
-            gr.Warning(f"Saving the frame for manual inspection.")
-            os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
-            cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_paste_back.jpg'), ready_to_paste)
-            exit(1)
-        return final_blend
+            """
+            Pastes the face back on the background.
+        
+            Args:
+                ready_to_paste: Full image with the face.
+                original_img: The background on which the face is to be pasted.
+                face_mask: Mask for the face region.
+                inv_mask: Inverse mask for the face region.
+                center: Center of the face region.
+        
+            Returns:
+                The background with the face pasted on it.
+            """
+        
+            try:
+                # Remove the face from the background
+                background = cv2.bitwise_and(original_img, original_img, mask=inv_mask)
+        
+                # Add the new face to the background
+                result = cv2.add(background, ready_to_paste)
+        
+                # Blend the face with the background using seamless cloning
+                contours, _ = cv2.findContours(face_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                largest_contour = max(contours, key=cv2.contourArea)
+                x, y, w, h = cv2.boundingRect(largest_contour)
+                center_2 = (x + w // 2, y + h // 2)
+                final_blend = cv2.seamlessClone(result, original_img, face_mask, center_2, flags=cv2.NORMAL_CLONE)
+        
+                return final_blend
+        
+            except Exception as e:
+                gr.Warning(f"Failed to paste face back onto background: {e}")
+                gr.Warning(f"Saving the frame for manual inspection.")
+                os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
+                cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_paste_back.jpg'), ready_to_paste)
+                exit(1)
+        
