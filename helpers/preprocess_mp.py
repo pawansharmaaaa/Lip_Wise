@@ -170,7 +170,7 @@ class ModelProcessor:
             image_landmarks[0] = data
             np.save(os.path.join(self.npy_directory,'image_landmarks.npy'), image_landmarks)
             
-    def low_pass_filter(coordinates, alpha):
+    def low_pass_filter(self, coordinates, alpha):
         """
         Applies a low-pass filter to face landmark coordinates.
 
