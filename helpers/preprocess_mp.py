@@ -725,4 +725,4 @@ class FaceHelpers:
             os.makedirs(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames'), exist_ok=True)
             cv2.imwrite(os.path.join(file_check.CURRENT_FILE_DIRECTORY, 'error_frames', f'frame_paste_back.jpg'), ready_to_paste)
             exit(1)
-        return final_blend
+        return final_blend       

@@ -18,6 +18,9 @@ from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from realesrgan import RealESRGANer
 
+from facexlib.parsing.bisenet import BiSeNet
+from facexlib.parsing.parsenet import ParseNet
+
 class ModelLoader:
 
     def __init__(self, restorer, weight):
@@ -35,6 +38,15 @@ class ModelLoader:
         self.plate = np.full((512, 512, 3), (128, 128, 128), dtype=np.uint8)
 
         self.bgupsampler = None
+
+    def load_parser(self):
+        model = ParseNet(in_size=512, out_size=512, parsing_ch=19)
+        model_path = os.path.join(file_check.PARSER_WEIGHTS_DIR, 'parsenet.pth')
+        load_net = torch.load(model_path, map_location=lambda storage, loc: storage)
+        model.load_state_dict(load_net, strict=True)
+        model.eval()
+        model = model.to(self.device)
+        return model
 
     def _load(self, checkpoint_path):
         if self.device == 'cuda':

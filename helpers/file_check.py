@@ -9,6 +9,10 @@ from basicsr.utils.download_util import load_file_from_url
 
 LANDMARKER_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task'
 DETECTOR_MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/latest/blaze_face_short_range.tflite'
+PARSER_MODEL_URL = {
+    'bisenet': 'https://github.com/xinntao/facexlib/releases/download/v0.2.0/parsing_bisenet.pth',
+    'parsenet': 'https://github.com/xinntao/facexlib/releases/download/v0.2.2/parsing_parsenet.pth'
+}
 GFPGAN_MODEL_URL = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth'
 CODEFORMERS_MODEL_URL = 'https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth'
 RESTOREFORMER_MODEL_URL = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.4/RestoreFormer.pth'
@@ -29,6 +33,7 @@ CSS_FILE_PATH = os.path.join(CURRENT_FILE_DIRECTORY, 'styles', 'style-black.css'
 
 WEIGHTS_DIR = os.path.join(CURRENT_FILE_DIRECTORY, 'weights')
 MP_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'mp')
+PARSER_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'parser')
 GFPGAN_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'gfpgan')
 CODEFORMERS_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'codeformers')
 RESTOREFORMER_WEIGHTS_DIR = os.path.join(WEIGHTS_DIR, 'restoreformer')
@@ -60,8 +65,9 @@ def download_from_drive(url, model_dir, progress, file_name):
     except RuntimeError as e:
         print(f"Error occurred while downloading from drive: {e}")
 
-def perform_check(bg_model_name='RealESRGAN_x2plus', restorer='CodeFormer', use_gan_version=False):
+def perform_check(bg_model_name='RealESRGAN_x2plus', restorer='CodeFormer', parser='parsenet', use_gan_version=False):
     REALESRGAN_MODEL_PATH = os.path.join(REALESRGAN_WEIGHTS_DIR, f'{bg_model_name}.pth')
+    PARSER_MODEL_PATH = os.path.join(PARSER_WEIGHTS_DIR, f'{parser}.pth')
     try:
         #------------------------------CHECK FOR TEMP DIR-------------------------------
         # Check if directory exists
@@ -98,6 +104,14 @@ def perform_check(bg_model_name='RealESRGAN_x2plus', restorer='CodeFormer', use_
                                model_dir=MP_WEIGHTS_DIR,
                                progress=True, 
                                file_name='blaze_face_short_range.tflite')
+            
+        # Download face parser model
+        if not os.path.exists(PARSER_MODEL_PATH):
+            print(f"Downloading Face Parser model: {parser}...")
+            load_file_from_url(url=PARSER_MODEL_URL[parser],
+                               model_dir=PARSER_WEIGHTS_DIR,
+                               progress=True,
+                               file_name=f'{parser}.pth')
         
         # Download restorer model
         if restorer == 'GFPGAN':
