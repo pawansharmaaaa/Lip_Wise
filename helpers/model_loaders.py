@@ -19,6 +19,8 @@ from vqfr.archs.vqfrv2_arch import VQFRv2
 from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from realesrgan import RealESRGANer
+import insightface
+from insightface.app import FaceAnalysis
 
 class ModelLoader:
 
@@ -109,6 +111,12 @@ class ModelLoader:
                 gpu_id=None)
             
         return bg_upsampler
+    
+    def load_insightface(self):
+        det = FaceAnalysis(providers=['CUDAExecutionProvider', 'CPUExecutionProvider'])
+        det.prepare(ctx_id=0, det_size=(640, 640))
+        
+        return det
 
     def load_gfpgan_model(self):
         

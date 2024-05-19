@@ -731,13 +731,13 @@ class FaceHelpers:
             # flags = int(cv2.NORMAL_CLONE*0.5) | int(cv2.MIXED_CLONE*0.5)
             # result = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
             # original_img = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
-            half_mask = cv2.erode(half_mask, (7, 7), iterations=10)
-            half_mask = cv2.GaussianBlur(half_mask, (7, 7), 10)
+            # half_mask = cv2.erode(half_mask, (7, 7), iterations=10)
+            # half_mask = cv2.GaussianBlur(half_mask, (7, 7), 10)
 
-            # Assuming 'mask' is your binary mask
+            # Assuming 'mask' is binary mask
             contours, _ = cv2.findContours(half_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-            # Assuming you want the center of the largest contour
+            # The center of the largest contour
             largest_contour = max(contours, key=cv2.contourArea)
 
             # Calculate the bounding rectangle
