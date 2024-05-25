@@ -48,3 +48,4 @@ Experiments/helpers/__init__.py
 Experiments/infer.py
 Experiments/__init__.py
 Result_Analytics/
+.idx/dev.nix
