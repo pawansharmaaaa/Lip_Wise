@@ -105,27 +105,27 @@ class ModelProcessor:
         norm_pad_x = self.padding / dim.width
         norm_pad_y = self.padding / dim.height
         
-        # Initialize mediapipe
-        BaseOptions = mp.tasks.BaseOptions
-        VisionRunningMode = mp.tasks.vision.RunningMode
+        # # Initialize mediapipe
+        # BaseOptions = mp.tasks.BaseOptions
+        # VisionRunningMode = mp.tasks.vision.RunningMode
 
-        FaceLandmarker = mp.tasks.vision.FaceLandmarker
-        FaceLandmarkerOptions = mp.tasks.vision.FaceLandmarkerOptions
+        # FaceLandmarker = mp.tasks.vision.FaceLandmarker
+        # FaceLandmarkerOptions = mp.tasks.vision.FaceLandmarkerOptions
 
-        FaceDetector = mp.tasks.vision.FaceDetector
-        FaceDetectorOptions = mp.tasks.vision.FaceDetectorOptions
+        # FaceDetector = mp.tasks.vision.FaceDetector
+        # FaceDetectorOptions = mp.tasks.vision.FaceDetectorOptions
 
-        # Create a face detector instance with the image mode:
-        options_det = FaceDetectorOptions(
-            base_options=BaseOptions(model_asset_path=self.detector_model_path),
-            min_detection_confidence=0.5,
-            running_mode=VisionRunningMode.IMAGE)
+        # # Create a face detector instance with the image mode:
+        # options_det = FaceDetectorOptions(
+        #     base_options=BaseOptions(model_asset_path=self.detector_model_path),
+        #     min_detection_confidence=0.5,
+        #     running_mode=VisionRunningMode.IMAGE)
 
 
-        options_lan = FaceLandmarkerOptions(
-            base_options=BaseOptions(model_asset_path=self.landmarker_model_path),
-            min_face_detection_confidence=0.5,
-            running_mode=VisionRunningMode.IMAGE)
+        # options_lan = FaceLandmarkerOptions(
+        #     base_options=BaseOptions(model_asset_path=self.landmarker_model_path),
+        #     min_face_detection_confidence=0.5,
+        #     running_mode=VisionRunningMode.IMAGE)
         
         image_landmarks = np.zeros((1, 486, 2)).astype(np.float64)
         

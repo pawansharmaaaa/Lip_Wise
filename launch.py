@@ -6,6 +6,7 @@ import gradio as gr
 # Custom Modules
 import infer
 from helpers import file_check
+from modules.face_resolver import FaceResolver
 
 # Argument parser
 parser = argparse.ArgumentParser(description="Your description here")
@@ -149,6 +150,110 @@ with gr.Blocks(title='Lip-Wise', theme=theme, css = file_check.CSS_FILE_PATH) as
             </header>
             '''
         )
+    
+    with gr.Tab(label="Face-Selector", elem_id="tab", elem_classes=["tabs"]):
+        with gr.Row(elem_classes=["row"]):
+            with gr.Column():
+                with gr.Accordion(label="Input Video", open=True, elem_classes=["inp_group", "accordion"]):
+                    video_input = gr.File(file_count='single', 
+                                        label="Video",
+                                        container=True)
+                    video_preview = gr.Video(label="Video")
+
+                with gr.Column():
+                    frame = gr.Image(label="Frame",
+                                     scale=1)
+                    frame_index = gr.Slider(minimum=0, 
+                                            maximum=100, 
+                                            step=1, 
+                                            label="Frame Index",
+                                            container=True,
+                                            interactive=True)
+                    
+            with gr.Column(scale=1):
+                with gr.Column(scale=1):
+                    metadata = gr.HighlightedText(label="Metadata")
+                        
+                    faces = gr.Gallery(label="Select Reference Face",
+                                       scale=1,
+                                       elem_classes=["input"],
+                                       allow_preview=False,
+                                       object_fit="contain")
+                    
+                    similarity_strength = gr.Slider(value=1.2,
+                                                    minimum=0.1,
+                                                    maximum=2,
+                                                    step=0.1,
+                                                    label="Similarity Strength",
+                                                    container=True)
+                    
+                    process = gr.Button(value="Generate Preview",
+                                        variant="primary", 
+                                        elem_id="gen-button",
+                                        size='sm')
+            
+        with gr.Row():
+            with gr.Column():
+                preview = gr.Video(sources='upload', 
+                                   label="Preview", 
+                                   elem_classes=["output"],
+                                   container=True)
+                save = gr.Button(value="Save Data", 
+                                 interactive=False, 
+                                 variant="secondary", 
+                                 elem_id="clear-button")
+                
+        ### Function and Event Mapping
+        fr = FaceResolver()
+        
+        def update_selection(evt: gr.SelectData):
+            fr.save_embedding(evt.index)
+
+        def populate_metadata():
+            metadata = [
+                ("FPS", str(fr.fps)),
+                ("RESOLUTION", f"{str(fr.width)}x{str(fr.height)}"),
+                ("TOTAL FRAMES", str(fr.frame_count))
+            ]
+            return metadata
+        
+        def return_path():
+            return fr.video_path
+        
+        def update_slider_max(video_input):
+            fr.process_video(video_input)
+            return gr.update(maximum=(fr.frame_count-1))
+        
+        def show_save_button():
+            return gr.update(interactive=True)
+                
+        video_input.change(fn=update_slider_max, 
+                           inputs=[video_input],
+                           outputs=[frame_index]
+                           ).then(return_path, 
+                                  outputs=[video_preview]
+                           ).then(populate_metadata, 
+                                  outputs=[metadata]
+                           ).then(
+                                fr.update_frame, 
+                                inputs=[frame_index], 
+                                outputs=[frame, faces]
+                        )
+        
+        frame_index.change(fn=fr.update_frame, 
+                           inputs=[frame_index], 
+                           outputs=[frame, faces])
+        
+        faces.select(fn=update_selection)
+        
+        process.click(fn=fr.get_preview,
+                    inputs=[similarity_strength],
+                    outputs=[preview]).then(
+                        show_save_button,
+                        outputs=[save]
+                    )
+        
+        save.click(fn=fr.save_state)
 
     with gr.Tab(label="Process Image", elem_id="tab", elem_classes=["tabs"]):
         with gr.Row(elem_classes=["row"]):
