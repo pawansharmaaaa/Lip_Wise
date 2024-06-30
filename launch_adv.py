@@ -51,8 +51,6 @@ theme = gr.themes.Base(
     slider_color_dark="#B12805FF",
     panel_border_color_dark="#B12805FF",
     loader_color_dark="#C494ACFF",
-    # body_background_fill="radial-gradient( circle farthest-corner at -4% -12.9%,  rgba(255,255,255,1) 0.3%, rgba(255,255,255,1) 90.2% );",
-    # body_background_fill_dark= "linear-gradient(315deg, #0cbaba 0%, #380036 74%);"
     )
 
 head_html = f'''
