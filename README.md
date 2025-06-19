@@ -116,6 +116,9 @@ Lip-Wise is released under Apache License Version 2.0.
     <a href="https://github.com/googlesamples/mediapipe">
         <img src="https://github.com/pawansharmaaaa/Lip_Wise/assets/56242483/5d8d14f3-c12d-431c-a7da-bc08ca823147" height="30" alt="MediaPipe">
     </a>
+    <a href="https://github.com/astral-sh/ruff">
+        <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff" style="max-width:100%;">
+    </a>
 </div>
 
 ### Citations
